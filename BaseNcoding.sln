@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseNcoding", "BaseNcoding\BaseNcoding.csproj", "{12EEF8EB-4E0C-49E3-9D41-EEC9333C6E16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseNcoding.Tests", "BaseNcoding.Tests\BaseNcoding.Tests.csproj", "{431CDE7C-244A-4DD0-B005-C43E3C471350}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12EEF8EB-4E0C-49E3-9D41-EEC9333C6E16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12EEF8EB-4E0C-49E3-9D41-EEC9333C6E16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12EEF8EB-4E0C-49E3-9D41-EEC9333C6E16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12EEF8EB-4E0C-49E3-9D41-EEC9333C6E16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{431CDE7C-244A-4DD0-B005-C43E3C471350}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{431CDE7C-244A-4DD0-B005-C43E3C471350}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{431CDE7C-244A-4DD0-B005-C43E3C471350}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{431CDE7C-244A-4DD0-B005-C43E3C471350}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
