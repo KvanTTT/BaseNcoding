@@ -71,42 +71,42 @@ namespace BaseNcoding.Tests
 
 			str = "a";
 			base128 = BaseNConvert.ToBase128(str);
-			Assert.AreEqual("Zl------", base128);
+			Assert.AreEqual(6, base128.Count(c => c == BaseNConvert.Base128Special));
 			Assert.AreEqual(str, BaseNConvert.FromBase128ToString(base128));
 
 			str = "aa";
 			base128 = BaseNConvert.ToBase128(str);
-			Assert.AreEqual("Z¦J-----", base128);
+			Assert.AreEqual(5, base128.Count(c => c == BaseNConvert.Base128Special));
 			Assert.AreEqual(str, BaseNConvert.FromBase128ToString(base128));
 
 			str = "aaa";
 			base128 = BaseNConvert.ToBase128(str);
-			Assert.AreEqual("Z¦V7----", base128);
+			Assert.AreEqual(4, base128.Count(c => c == BaseNConvert.Base128Special));
 			Assert.AreEqual(str, BaseNConvert.FromBase128ToString(base128));
 
 			str = "aaaa";
 			base128 = BaseNConvert.ToBase128(str);
-			Assert.AreEqual("Z¦V@.---", base128);
+			Assert.AreEqual(3, base128.Count(c => c == BaseNConvert.Base128Special));
 			Assert.AreEqual(str, BaseNConvert.FromBase128ToString(base128));
 
 			str = "aaaaa";
 			base128 = BaseNConvert.ToBase128(str);
-			Assert.AreEqual("Z¦V@2(--", base128);
+			Assert.AreEqual(2, base128.Count(c => c == BaseNConvert.Base128Special));
 			Assert.AreEqual(str, BaseNConvert.FromBase128ToString(base128));
 
 			str = "aaaaaa";
 			base128 = BaseNConvert.ToBase128(str);
-			Assert.AreEqual("Z¦V@2)n-", base128);
+			Assert.AreEqual(1, base128.Count(c => c == BaseNConvert.Base128Special));
 			Assert.AreEqual(str, BaseNConvert.FromBase128ToString(base128));
 
 			str = "aaaaaaa";
 			base128 = BaseNConvert.ToBase128(str);
-			Assert.AreEqual("Z¦V@2)n°", base128);
+			Assert.AreEqual(0, base128.Count(c => c == BaseNConvert.Base128Special));
 			Assert.AreEqual(str, BaseNConvert.FromBase128ToString(base128));
 
 			str = "aaaaaaaa";
 			base128 = BaseNConvert.ToBase128(str);
-			Assert.AreEqual("Z¦V@2)n°Zl------", base128);
+			Assert.AreEqual(6, base128.Count(c => c == BaseNConvert.Base128Special));
 			Assert.AreEqual(str, BaseNConvert.FromBase128ToString(base128));
 		}
 	}

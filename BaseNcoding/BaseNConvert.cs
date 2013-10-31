@@ -8,8 +8,8 @@ namespace BaseNcoding
 {
 	public class BaseNConvert
 	{
-		static char Special = '-';
-		static string Base128Chars = "!#$%()*,.0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎ";
+		public static char Base128Special = '-';
+		public static string Base128Chars = "!#$%()*,.0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎ";
 
 		public static string ToBase128(string data)
 		{
@@ -59,27 +59,27 @@ namespace BaseNcoding
 			{
 				case 1:
 					result.Append(Base128Chars[(old << 6) & 0x40]);
-					result.Append(Special, 6);
+					result.Append(Base128Special, 6);
 					break;
 				case 2:
 					result.Append(Base128Chars[((old << 5) & 0x60)]);
-					result.Append(Special, 5);
+					result.Append(Base128Special, 5);
 					break;
 				case 3:
 					result.Append(Base128Chars[((old << 4) & 0x70)]);
-					result.Append(Special, 4);
+					result.Append(Base128Special, 4);
 					break;
 				case 4:
 					result.Append(Base128Chars[((old << 3) & 0x78)]);
-					result.Append(Special, 3);
+					result.Append(Base128Special, 3);
 					break;
 				case 5:
 					result.Append(Base128Chars[((old << 2) & 0x7C)]);
-					result.Append(Special, 2);
+					result.Append(Base128Special, 2);
 					break;
 				case 6:
 					result.Append(Base128Chars[((old << 1) & 0x7E)]);
-					result.Append(Special);
+					result.Append(Base128Special);
 					break;
 			}
 
@@ -89,7 +89,7 @@ namespace BaseNcoding
 		public static byte[] FromBase128(string s)
 		{
 			int lastSpecialInd = s.Length;
-			while (s[lastSpecialInd - 1] == Special)
+			while (s[lastSpecialInd - 1] == Base128Special)
 				lastSpecialInd--;
 
 			int length = (s.Length + 7) / 8 * 7 - (s.Length - lastSpecialInd);
