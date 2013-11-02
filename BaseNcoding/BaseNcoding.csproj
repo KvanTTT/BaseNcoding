@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base128.cs" />
+    <Compile Include="Base32.cs" />
     <Compile Include="Base64.cs" />
     <Compile Include="BaseN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

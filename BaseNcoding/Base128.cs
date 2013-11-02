@@ -18,12 +18,13 @@ namespace BaseNcoding
 
 		public override string Encode(byte[] data)
 		{
-			StringBuilder result = new StringBuilder((data.Length + 6) / 7 * 8);
+			int dataLength = data.Length;
+			StringBuilder result = new StringBuilder((dataLength + 6) / 7 * 8);
 
 			byte x1, x2;
 			int i;
 
-			int length7 = (data.Length / 7) * 7;
+			int length7 = (dataLength / 7) * 7;
 			for (i = 0; i < length7; i += 7)
 			{
 				x1 = data[i];
@@ -49,7 +50,7 @@ namespace BaseNcoding
 				result.Append(Alphabet[x1 & 0x7F]);
 			}
 
-			switch (data.Length - length7)
+			switch (dataLength - length7)
 			{
 				case 1:
 					x1 = data[i];
