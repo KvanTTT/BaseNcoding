@@ -62,13 +62,13 @@ namespace BaseNcoding.Tests
 				int bitsPerByte = 8;
 				int charByteBitsLcm = BaseN.LCM(bitsPerByte, bitsPerChar);
 				int maxTailLength = charByteBitsLcm / bitsPerByte - 1;
-				for (int i = 0; i <= maxTailLength + 1; i++)
+				for (int i = 0; i <= maxTailLength + 2; i++)
 				{
-					strBuilder.Append(testChar);
 					string str = strBuilder.ToString();
 					string encoded = Converter.EncodeString(str);
-					Assert.AreEqual(maxTailLength - (i % (maxTailLength + 1)), encoded.Count(c => c == Converter.Special));
+					Assert.AreEqual(i == 0 ? 0 : (maxTailLength - (i - 1) % (maxTailLength + 1)), encoded.Count(c => c == Converter.Special));
 					Assert.AreEqual(str, Converter.DecodeToString(encoded));
+					strBuilder.Append(testChar);
 				}
 			}
 		}

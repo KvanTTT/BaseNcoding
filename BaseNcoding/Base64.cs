@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace BaseNcoding
 {
-	/// <summary>
-	/// http://www.herongyang.com/encoding/Base64-Sun-Java-Implementation.html
-	/// </summary>
 	public class Base64 : BaseN
 	{
 		public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -23,37 +20,39 @@ namespace BaseNcoding
 		{
 			StringBuilder result = new StringBuilder((data.Length + 2) / 3 * 4);
 
-			byte x = 0;
-			int old = 0;
+			byte x1, x2;
 			int i;
-			for (i = 0; i < data.Length; i++)
+
+			int length3 = (data.Length / 3) * 3;
+			for (i = 0; i < length3; i += 3)
 			{
-				x = data[i];
-				switch (i % 3)
-				{
-					case 0:
-						result.Append(Alphabet[x >> 2]);
-						break;
-					case 1:
-						result.Append(Alphabet[((old << 4) & 0x30) | (x >> 4)]);
-						break;
-					case 2:
-						result.Append(Alphabet[((old << 2) & 0x3C) | (x >> 6)]);
-						result.Append(Alphabet[x & 0x3F]);
-						break;
-				}
-				old = x;
+				x1 = data[i];
+				result.Append(Alphabet[x1 >> 2]);
+
+				x2 = data[i + 1];
+				result.Append(Alphabet[((x1 << 4) & 0x30) | (x2 >> 4)]);
+
+				x1 = data[i + 2];
+				result.Append(Alphabet[((x2 << 2) & 0x3C) | (x1 >> 6)]);
+				result.Append(Alphabet[x1 & 0x3F]);
 			}
 
-			switch (i % 3)
+			switch (data.Length - length3)
 			{
 				case 1:
-					result.Append(Alphabet[(old << 4) & 0x30]);
-					result.Append(Special);
-					result.Append(Special);
+					x1 = data[i];
+					result.Append(Alphabet[x1 >> 2]);
+					result.Append(Alphabet[(x1 << 4) & 0x30]);
+
+					result.Append(Special, 2);
 					break;
 				case 2:
-					result.Append(Alphabet[((old << 2) & 0x3C)]);
+					x1 = data[i];
+					result.Append(Alphabet[x1 >> 2]);
+					x2 = data[i + 1];
+					result.Append(Alphabet[((x1 << 4) & 0x30) | (x2 >> 4)]);
+					result.Append(Alphabet[(x2 << 2) & 0x3C]);
+
 					result.Append(Special);
 					break;
 			}
@@ -63,38 +62,46 @@ namespace BaseNcoding
 
 		public override byte[] Decode(string data)
 		{
+			if (string.IsNullOrEmpty(data))
+				return new byte[0];
+
 			int lastSpecialInd = data.Length;
 			while (data[lastSpecialInd - 1] == Special)
 				lastSpecialInd--;
+			int tailLength = data.Length - lastSpecialInd;
 
-			int length = (data.Length + 3) / 4 * 3 - (data.Length - lastSpecialInd);
-			byte[] result = new byte[length];
-			int dst = 0;
+			byte[] result = new byte[(data.Length + 3) / 4 * 3 - tailLength];
+			int length3 = result.Length / 3 * 3;
+			int x1, x2;
 
-			for (int i = 0; i < data.Length; i++)
+			int i, srcInd = 0;
+			for (i = 0; i < length3; i += 3)
 			{
-				int code = Alphabet.IndexOf(data[i]);
-				if (code == -1)
+				x1 = Alphabet.IndexOf(data[srcInd++]);
+				x2 = Alphabet.IndexOf(data[srcInd++]);
+				result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+
+				x1 = Alphabet.IndexOf(data[srcInd++]);
+				result[i + 1] = (byte)((x2 << 4) | ((x1 >> 2) & 0xF));
+
+				x2 = Alphabet.IndexOf(data[srcInd++]);
+				result[i + 2] = (byte)((x1 << 6) | (x2 & 0x3F));
+			}
+
+			switch (tailLength)
+			{
+				case 2:
+					x1 = Alphabet.IndexOf(data[srcInd++]);
+					x2 = Alphabet.IndexOf(data[srcInd++]);
+					result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
 					break;
-				switch (i % 4)
-				{
-					case 0:
-						result[dst] = (byte)(code << 2);
-						break;
-					case 1:
-						result[dst++] |= (byte)((code >> 4) & 0x3);
-						if (dst < length)
-							result[dst] = (byte)(code << 4);
-						break;
-					case 2:
-						result[dst++] |= (byte)((code >> 2) & 0xF);
-						if (dst < length)
-							result[dst] = (byte)(code << 6);
-						break;
-					case 3:
-						result[dst++] |= (byte)(code & 0x3f);
-						break;
-				}
+				case 1:
+					x1 = Alphabet.IndexOf(data[srcInd++]);
+					x2 = Alphabet.IndexOf(data[srcInd++]);
+					result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+					x1 = Alphabet.IndexOf(data[srcInd++]);
+					result[i + 1] = (byte)((x2 << 4) | ((x1 >> 2) & 0xF));
+					break;
 			}
 
 			return result;
