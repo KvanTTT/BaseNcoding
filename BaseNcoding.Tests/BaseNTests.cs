@@ -56,7 +56,7 @@ namespace BaseNcoding.Tests
 			char testChar = 'a';
 			StringBuilder strBuilder = new StringBuilder();
 
-			if (BaseN.IsPowerOfTwo(Converter.Base) && Converter.BitsPerChar <= 8)
+			if (!(Converter is ZBase32) && BaseN.IsPowerOfTwo(Converter.Base) && Converter.BitsPerChar <= 8)
 			{
 				int bitsPerChar = (int)Converter.BitsPerChar;
 				int bitsPerByte = 8;

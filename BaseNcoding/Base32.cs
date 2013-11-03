@@ -8,7 +8,7 @@ namespace BaseNcoding
 {
 	public class Base32 : BaseN
 	{
-		public const string DefaultAlphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
+		public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 		public const char DefaultSpecial = '=';
 
 		public Base32(string alphabet = DefaultAlphabet, char special = DefaultSpecial)

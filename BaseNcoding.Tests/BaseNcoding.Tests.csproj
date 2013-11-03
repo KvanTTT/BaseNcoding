@@ -49,6 +49,7 @@
     <Compile Include="Base64Tests.cs" />
     <Compile Include="BaseNTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ZBase32Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
