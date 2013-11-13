@@ -43,6 +43,7 @@
     <Compile Include="Base128.cs" />
     <Compile Include="Base32.cs" />
     <Compile Include="Base64.cs" />
+    <Compile Include="Base85.cs" />
     <Compile Include="BaseN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZBase32.cs" />

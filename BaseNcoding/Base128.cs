@@ -8,8 +8,8 @@ namespace BaseNcoding
 {
 	public class Base128 : BaseN
 	{
-		public const string DefaultAlphabet = "!#$%()*,.0123456789:;=@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎ";
-		public const char DefaultSpecial = '-';
+		public const string DefaultAlphabet = "!#$%()*,.0123456789:;-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎ";
+		public const char DefaultSpecial = '=';
 
 		public Base128(string alphabet = DefaultAlphabet, char special = DefaultSpecial)
 			: base(128, alphabet, special)
