@@ -8,7 +8,8 @@ namespace BaseNcoding
 {
 	public class Base85 : BaseN
 	{
-		private const string DefaultAlpabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~";
+		public const string DefaultAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~";
+		public const char DefaultSpecial = (char)0;
 		private const int AsciiOffset = 33;
 		private static uint[] Pow85 = { 85 * 85 * 85 * 85, 85 * 85 * 85, 85 * 85, 85, 1 };
 		
@@ -21,8 +22,8 @@ namespace BaseNcoding
 			set;
 		}
 
-		public Base85(bool prefixPostfix = false)
-			: base(85, DefaultAlpabet, (char)0)
+		public Base85(string alphabet = DefaultAlphabet, char special = DefaultSpecial, bool prefixPostfix = false)
+			: base(85, alphabet, special)
 		{
 			PrefixPostfix = prefixPostfix;
 		}

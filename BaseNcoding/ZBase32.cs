@@ -11,7 +11,7 @@ namespace BaseNcoding
 	public class ZBase32 : BaseN
 	{
 		public const string DefaultAlphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
-		public const char DefaultSpecial = '=';
+		public const char DefaultSpecial = (char)0;
 
 		private static readonly byte[] DecodingTable = new byte[128];
 
