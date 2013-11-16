@@ -30,6 +30,7 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.cmbSample = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tbInput = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
@@ -46,7 +47,6 @@
 			this.tbAlphabet = new System.Windows.Forms.TextBox();
 			this.cbPrefixPostfix = new System.Windows.Forms.CheckBox();
 			this.btnSwapInputOutput = new System.Windows.Forms.Button();
-			this.cmbSample = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -75,6 +75,16 @@
 			this.splitContainer1.Size = new System.Drawing.Size(566, 651);
 			this.splitContainer1.SplitterDistance = 318;
 			this.splitContainer1.TabIndex = 3;
+			// 
+			// cmbSample
+			// 
+			this.cmbSample.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cmbSample.FormattingEnabled = true;
+			this.cmbSample.Location = new System.Drawing.Point(59, 5);
+			this.cmbSample.Name = "cmbSample";
+			this.cmbSample.Size = new System.Drawing.Size(121, 21);
+			this.cmbSample.TabIndex = 3;
+			this.cmbSample.SelectedIndexChanged += new System.EventHandler(this.cmbSample_SelectedIndexChanged);
 			// 
 			// label1
 			// 
@@ -174,7 +184,7 @@
 			this.tbLineLength.Name = "tbLineLength";
 			this.tbLineLength.Size = new System.Drawing.Size(56, 20);
 			this.tbLineLength.TabIndex = 9;
-			this.tbLineLength.Text = "80";
+			this.tbLineLength.Text = "0";
 			this.tbLineLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.tbLineLength.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbTextBox_KeyDown);
 			// 
@@ -251,16 +261,6 @@
 			this.btnSwapInputOutput.Text = "↑↓";
 			this.btnSwapInputOutput.UseVisualStyleBackColor = true;
 			this.btnSwapInputOutput.Click += new System.EventHandler(this.btnSwapInputOutput_Click);
-			// 
-			// cmbSample
-			// 
-			this.cmbSample.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cmbSample.FormattingEnabled = true;
-			this.cmbSample.Location = new System.Drawing.Point(59, 5);
-			this.cmbSample.Name = "cmbSample";
-			this.cmbSample.Size = new System.Drawing.Size(121, 21);
-			this.cmbSample.TabIndex = 3;
-			this.cmbSample.SelectedIndexChanged += new System.EventHandler(this.cmbSample_SelectedIndexChanged);
 			// 
 			// frmMain
 			// 

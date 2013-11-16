@@ -13,15 +13,9 @@ namespace BaseNcoding
 		public const string DefaultAlphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
 		public const char DefaultSpecial = (char)0;
 
-		private static readonly byte[] DecodingTable = new byte[128];
-
 		public ZBase32(string alphabet = DefaultAlphabet, char special = DefaultSpecial)
 			: base(32, alphabet, special)
 		{
-			for (var i = 0; i < DecodingTable.Length; ++i)
-				DecodingTable[i] = byte.MaxValue;
-			for (var i = 0; i < DefaultAlphabet.Length; ++i)
-				DecodingTable[DefaultAlphabet[i]] = (byte)i;
 		}
 
 		public override string Encode(byte[] data)
@@ -68,7 +62,7 @@ namespace BaseNcoding
 				ulong buffer = 0;
 				for (var j = 0; j < 8 && index[j] != -1; ++j)
 				{
-					buffer = (buffer << 5) | (ulong)(DecodingTable[index[j]] & 0x1f);
+					buffer = (buffer << 5) | (ulong)(InvAlphabet[index[j]] & 0x1f);
 					shortByteCount++;
 				}
 
@@ -83,7 +77,7 @@ namespace BaseNcoding
 			return result.ToArray();
 		}
 
-		private static int CreateIndexByOctetAndMovePosition(ref string data, int currentPosition, ref int[] index)
+		private int CreateIndexByOctetAndMovePosition(ref string data, int currentPosition, ref int[] index)
 		{
 			var j = 0;
 			while (j < 8)
@@ -94,7 +88,7 @@ namespace BaseNcoding
 					continue;
 				}
 
-				if (IgnoredSymbol(data[currentPosition]))
+				if (InvAlphabet[data[currentPosition]] == -1)
 				{
 					currentPosition++;
 					continue;
@@ -106,11 +100,6 @@ namespace BaseNcoding
 			}
 
 			return currentPosition;
-		}
-
-		private static bool IgnoredSymbol(char checkedSymbol)
-		{
-			return checkedSymbol >= DecodingTable.Length || DecodingTable[checkedSymbol] == byte.MaxValue;
 		}
 	}
 }

@@ -77,29 +77,29 @@ namespace BaseNcoding
 			int i, srcInd = 0;
 			for (i = 0; i < length3; i += 3)
 			{
-				x1 = Alphabet.IndexOf(data[srcInd++]);
-				x2 = Alphabet.IndexOf(data[srcInd++]);
+				x1 = InvAlphabet[data[srcInd++]];
+				x2 = InvAlphabet[data[srcInd++]];
 				result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
 
-				x1 = Alphabet.IndexOf(data[srcInd++]);
+				x1 = InvAlphabet[data[srcInd++]];
 				result[i + 1] = (byte)((x2 << 4) | ((x1 >> 2) & 0xF));
 
-				x2 = Alphabet.IndexOf(data[srcInd++]);
+				x2 = InvAlphabet[data[srcInd++]];
 				result[i + 2] = (byte)((x1 << 6) | (x2 & 0x3F));
 			}
 
 			switch (tailLength)
 			{
 				case 2:
-					x1 = Alphabet.IndexOf(data[srcInd++]);
-					x2 = Alphabet.IndexOf(data[srcInd++]);
+					x1 = InvAlphabet[data[srcInd++]];
+					x2 = InvAlphabet[data[srcInd++]];
 					result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
 					break;
 				case 1:
-					x1 = Alphabet.IndexOf(data[srcInd++]);
-					x2 = Alphabet.IndexOf(data[srcInd++]);
+					x1 = InvAlphabet[data[srcInd++]];
+					x2 = InvAlphabet[data[srcInd++]];
 					result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
-					x1 = Alphabet.IndexOf(data[srcInd++]);
+					x1 = InvAlphabet[data[srcInd++]];
 					result[i + 1] = (byte)((x2 << 4) | ((x1 >> 2) & 0xF));
 					break;
 			}

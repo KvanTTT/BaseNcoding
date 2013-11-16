@@ -34,6 +34,8 @@ namespace BaseNcoding
 			protected set;
 		}
 
+		protected int[] InvAlphabet;
+
 		public BaseN(uint b, string alphabet, char special)
 		{
 			if (alphabet.Length != b)
@@ -50,6 +52,14 @@ namespace BaseNcoding
 			Base = b;
 			Alphabet = alphabet;
 			Special = special;
+
+			InvAlphabet = new int[256];
+
+			for (int i = 0; i < 256; i++)
+				InvAlphabet[i] = -1;
+
+			for (int i = 0; i < b; i++)
+				InvAlphabet[Alphabet[i]] = i;
 		}
 
 		public virtual string EncodeString(string data)

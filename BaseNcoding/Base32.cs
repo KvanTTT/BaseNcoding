@@ -114,14 +114,14 @@ namespace BaseNcoding
 			int i, srcInd = 0;
 			for (i = 0; i < length5; i += 5)
 			{
-				x1 = Alphabet.IndexOf(data[srcInd++]);
-				x2 = Alphabet.IndexOf(data[srcInd++]);
-				x3 = Alphabet.IndexOf(data[srcInd++]);
-				x4 = Alphabet.IndexOf(data[srcInd++]);
-				x5 = Alphabet.IndexOf(data[srcInd++]);
-				x6 = Alphabet.IndexOf(data[srcInd++]);
-				x7 = Alphabet.IndexOf(data[srcInd++]);
-				x8 = Alphabet.IndexOf(data[srcInd++]);
+				x1 = InvAlphabet[data[srcInd++]];
+				x2 = InvAlphabet[data[srcInd++]];
+				x3 = InvAlphabet[data[srcInd++]];
+				x4 = InvAlphabet[data[srcInd++]];
+				x5 = InvAlphabet[data[srcInd++]];
+				x6 = InvAlphabet[data[srcInd++]];
+				x7 = InvAlphabet[data[srcInd++]];
+				x8 = InvAlphabet[data[srcInd++]];
 				
 				result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
 				result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
@@ -133,38 +133,38 @@ namespace BaseNcoding
 			switch (tailLength)
 			{
 				case 4:
-					x1 = Alphabet.IndexOf(data[srcInd++]);
-					x2 = Alphabet.IndexOf(data[srcInd++]);
+					x1 = InvAlphabet[data[srcInd++]];
+					x2 = InvAlphabet[data[srcInd++]];
 					result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
 					break;
 				case 3:
-					x1 = Alphabet.IndexOf(data[srcInd++]);
-					x2 = Alphabet.IndexOf(data[srcInd++]);
-					x3 = Alphabet.IndexOf(data[srcInd++]);
-					x4 = Alphabet.IndexOf(data[srcInd++]);
+					x1 = InvAlphabet[data[srcInd++]];
+					x2 = InvAlphabet[data[srcInd++]];
+					x3 = InvAlphabet[data[srcInd++]];
+					x4 = InvAlphabet[data[srcInd++]];
 				
 					result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
 					result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
 					break;
 				case 2:
-					x1 = Alphabet.IndexOf(data[srcInd++]);
-					x2 = Alphabet.IndexOf(data[srcInd++]);
-					x3 = Alphabet.IndexOf(data[srcInd++]);
-					x4 = Alphabet.IndexOf(data[srcInd++]);
-					x5 = Alphabet.IndexOf(data[srcInd++]);
+					x1 = InvAlphabet[data[srcInd++]];
+					x2 = InvAlphabet[data[srcInd++]];
+					x3 = InvAlphabet[data[srcInd++]];
+					x4 = InvAlphabet[data[srcInd++]];
+					x5 = InvAlphabet[data[srcInd++]];
 				
 					result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
 					result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
 					result[i + 2] = (byte)((x4 << 4) | ((x5 >> 1) & 0xF));
 					break;
 				case 1:
-					x1 = Alphabet.IndexOf(data[srcInd++]);
-					x2 = Alphabet.IndexOf(data[srcInd++]);
-					x3 = Alphabet.IndexOf(data[srcInd++]);
-					x4 = Alphabet.IndexOf(data[srcInd++]);
-					x5 = Alphabet.IndexOf(data[srcInd++]);
-					x6 = Alphabet.IndexOf(data[srcInd++]);
-					x7 = Alphabet.IndexOf(data[srcInd++]);
+					x1 = InvAlphabet[data[srcInd++]];
+					x2 = InvAlphabet[data[srcInd++]];
+					x3 = InvAlphabet[data[srcInd++]];
+					x4 = InvAlphabet[data[srcInd++]];
+					x5 = InvAlphabet[data[srcInd++]];
+					x6 = InvAlphabet[data[srcInd++]];
+					x7 = InvAlphabet[data[srcInd++]];
 				
 					result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
 					result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
