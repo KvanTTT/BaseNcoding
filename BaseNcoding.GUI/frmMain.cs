@@ -77,6 +77,7 @@ namespace BaseNcoding.GUI
 			cmbMethod.Items.Add("Base128");
 			cmbMethod.Items.Add("ZBase32");
 			cmbMethod.Items.Add("Base85");
+			cmbMethod.Items.Add("Base91");
 			cmbMethod.SelectedIndex = 0;
 
 			foreach (var sample in Samples)
@@ -134,6 +135,9 @@ namespace BaseNcoding.GUI
 				case "Base85":
 					method = new Base85(alphabet, special, cbPrefixPostfix.Checked);
 					break;
+				case "Base91":
+					method = new Base91(alphabet, special);
+					break;
 			}
 			return method;
 		}
@@ -164,6 +168,10 @@ namespace BaseNcoding.GUI
 					cbPrefixPostfix.Enabled = true;
 					tbAlphabet.Text = Base85.DefaultAlphabet;
 					tbSpecialChar.Text = Base85.DefaultSpecial.ToString();
+					break;
+				case "Base91":
+					tbAlphabet.Text = Base91.DefaultAlphabet;
+					tbSpecialChar.Text = Base91.DefaultSpecial.ToString();
 					break;
 			}
 			cmbSample_SelectedIndexChanged(sender, e);
