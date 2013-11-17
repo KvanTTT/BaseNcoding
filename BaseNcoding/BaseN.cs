@@ -34,6 +34,11 @@ namespace BaseNcoding
 			protected set;
 		}
 
+		public abstract bool HaveSpecial
+		{
+			get;
+		}
+
 		protected int[] InvAlphabet;
 
 		public BaseN(uint b, string alphabet, char special)
@@ -53,9 +58,9 @@ namespace BaseNcoding
 			Alphabet = alphabet;
 			Special = special;
 
-			InvAlphabet = new int[256];
+			InvAlphabet = new int[Alphabet.Max(c => c) + 1];
 
-			for (int i = 0; i < 256; i++)
+			for (int i = 0; i < InvAlphabet.Length; i++)
 				InvAlphabet[i] = -1;
 
 			for (int i = 0; i < b; i++)

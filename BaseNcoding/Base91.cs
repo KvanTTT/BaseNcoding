@@ -10,6 +10,11 @@ namespace BaseNcoding
 		public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\"";
 		public const char DefaultSpecial = (char)0;
 
+		public override bool HaveSpecial
+		{
+			get { return false; }
+		}
+
 		public Base91(string alphabet = DefaultAlphabet, char special = DefaultSpecial)
 			: base(91, alphabet, special)
 		{

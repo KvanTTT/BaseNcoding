@@ -235,6 +235,7 @@
 			this.tbAlphabet.Location = new System.Drawing.Point(584, 139);
 			this.tbAlphabet.Multiline = true;
 			this.tbAlphabet.Name = "tbAlphabet";
+			this.tbAlphabet.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.tbAlphabet.Size = new System.Drawing.Size(161, 81);
 			this.tbAlphabet.TabIndex = 15;
 			this.tbAlphabet.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";

@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base128Tests.cs" />
+    <Compile Include="Base256Tests.cs" />
     <Compile Include="Base32Tests.cs" />
     <Compile Include="Base64Tests.cs" />
     <Compile Include="Base85Tests.cs" />

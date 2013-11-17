@@ -16,6 +16,11 @@ namespace BaseNcoding
 		public const string Prefix = "<~";
 		public const string Postfix = "~>";
 
+		public override bool HaveSpecial
+		{
+			get { return false; }
+		}
+
 		public bool PrefixPostfix
 		{
 			get;

@@ -11,6 +11,11 @@ namespace BaseNcoding
 		public const string DefaultAlphabet = "!#$%()*,.0123456789:;-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎ";
 		public const char DefaultSpecial = '=';
 
+		public override bool HaveSpecial
+		{
+			get { return true; }
+		}
+
 		public Base128(string alphabet = DefaultAlphabet, char special = DefaultSpecial)
 			: base(128, alphabet, special)
 		{
