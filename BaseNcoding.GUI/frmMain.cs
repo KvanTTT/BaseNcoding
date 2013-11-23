@@ -76,6 +76,7 @@ namespace BaseNcoding.GUI
 			cmbMethod.Items.Add("Base64");
 			cmbMethod.Items.Add("Base128");
 			cmbMethod.Items.Add("Base256");
+			cmbMethod.Items.Add("Base1024");
 			cmbMethod.Items.Add("ZBase32");
 			cmbMethod.Items.Add("Base85");
 			cmbMethod.Items.Add("Base91");
@@ -133,6 +134,9 @@ namespace BaseNcoding.GUI
 				case "Base256":
 					method = new Base256(alphabet, special);
 					break;
+				case "Base1024":
+					method = new Base1024(alphabet, special);
+					break;
 				case "ZBase32":
 					method = new ZBase32(alphabet, special);
 					break;
@@ -167,6 +171,10 @@ namespace BaseNcoding.GUI
 				case "Base256":
 					tbAlphabet.Text = Base256.DefaultAlphabet;
 					tbSpecialChar.Text = Base256.DefaultSpecial.ToString();
+					break;
+				case "Base1024":
+					tbAlphabet.Text = Base1024.DefaultAlphabet;
+					tbSpecialChar.Text = Base1024.DefaultSpecial.ToString();
 					break;
 				case "ZBase32":
 					tbAlphabet.Text = ZBase32.DefaultAlphabet;

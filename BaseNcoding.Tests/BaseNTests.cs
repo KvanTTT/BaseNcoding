@@ -22,7 +22,7 @@ namespace BaseNcoding.Tests
 		public const string RusString =
 				"Зарегистрируйтесь сейчас на Десятую Международную Конференцию по " +
 				"Unicode, которая состоится 10-12 марта 1997 года в Майнце в Германии. " +
-				"Конференция соберет широкий круг экспертов по  вопросам глобального " +
+				"Конференция соберет широкий круг экспертов по вопросам глобального " +
 				"Интернета и Unicode, локализации и интернационализации, воплощению и " +
 				"применению Unicode в различных операционных системах и программных " +
 				"приложениях, шрифтах, верстке и многоязычных компьютерных системах.";
@@ -56,7 +56,7 @@ namespace BaseNcoding.Tests
 			char testChar = 'a';
 			StringBuilder strBuilder = new StringBuilder();
 
-			if (!(Converter is ZBase32) && BaseN.IsPowerOfTwo(Converter.Base) && Converter.BitsPerChar <= 8)
+			if (!(Converter is ZBase32) && BaseN.IsPowerOfTwo(Converter.Base))
 			{
 				int bitsPerChar = (int)Converter.BitsPerChar;
 				int bitsPerByte = 8;

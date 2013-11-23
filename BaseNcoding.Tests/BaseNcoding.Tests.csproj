@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Base1024Tests.cs" />
     <Compile Include="Base128Tests.cs" />
     <Compile Include="Base256Tests.cs" />
     <Compile Include="Base32Tests.cs" />
