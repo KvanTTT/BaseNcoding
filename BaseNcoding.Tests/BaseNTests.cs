@@ -50,13 +50,37 @@ namespace BaseNcoding.Tests
 			Assert.AreEqual(str, decoded);
 		}
 
+		[TestCase(Base64SampleString)]
+		[TestCase(RusString)]
+		[TestCase(GreekString)]
+		public void EncodeDecodeTestDefaultTextEncoding(string str)
+		{
+			Converter.Encoding = Encoding.Default;
+			string encoded = Converter.EncodeString(str);
+			string decoded = Converter.DecodeToString(encoded);
+
+			Assert.AreEqual(str, decoded);
+		}
+
+		[TestCase(Base64SampleString)]
+		[TestCase(RusString)]
+		[TestCase(GreekString)]
+		public void EncodeDecodeTestUnicodeTextEncoding(string str)
+		{
+			Converter.Encoding = Encoding.Unicode;
+			string encoded = Converter.EncodeString(str);
+			string decoded = Converter.DecodeToString(encoded);
+
+			Assert.AreEqual(str, decoded);
+		}
+
 		[Test]
 		public void TailTests()
 		{
 			char testChar = 'a';
 			StringBuilder strBuilder = new StringBuilder();
 
-			if (!(Converter is ZBase32) && BaseN.IsPowerOfTwo(Converter.Base))
+			if (Converter.HaveSpecial && BaseN.IsPowerOfTwo(Converter.Base))
 			{
 				int bitsPerChar = (int)Converter.BitsPerChar;
 				int bitsPerByte = 8;

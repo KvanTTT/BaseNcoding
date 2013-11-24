@@ -27,8 +27,8 @@ namespace BaseNcoding
 			set;
 		}
 
-		public Base85(string alphabet = DefaultAlphabet, char special = DefaultSpecial, bool prefixPostfix = false)
-			: base(85, alphabet, special)
+		public Base85(string alphabet = DefaultAlphabet, char special = DefaultSpecial, bool prefixPostfix = false, Encoding textEncoding = null)
+			: base(85, alphabet, special, textEncoding)
 		{
 			PrefixPostfix = prefixPostfix;
 		}

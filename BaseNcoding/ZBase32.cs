@@ -18,8 +18,8 @@ namespace BaseNcoding
 			get { return false; }
 		}
 
-		public ZBase32(string alphabet = DefaultAlphabet, char special = DefaultSpecial)
-			: base(32, alphabet, special)
+		public ZBase32(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
+			: base(32, alphabet, special, textEncoding)
 		{
 		}
 

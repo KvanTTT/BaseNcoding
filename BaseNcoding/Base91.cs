@@ -15,8 +15,8 @@ namespace BaseNcoding
 			get { return false; }
 		}
 
-		public Base91(string alphabet = DefaultAlphabet, char special = DefaultSpecial)
-			: base(91, alphabet, special)
+		public Base91(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
+			: base(91, alphabet, special, textEncoding)
 		{
 		}
 

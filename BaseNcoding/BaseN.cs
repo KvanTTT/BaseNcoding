@@ -39,9 +39,15 @@ namespace BaseNcoding
 			get;
 		}
 
+		public Encoding Encoding
+		{
+			get;
+			set;
+		}
+
 		protected int[] InvAlphabet;
 
-		public BaseN(uint b, string alphabet, char special)
+		public BaseN(uint b, string alphabet, char special, Encoding encoding = null)
 		{
 			if (alphabet.Length != b)
 				throw new ArgumentException("Base string should contain " + b + " chars");
@@ -65,18 +71,20 @@ namespace BaseNcoding
 
 			for (int i = 0; i < b; i++)
 				InvAlphabet[Alphabet[i]] = i;
+
+			Encoding = encoding ?? Encoding.UTF8;
 		}
 
 		public virtual string EncodeString(string data)
 		{
-			return Encode(Encoding.UTF8.GetBytes(data));
+			return Encode(Encoding.GetBytes(data));
 		}
 
 		public abstract string Encode(byte[] data);
 
 		public virtual string DecodeToString(string data)
 		{
-			return Encoding.UTF8.GetString(Decode(data));
+			return Encoding.GetString(Decode(data));
 		}
 
 		public abstract byte[] Decode(string data);

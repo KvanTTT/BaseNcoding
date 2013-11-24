@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BaseNcoding.GUI.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -72,19 +73,78 @@ namespace BaseNcoding.GUI
 		{
 			InitializeComponent();
 
-			cmbMethod.Items.Add("Base32");
-			cmbMethod.Items.Add("Base64");
-			cmbMethod.Items.Add("Base128");
-			cmbMethod.Items.Add("Base256");
-			cmbMethod.Items.Add("Base1024");
-			cmbMethod.Items.Add("ZBase32");
-			cmbMethod.Items.Add("Base85");
-			cmbMethod.Items.Add("Base91");
-			cmbMethod.SelectedIndex = 0;
+			var methods = new ComboBoxItem[]
+			{
+				new ComboBoxItem("Base32",	 "Base32"),
+				new ComboBoxItem("Base64",	 "Base64"),
+				new ComboBoxItem("Base128",	 "Base128"),
+				new ComboBoxItem("Base256",	 "Base256"),
+				new ComboBoxItem("Base1024", "Base1024"),
+				new ComboBoxItem("ZBase32",	 "ZBase32"),
+				new ComboBoxItem("Base85",	 "Base85"),
+				new ComboBoxItem("Base91", 	 "Base91"),
+			};
+			cmbMethod.Items.AddRange(methods);
 
-			foreach (var sample in Samples)
-				cmbSample.Items.Add(sample);
-			cmbSample.SelectedIndex = 0;
+			cmbSample.Items.AddRange(Samples);
+
+			var encodings = Encoding.GetEncodings();
+			//cmbTextEncoding.Items.AddRange(encodings.Select(encoding => new ComboBoxItem(encoding.DisplayName, encoding)).ToArray());
+			var textEncodingItems = new ComboBoxItem[]
+			{
+				new ComboBoxItem(Encoding.UTF8.EncodingName, Encoding.UTF8),
+				new ComboBoxItem(Encoding.ASCII.EncodingName, Encoding.ASCII),
+				new ComboBoxItem(Encoding.BigEndianUnicode.EncodingName, Encoding.BigEndianUnicode),
+				new ComboBoxItem(Encoding.Default.EncodingName, Encoding.Default),
+				new ComboBoxItem(Encoding.Unicode.EncodingName, Encoding.Unicode),
+				new ComboBoxItem(Encoding.UTF32.EncodingName, Encoding.UTF32),
+				new ComboBoxItem(Encoding.UTF7.EncodingName, Encoding.UTF7)
+			};
+			cmbTextEncoding.Items.AddRange(textEncodingItems);
+
+			var savedMethod = methods.FirstOrDefault(item => item.Text == Settings.Default.Method);
+			if (savedMethod != null)
+			{
+				cmbMethod.SelectedItem = savedMethod;
+				tbSpecialChar.Text = Settings.Default.SpecialChar.ToString();
+				tbAlphabet.Text = Settings.Default.Alphabet;
+				cbPrefixPostfix.Checked = Settings.Default.PrefixPostfix;
+			}
+			else
+			{
+				cmbMethod.SelectedItem = methods.FirstOrDefault(item => item.Text == "Base64");
+			}
+
+			nudLineLength.Value = Settings.Default.MaxLineLength;
+
+			cmbTextEncoding.SelectedItem =
+				textEncodingItems.FirstOrDefault(item => item.Text == Settings.Default.TextEncoding) ??
+				textEncodingItems[0];
+
+			var savedSample = Samples.FirstOrDefault(item => item.Text == Settings.Default.Samlpe);
+			if (savedSample != null)
+			{
+				cmbSample.SelectedItem = savedSample;
+				tbInput.Text = Settings.Default.InputText;
+			}
+			else
+			{
+				cmbSample.SelectedItem = Samples[0];
+			}
+		}
+
+		private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Settings.Default.Method = cmbMethod.SelectedItem.ToString();
+			Settings.Default.MaxLineLength = (int)nudLineLength.Value;
+			Settings.Default.SpecialChar = tbSpecialChar.Text[0];
+			Settings.Default.Alphabet = tbAlphabet.Text;
+			Settings.Default.PrefixPostfix = cbPrefixPostfix.Checked;
+			Settings.Default.TextEncoding = cmbTextEncoding.SelectedItem.ToString();
+			Settings.Default.Samlpe = cmbSample.SelectedItem.ToString();
+			Settings.Default.InputText = tbInput.Text;
+
+			Settings.Default.Save();
 		}
 
 		private void btnEncode_Click(object sender, EventArgs e)
@@ -93,6 +153,7 @@ namespace BaseNcoding.GUI
 			{
 				BaseN method = GetMethod();
 				tbOutput.Text = method.EncodeString(tbInput.Text);
+				tbOutputLength.Text = tbOutput.Text.Length.ToString();
 			}
 			catch (Exception ex)
 			{
@@ -106,6 +167,7 @@ namespace BaseNcoding.GUI
 			{
 				BaseN method = GetMethod();
 				tbOutput.Text = method.DecodeToString(tbInput.Text);
+				tbOutputLength.Text = tbOutput.Text.Length.ToString();
 			}
 			catch (Exception ex)
 			{
@@ -120,31 +182,32 @@ namespace BaseNcoding.GUI
 			if (tbSpecialChar.Text.Length > 1)
 				throw new ArgumentException("Special char should contains one symbol");
 			char special = string.IsNullOrWhiteSpace(tbSpecialChar.Text) ? (char)0 : tbSpecialChar.Text[0];
+			Encoding textEncoding = (Encoding)((ComboBoxItem)cmbTextEncoding.SelectedItem).Value;
 			switch (cmbMethod.SelectedItem.ToString())
 			{
 				case "Base32":
-					method = new Base32(alphabet, special);
+					method = new Base32(alphabet, special, textEncoding);
 					break;
 				case "Base64":
-					method = new Base64(alphabet, special);
+					method = new Base64(alphabet, special, textEncoding);
 					break;
 				case "Base128":
-					method = new Base128(alphabet, special);
+					method = new Base128(alphabet, special, textEncoding);
 					break;
 				case "Base256":
-					method = new Base256(alphabet, special);
+					method = new Base256(alphabet, special, textEncoding);
 					break;
 				case "Base1024":
-					method = new Base1024(alphabet, special);
+					method = new Base1024(alphabet, special, textEncoding);
 					break;
 				case "ZBase32":
-					method = new ZBase32(alphabet, special);
+					method = new ZBase32(alphabet, special, textEncoding);
 					break;
 				case "Base85":
-					method = new Base85(alphabet, special, cbPrefixPostfix.Checked);
+					method = new Base85(alphabet, special, cbPrefixPostfix.Checked, textEncoding);
 					break;
 				case "Base91":
-					method = new Base91(alphabet, special);
+					method = new Base91(alphabet, special, textEncoding);
 					break;
 			}
 			return method;
@@ -214,8 +277,17 @@ namespace BaseNcoding.GUI
 			if (cmbSample.SelectedItem as ComboBoxItem != null)
 			{
 				tbInput.Text = (cmbSample.SelectedItem as ComboBoxItem).Value.ToString();
+				tbInputLength.Text = tbInput.Text.Length.ToString();
 				tbOutput.Clear();
+				tbOutputLength.Text = "0";
 			}
 		}
+
+		private void tbInput_TextChanged(object sender, EventArgs e)
+		{
+			tbInputLength.Text = tbInput.Text.Length.ToString();
+		}
+
+		
 	}
 }

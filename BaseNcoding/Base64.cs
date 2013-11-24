@@ -16,8 +16,8 @@ namespace BaseNcoding
 			get { return true; }
 		}
 
-		public Base64(string alphabet = DefaultAlphabet, char special = DefaultSpecial)
-			: base(64, alphabet, special)
+		public Base64(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
+			: base(64, alphabet, special, textEncoding)
 		{
 		}
 
