@@ -117,5 +117,29 @@ namespace BaseNcoding.GUI.Properties {
                 this["InputText"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
+        public int GeneratingTextCharCount {
+            get {
+                return ((int)(this["GeneratingTextCharCount"]));
+            }
+            set {
+                this["GeneratingTextCharCount"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool GenerateOnlyLettersAndDigits {
+            get {
+                return ((bool)(this["GenerateOnlyLettersAndDigits"]));
+            }
+            set {
+                this["GenerateOnlyLettersAndDigits"] = value;
+            }
+        }
     }
 }

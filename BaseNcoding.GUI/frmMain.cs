@@ -133,6 +133,9 @@ namespace BaseNcoding.GUI
 			{
 				cmbSample.SelectedItem = Samples[0];
 			}
+
+			nudGeneratingTextCharCount.Value = Settings.Default.GeneratingTextCharCount;
+			cbOnlyLettersAndDigits.Checked = Settings.Default.GenerateOnlyLettersAndDigits;
 		}
 
 		private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -145,6 +148,8 @@ namespace BaseNcoding.GUI
 			Settings.Default.TextEncoding = cmbTextEncoding.SelectedItem.ToString();
 			Settings.Default.Samlpe = cmbSample.SelectedItem.ToString();
 			Settings.Default.InputText = tbInput.Text;
+			Settings.Default.GeneratingTextCharCount = (int)nudGeneratingTextCharCount.Value;
+			Settings.Default.GenerateOnlyLettersAndDigits = cbOnlyLettersAndDigits.Checked;
 
 			Settings.Default.Save();
 		}
@@ -309,6 +314,32 @@ namespace BaseNcoding.GUI
 			tbInputLength.Text = tbInput.Text.Length.ToString();
 		}
 
-		
+		private void btnGenerateInputText_Click(object sender, EventArgs e)
+		{
+			tbInput.Text = RandomString((int)nudGeneratingTextCharCount.Value, cbOnlyLettersAndDigits.Checked);
+			tbOutput.Clear();
+			tbOutputLength.Text = "0";
+		}
+
+		public static string RandomString(int size, bool onlyLettersAndDigits)
+		{
+			Random r = new Random();
+			if (onlyLettersAndDigits)
+			{
+				string lettersAndDigits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+				StringBuilder result = new StringBuilder(size);
+				for (int i = 0; i < size; i++)
+					result.Append(lettersAndDigits[r.Next(lettersAndDigits.Length)]);
+				return result.ToString();
+			}
+			else
+			{
+				var data = new byte[size];
+				for (int i = 0; i < size; i++)
+					data[i] = (byte)r.Next(32, 127);
+				var encoding = new ASCIIEncoding();
+				return encoding.GetString(data);
+			}
+		}
 	}
 }

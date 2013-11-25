@@ -30,6 +30,9 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.btnGenerateInputText = new System.Windows.Forms.Button();
+			this.nudGeneratingTextCharCount = new System.Windows.Forms.NumericUpDown();
+			this.label11 = new System.Windows.Forms.Label();
 			this.cmbSample = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tbInput = new System.Windows.Forms.TextBox();
@@ -55,15 +58,13 @@
 			this.nudLineLength = new System.Windows.Forms.NumericUpDown();
 			this.label10 = new System.Windows.Forms.Label();
 			this.tbTime = new System.Windows.Forms.TextBox();
-			this.label11 = new System.Windows.Forms.Label();
-			this.nudGenerateCharCount = new System.Windows.Forms.NumericUpDown();
-			this.btnGenerateInputText = new System.Windows.Forms.Button();
+			this.cbOnlyLettersAndDigits = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudGeneratingTextCharCount)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudLineLength)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.nudGenerateCharCount)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -77,8 +78,9 @@
 			// 
 			// splitContainer1.Panel1
 			// 
+			this.splitContainer1.Panel1.Controls.Add(this.cbOnlyLettersAndDigits);
 			this.splitContainer1.Panel1.Controls.Add(this.btnGenerateInputText);
-			this.splitContainer1.Panel1.Controls.Add(this.nudGenerateCharCount);
+			this.splitContainer1.Panel1.Controls.Add(this.nudGeneratingTextCharCount);
 			this.splitContainer1.Panel1.Controls.Add(this.label11);
 			this.splitContainer1.Panel1.Controls.Add(this.cmbSample);
 			this.splitContainer1.Panel1.Controls.Add(this.label1);
@@ -91,6 +93,47 @@
 			this.splitContainer1.Size = new System.Drawing.Size(568, 655);
 			this.splitContainer1.SplitterDistance = 319;
 			this.splitContainer1.TabIndex = 3;
+			// 
+			// btnGenerateInputText
+			// 
+			this.btnGenerateInputText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnGenerateInputText.Location = new System.Drawing.Point(424, 27);
+			this.btnGenerateInputText.Name = "btnGenerateInputText";
+			this.btnGenerateInputText.Size = new System.Drawing.Size(132, 24);
+			this.btnGenerateInputText.TabIndex = 26;
+			this.btnGenerateInputText.Text = "Generate Input Text";
+			this.btnGenerateInputText.UseVisualStyleBackColor = true;
+			this.btnGenerateInputText.Click += new System.EventHandler(this.btnGenerateInputText_Click);
+			// 
+			// nudGeneratingTextCharCount
+			// 
+			this.nudGeneratingTextCharCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.nudGeneratingTextCharCount.Location = new System.Drawing.Point(351, 5);
+			this.nudGeneratingTextCharCount.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+			this.nudGeneratingTextCharCount.Name = "nudGeneratingTextCharCount";
+			this.nudGeneratingTextCharCount.Size = new System.Drawing.Size(67, 20);
+			this.nudGeneratingTextCharCount.TabIndex = 25;
+			this.nudGeneratingTextCharCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.nudGeneratingTextCharCount.Value = new decimal(new int[] {
+            3000,
+            0,
+            0,
+            0});
+			// 
+			// label11
+			// 
+			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label11.AutoSize = true;
+			this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.label11.Location = new System.Drawing.Point(272, 6);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(73, 16);
+			this.label11.TabIndex = 5;
+			this.label11.Text = "Char Count";
 			// 
 			// cmbSample
 			// 
@@ -117,11 +160,11 @@
 			this.tbInput.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbInput.Location = new System.Drawing.Point(3, 29);
+			this.tbInput.Location = new System.Drawing.Point(3, 57);
 			this.tbInput.Multiline = true;
 			this.tbInput.Name = "tbInput";
 			this.tbInput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.tbInput.Size = new System.Drawing.Size(562, 287);
+			this.tbInput.Size = new System.Drawing.Size(562, 259);
 			this.tbInput.TabIndex = 1;
 			this.tbInput.Text = resources.GetString("tbInput.Text");
 			this.tbInput.TextChanged += new System.EventHandler(this.tbInput_TextChanged);
@@ -358,45 +401,16 @@
 			this.tbTime.TabIndex = 25;
 			this.tbTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
-			// label11
+			// cbOnlyLettersAndDigits
 			// 
-			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.label11.AutoSize = true;
-			this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label11.Location = new System.Drawing.Point(299, 6);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(73, 16);
-			this.label11.TabIndex = 5;
-			this.label11.Text = "Char Count";
-			// 
-			// nudGenerateCharCount
-			// 
-			this.nudGenerateCharCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.nudGenerateCharCount.Location = new System.Drawing.Point(378, 5);
-			this.nudGenerateCharCount.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-			this.nudGenerateCharCount.Name = "nudGenerateCharCount";
-			this.nudGenerateCharCount.Size = new System.Drawing.Size(67, 20);
-			this.nudGenerateCharCount.TabIndex = 25;
-			this.nudGenerateCharCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.nudGenerateCharCount.Value = new decimal(new int[] {
-            3000,
-            0,
-            0,
-            0});
-			// 
-			// btnGenerateInputText
-			// 
-			this.btnGenerateInputText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnGenerateInputText.Location = new System.Drawing.Point(451, 3);
-			this.btnGenerateInputText.Name = "btnGenerateInputText";
-			this.btnGenerateInputText.Size = new System.Drawing.Size(114, 24);
-			this.btnGenerateInputText.TabIndex = 26;
-			this.btnGenerateInputText.Text = "Generate Input Text";
-			this.btnGenerateInputText.UseVisualStyleBackColor = true;
+			this.cbOnlyLettersAndDigits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.cbOnlyLettersAndDigits.AutoSize = true;
+			this.cbOnlyLettersAndDigits.Location = new System.Drawing.Point(275, 32);
+			this.cbOnlyLettersAndDigits.Name = "cbOnlyLettersAndDigits";
+			this.cbOnlyLettersAndDigits.Size = new System.Drawing.Size(132, 17);
+			this.cbOnlyLettersAndDigits.TabIndex = 27;
+			this.cbOnlyLettersAndDigits.Text = "Only Letters and Digits";
+			this.cbOnlyLettersAndDigits.UseVisualStyleBackColor = true;
 			// 
 			// frmMain
 			// 
@@ -433,8 +447,8 @@
 			this.splitContainer1.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.nudGeneratingTextCharCount)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.nudLineLength)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.nudGenerateCharCount)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -469,8 +483,9 @@
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.TextBox tbTime;
 		private System.Windows.Forms.Button btnGenerateInputText;
-		private System.Windows.Forms.NumericUpDown nudGenerateCharCount;
+		private System.Windows.Forms.NumericUpDown nudGeneratingTextCharCount;
 		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.CheckBox cbOnlyLettersAndDigits;
 	}
 }
 
