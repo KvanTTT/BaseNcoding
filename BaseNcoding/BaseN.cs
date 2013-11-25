@@ -64,7 +64,7 @@ namespace BaseNcoding
 			Alphabet = alphabet;
 			Special = special;
 
-			InvAlphabet = new int[Alphabet.Max(c => c) + 1];
+			InvAlphabet = new int[Alphabet.Max() + 1];
 
 			for (int i = 0; i < InvAlphabet.Length; i++)
 				InvAlphabet[i] = -1;

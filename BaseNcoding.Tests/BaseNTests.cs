@@ -52,7 +52,6 @@ namespace BaseNcoding.Tests
 
 		[TestCase(Base64SampleString)]
 		[TestCase(RusString)]
-		[TestCase(GreekString)]
 		public void EncodeDecodeTestDefaultTextEncoding(string str)
 		{
 			Converter.Encoding = Encoding.Default;

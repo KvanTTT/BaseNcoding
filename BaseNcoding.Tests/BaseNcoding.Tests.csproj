@@ -48,6 +48,7 @@
     <Compile Include="Base128Tests.cs" />
     <Compile Include="Base256Tests.cs" />
     <Compile Include="Base32Tests.cs" />
+    <Compile Include="Base4096Tests.cs" />
     <Compile Include="Base64Tests.cs" />
     <Compile Include="Base85Tests.cs" />
     <Compile Include="Base91Tests.cs" />

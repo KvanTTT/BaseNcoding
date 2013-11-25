@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -80,6 +81,7 @@ namespace BaseNcoding.GUI
 				new ComboBoxItem("Base128",	 "Base128"),
 				new ComboBoxItem("Base256",	 "Base256"),
 				new ComboBoxItem("Base1024", "Base1024"),
+				new ComboBoxItem("Base4096", "Base4096"),
 				new ComboBoxItem("ZBase32",	 "ZBase32"),
 				new ComboBoxItem("Base85",	 "Base85"),
 				new ComboBoxItem("Base91", 	 "Base91"),
@@ -152,7 +154,13 @@ namespace BaseNcoding.GUI
 			try
 			{
 				BaseN method = GetMethod();
+
+				Stopwatch stopwatch = new Stopwatch();
+				stopwatch.Start();
 				tbOutput.Text = method.EncodeString(tbInput.Text);
+				stopwatch.Stop();
+				tbTime.Text = stopwatch.Elapsed.ToString();
+
 				tbOutputLength.Text = tbOutput.Text.Length.ToString();
 			}
 			catch (Exception ex)
@@ -166,7 +174,13 @@ namespace BaseNcoding.GUI
 			try
 			{
 				BaseN method = GetMethod();
+
+				Stopwatch stopwatch = new Stopwatch();
+				stopwatch.Start();
 				tbOutput.Text = method.DecodeToString(tbInput.Text);
+				stopwatch.Stop();
+				tbTime.Text = stopwatch.Elapsed.ToString();
+
 				tbOutputLength.Text = tbOutput.Text.Length.ToString();
 			}
 			catch (Exception ex)
@@ -199,6 +213,9 @@ namespace BaseNcoding.GUI
 					break;
 				case "Base1024":
 					method = new Base1024(alphabet, special, textEncoding);
+					break;
+				case "Base4096":
+					method = new Base4096(alphabet, special, textEncoding);
 					break;
 				case "ZBase32":
 					method = new ZBase32(alphabet, special, textEncoding);
@@ -238,6 +255,10 @@ namespace BaseNcoding.GUI
 				case "Base1024":
 					tbAlphabet.Text = Base1024.DefaultAlphabet;
 					tbSpecialChar.Text = Base1024.DefaultSpecial.ToString();
+					break;
+				case "Base4096":
+					tbAlphabet.Text = Base4096.DefaultAlphabet;
+					tbSpecialChar.Text = Base4096.DefaultSpecial.ToString();
 					break;
 				case "ZBase32":
 					tbAlphabet.Text = ZBase32.DefaultAlphabet;

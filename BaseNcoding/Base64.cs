@@ -27,36 +27,37 @@ namespace BaseNcoding
 
 			byte x1, x2;
 			int i;
+			string alphabet = Alphabet;
 
 			int length3 = (data.Length / 3) * 3;
 			for (i = 0; i < length3; i += 3)
 			{
 				x1 = data[i];
-				result.Append(Alphabet[x1 >> 2]);
+				result.Append(alphabet[x1 >> 2]);
 
 				x2 = data[i + 1];
-				result.Append(Alphabet[((x1 << 4) & 0x30) | (x2 >> 4)]);
+				result.Append(alphabet[((x1 << 4) & 0x30) | (x2 >> 4)]);
 
 				x1 = data[i + 2];
-				result.Append(Alphabet[((x2 << 2) & 0x3C) | (x1 >> 6)]);
-				result.Append(Alphabet[x1 & 0x3F]);
+				result.Append(alphabet[((x2 << 2) & 0x3C) | (x1 >> 6)]);
+				result.Append(alphabet[x1 & 0x3F]);
 			}
 
 			switch (data.Length - length3)
 			{
 				case 1:
 					x1 = data[i];
-					result.Append(Alphabet[x1 >> 2]);
-					result.Append(Alphabet[(x1 << 4) & 0x30]);
+					result.Append(alphabet[x1 >> 2]);
+					result.Append(alphabet[(x1 << 4) & 0x30]);
 
 					result.Append(Special, 2);
 					break;
 				case 2:
 					x1 = data[i];
-					result.Append(Alphabet[x1 >> 2]);
+					result.Append(alphabet[x1 >> 2]);
 					x2 = data[i + 1];
-					result.Append(Alphabet[((x1 << 4) & 0x30) | (x2 >> 4)]);
-					result.Append(Alphabet[(x2 << 2) & 0x3C]);
+					result.Append(alphabet[((x1 << 4) & 0x30) | (x2 >> 4)]);
+					result.Append(alphabet[(x2 << 2) & 0x3C]);
 
 					result.Append(Special);
 					break;

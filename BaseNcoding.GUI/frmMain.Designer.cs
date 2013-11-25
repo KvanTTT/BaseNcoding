@@ -53,11 +53,17 @@
 			this.label9 = new System.Windows.Forms.Label();
 			this.tbInputLength = new System.Windows.Forms.TextBox();
 			this.nudLineLength = new System.Windows.Forms.NumericUpDown();
+			this.label10 = new System.Windows.Forms.Label();
+			this.tbTime = new System.Windows.Forms.TextBox();
+			this.label11 = new System.Windows.Forms.Label();
+			this.nudGenerateCharCount = new System.Windows.Forms.NumericUpDown();
+			this.btnGenerateInputText = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.nudLineLength)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudGenerateCharCount)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
@@ -71,6 +77,9 @@
 			// 
 			// splitContainer1.Panel1
 			// 
+			this.splitContainer1.Panel1.Controls.Add(this.btnGenerateInputText);
+			this.splitContainer1.Panel1.Controls.Add(this.nudGenerateCharCount);
+			this.splitContainer1.Panel1.Controls.Add(this.label11);
 			this.splitContainer1.Panel1.Controls.Add(this.cmbSample);
 			this.splitContainer1.Panel1.Controls.Add(this.label1);
 			this.splitContainer1.Panel1.Controls.Add(this.tbInput);
@@ -329,11 +338,73 @@
 			this.nudLineLength.TabIndex = 24;
 			this.nudLineLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
+			// label10
+			// 
+			this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(583, 571);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(30, 13);
+			this.label10.TabIndex = 26;
+			this.label10.Text = "Time";
+			// 
+			// tbTime
+			// 
+			this.tbTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.tbTime.Location = new System.Drawing.Point(619, 568);
+			this.tbTime.Name = "tbTime";
+			this.tbTime.ReadOnly = true;
+			this.tbTime.Size = new System.Drawing.Size(127, 20);
+			this.tbTime.TabIndex = 25;
+			this.tbTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
+			// label11
+			// 
+			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label11.AutoSize = true;
+			this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.label11.Location = new System.Drawing.Point(299, 6);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(73, 16);
+			this.label11.TabIndex = 5;
+			this.label11.Text = "Char Count";
+			// 
+			// nudGenerateCharCount
+			// 
+			this.nudGenerateCharCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.nudGenerateCharCount.Location = new System.Drawing.Point(378, 5);
+			this.nudGenerateCharCount.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+			this.nudGenerateCharCount.Name = "nudGenerateCharCount";
+			this.nudGenerateCharCount.Size = new System.Drawing.Size(67, 20);
+			this.nudGenerateCharCount.TabIndex = 25;
+			this.nudGenerateCharCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.nudGenerateCharCount.Value = new decimal(new int[] {
+            3000,
+            0,
+            0,
+            0});
+			// 
+			// btnGenerateInputText
+			// 
+			this.btnGenerateInputText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnGenerateInputText.Location = new System.Drawing.Point(451, 3);
+			this.btnGenerateInputText.Name = "btnGenerateInputText";
+			this.btnGenerateInputText.Size = new System.Drawing.Size(114, 24);
+			this.btnGenerateInputText.TabIndex = 26;
+			this.btnGenerateInputText.Text = "Generate Input Text";
+			this.btnGenerateInputText.UseVisualStyleBackColor = true;
+			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(759, 679);
+			this.Controls.Add(this.label10);
+			this.Controls.Add(this.tbTime);
 			this.Controls.Add(this.nudLineLength);
 			this.Controls.Add(this.label8);
 			this.Controls.Add(this.tbOutputLength);
@@ -363,6 +434,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.nudLineLength)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudGenerateCharCount)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -394,6 +466,11 @@
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.TextBox tbInputLength;
 		private System.Windows.Forms.NumericUpDown nudLineLength;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.TextBox tbTime;
+		private System.Windows.Forms.Button btnGenerateInputText;
+		private System.Windows.Forms.NumericUpDown nudGenerateCharCount;
+		private System.Windows.Forms.Label label11;
 	}
 }
 
