@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BaseNcoding
 {
-	public class Base64 : BaseN
+	public class Base64 : Base
 	{
 		public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 		public const char DefaultSpecial = '=';

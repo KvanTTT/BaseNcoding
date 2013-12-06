@@ -8,7 +8,7 @@ namespace BaseNcoding
 	/// <summary>
 	/// From: https://github.com/denxc/ZBase32Encoder/blob/master/ZBase32Encoder/ZBase32Encoder/ZBase32Encoder.cs
 	/// </summary>
-	public class ZBase32 : BaseN
+	public class ZBase32 : Base
 	{
 		public const string DefaultAlphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
 		public const char DefaultSpecial = (char)0;

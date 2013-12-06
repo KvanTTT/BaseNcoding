@@ -154,19 +154,23 @@ namespace BaseNcoding.GUI
 			Settings.Default.Save();
 		}
 
-		private void btnEncode_Click(object sender, EventArgs e)
+		private void btnEncodeDecode_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				BaseN method = GetMethod();
+				Base method = GetMethod();
+				bool encode = (string)(((Button)sender).Tag) == "encode";
+				string result;
 
 				Stopwatch stopwatch = new Stopwatch();
 				stopwatch.Start();
-				tbOutput.Text = method.EncodeString(tbInput.Text);
+				result = encode ? method.EncodeString(tbInput.Text) : method.DecodeToString(tbInput.Text);
 				stopwatch.Stop();
+				tbOutput.Text = result;
 				tbTime.Text = stopwatch.Elapsed.ToString();
 
-				tbOutputLength.Text = tbOutput.Text.Length.ToString();
+				tbOutputLength.Text = result.Length.ToString();
+				tbOutputSize.Text = method.Encoding.GetByteCount(result).ToString();
 			}
 			catch (Exception ex)
 			{
@@ -174,29 +178,9 @@ namespace BaseNcoding.GUI
 			}
 		}
 
-		private void btnDecode_Click(object sender, EventArgs e)
+		private Base GetMethod()
 		{
-			try
-			{
-				BaseN method = GetMethod();
-
-				Stopwatch stopwatch = new Stopwatch();
-				stopwatch.Start();
-				tbOutput.Text = method.DecodeToString(tbInput.Text);
-				stopwatch.Stop();
-				tbTime.Text = stopwatch.Elapsed.ToString();
-
-				tbOutputLength.Text = tbOutput.Text.Length.ToString();
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.Message, "Error");
-			}
-		}
-
-		private BaseN GetMethod()
-		{
-			BaseN method = null;
+			Base method = null;
 			string alphabet = tbAlphabet.Text;
 			if (tbSpecialChar.Text.Length > 1)
 				throw new ArgumentException("Special char should contains one symbol");
@@ -306,6 +290,7 @@ namespace BaseNcoding.GUI
 				tbInputLength.Text = tbInput.Text.Length.ToString();
 				tbOutput.Clear();
 				tbOutputLength.Text = "0";
+				tbOutputSize.Text = "0";
 			}
 		}
 
@@ -319,6 +304,7 @@ namespace BaseNcoding.GUI
 			tbInput.Text = RandomString((int)nudGeneratingTextCharCount.Value, cbOnlyLettersAndDigits.Checked);
 			tbOutput.Clear();
 			tbOutputLength.Text = "0";
+			tbOutputSize.Text = "0";
 		}
 
 		public static string RandomString(int size, bool onlyLettersAndDigits)

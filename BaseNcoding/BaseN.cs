@@ -2,124 +2,122 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BaseNcoding
 {
-	public abstract class BaseN
+	public class BaseN : Base
 	{
-		public uint Base
-		{
-			get;
-			protected set;
-		}
+		private uint _minPowerOfTwo;
+		private uint _maxPowerOfTwo;
+		private int _minBitsCount;
+		private int _maxBitsCount;
 
-		public double BitsPerChar
+		public BaseN(uint charsCount, string alphabet, char special, Encoding encoding = null)
+			: base(charsCount, alphabet, special, encoding)
 		{
-			get
+			if (IsPowerOfTwo(charsCount))
 			{
-				return Math.Log(Base, 2);
-			}
-		}
-
-		public string Alphabet
-		{
-			get;
-			protected set;
-		}
-
-		public char Special
-		{
-			get;
-			protected set;
-		}
-
-		public abstract bool HaveSpecial
-		{
-			get;
-		}
-
-		public Encoding Encoding
-		{
-			get;
-			set;
-		}
-
-		protected int[] InvAlphabet;
-
-		public BaseN(uint b, string alphabet, char special, Encoding encoding = null)
-		{
-			if (alphabet.Length != b)
-				throw new ArgumentException("Base string should contain " + b + " chars");
-
-			for (int i = 0; i < b; i++)
-				for (int j = i + 1; j < b; j++)
-					if (alphabet[i] == alphabet[j])
-						throw new ArgumentException("Base string should contain distinct chars");
-
-			if (alphabet.Contains(special))
-				throw new AggregateException("Base string should not contain special char");
-
-			Base = b;
-			Alphabet = alphabet;
-			Special = special;
-
-			InvAlphabet = new int[Alphabet.Max() + 1];
-
-			for (int i = 0; i < InvAlphabet.Length; i++)
-				InvAlphabet[i] = -1;
-
-			for (int i = 0; i < b; i++)
-				InvAlphabet[Alphabet[i]] = i;
-
-			Encoding = encoding ?? Encoding.UTF8;
-		}
-
-		public virtual string EncodeString(string data)
-		{
-			return Encode(Encoding.GetBytes(data));
-		}
-
-		public abstract string Encode(byte[] data);
-
-		public virtual string DecodeToString(string data)
-		{
-			return Encoding.GetString(Decode(data));
-		}
-
-		public abstract byte[] Decode(string data);
-
-		/// <summary>
-		/// From: http://stackoverflow.com/a/600306/1046374
-		/// </summary>
-		/// <param name="x"></param>
-		/// <returns></returns>
-		public static bool IsPowerOfTwo(uint x)
-		{
-			return (x & (x - 1)) == 0;
-		}
-
-		/// <summary>
-		/// From: http://stackoverflow.com/a/13569863/1046374
-		/// </summary>
-		public static int LCM(int a, int b)
-		{
-			int num1, num2;
-			if (a > b)
-			{
-				num1 = a;
-				num2 = b;
+				_maxPowerOfTwo = _minPowerOfTwo = charsCount;
+				_maxBitsCount = _minBitsCount = LogBase2((uint)_minPowerOfTwo);
 			}
 			else
 			{
-				num1 = b;
-				num2 = a;
+				_maxPowerOfTwo = NextPowOf2(charsCount);
+				_minPowerOfTwo = _maxPowerOfTwo / 2;
+				_minBitsCount = LogBase2((uint)_minPowerOfTwo);
+				_maxBitsCount = _minBitsCount + 1;
+			}
+		}
+
+		public override bool HaveSpecial
+		{
+			get { return true; }
+		}
+
+		public override string Encode(byte[] data)
+		{
+			if (data.Length == 0)
+				return string.Empty;
+
+			var result = new StringBuilder((int)((double)(data.Length + (_maxBitsCount - 1)) / _maxBitsCount * 8 + 1));
+			var bitsArray = new BitsArray(data, false);
+			int bitsCount = data.Length * 8;
+
+			short ind;
+			while (bitsArray.CurrentBitPos + _maxBitsCount <= bitsCount)
+			{
+				ind = bitsArray.GetBits(_maxBitsCount);
+				if (ind < CharsCount)
+				{
+					result.Append(Alphabet[ind]);
+					bitsArray.CurrentBitPos += _maxBitsCount;
+				}
+				else
+				{
+					ind = bitsArray.GetBits(_minBitsCount);
+					result.Append(Alphabet[ind]);
+					bitsArray.CurrentBitPos += _minBitsCount;
+				}
 			}
 
-			for (int i = 1; i <= num2; i++)
-				if ((num1 * i) % num2 == 0)
-					return i * num1;
-			return num2;
+			if (bitsArray.CurrentBitPos != bitsCount)
+			{
+				int excessBytesCount = ((_maxBitsCount - (8 - bitsArray.CurrentBitInBytePos)) + 7) / 8 + 1;
+				byte[] excessBytes = new byte[excessBytesCount];
+				excessBytes[0] = data[data.Length - 1];
+				bitsArray = new BitsArray(excessBytes, false, bitsArray.CurrentBitInBytePos);
+				
+				ind = bitsArray.GetBits(_maxBitsCount);
+				if (ind < CharsCount)
+				{
+					result.Append(Alphabet[ind]);
+					bitsArray.CurrentBitPos += _maxBitsCount;
+				}
+				else
+				{
+					ind = bitsArray.GetBits(_minBitsCount);
+					result.Append(Alphabet[ind]);
+					bitsArray.CurrentBitPos += _minBitsCount;
+
+					if (bitsArray.CurrentBitPos == 8)
+						excessBytesCount--; // = 0
+				}
+
+				for (int i = 0; i < excessBytesCount - 1; i++)
+					result.Append(Special);
+			}
+
+			return result.ToString();
+		}
+
+		public override byte[] Decode(string data)
+		{
+			if (string.IsNullOrEmpty(data))
+				return new byte[0];
+			int lastSpecialInd = data.Length;
+			while (data[lastSpecialInd - 1] == Special)
+				lastSpecialInd--;
+			int tailLength = data.Length - lastSpecialInd;
+
+			var bitsArray = new BitsArray((int)((double)(data.Length + 7) / 8 * _maxBitsCount), true);
+
+			for (int i = 0; i < data.Length - 1 - tailLength; i++)
+			{
+				int ind1 = InvAlphabet[data[i]];
+				int ind2 = InvAlphabet[data[i + 1]];
+
+				/*if (ind1 >= _minPowerOfTwo)
+					bitsArray.AddBits((short)ind1, _maxBitsCount);
+				else
+				{
+				}*/
+				if (ind1 > _minPowerOfTwo)
+					bitsArray.AddBits((short)ind1, _minBitsCount);
+				else
+					bitsArray.AddBits((short)ind1, _maxBitsCount);
+			}
+
+			return bitsArray.ToBytesArray(bitsArray.BytesCount - tailLength);
 		}
 	}
 }

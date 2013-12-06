@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BaseNcoding
 {
-	public class Base91 : BaseN
+	public class Base91 : Base
 	{
 		public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\"";
 		public const char DefaultSpecial = (char)0;

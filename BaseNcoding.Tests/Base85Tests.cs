@@ -7,7 +7,7 @@ using System.Text;
 namespace BaseNcoding.Tests
 {
 	[TestFixture]
-	public class Base85Tests : BaseNTests
+	public class Base85Tests : BaseTests
 	{
 		[SetUp]
 		public void SetUp()

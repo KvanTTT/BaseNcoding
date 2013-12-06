@@ -30,6 +30,7 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.cbOnlyLettersAndDigits = new System.Windows.Forms.CheckBox();
 			this.btnGenerateInputText = new System.Windows.Forms.Button();
 			this.nudGeneratingTextCharCount = new System.Windows.Forms.NumericUpDown();
 			this.label11 = new System.Windows.Forms.Label();
@@ -58,7 +59,8 @@
 			this.nudLineLength = new System.Windows.Forms.NumericUpDown();
 			this.label10 = new System.Windows.Forms.Label();
 			this.tbTime = new System.Windows.Forms.TextBox();
-			this.cbOnlyLettersAndDigits = new System.Windows.Forms.CheckBox();
+			this.label12 = new System.Windows.Forms.Label();
+			this.tbOutputSize = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -93,6 +95,17 @@
 			this.splitContainer1.Size = new System.Drawing.Size(568, 655);
 			this.splitContainer1.SplitterDistance = 319;
 			this.splitContainer1.TabIndex = 3;
+			// 
+			// cbOnlyLettersAndDigits
+			// 
+			this.cbOnlyLettersAndDigits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.cbOnlyLettersAndDigits.AutoSize = true;
+			this.cbOnlyLettersAndDigits.Location = new System.Drawing.Point(275, 32);
+			this.cbOnlyLettersAndDigits.Name = "cbOnlyLettersAndDigits";
+			this.cbOnlyLettersAndDigits.Size = new System.Drawing.Size(132, 17);
+			this.cbOnlyLettersAndDigits.TabIndex = 27;
+			this.cbOnlyLettersAndDigits.Text = "Only Letters and Digits";
+			this.cbOnlyLettersAndDigits.UseVisualStyleBackColor = true;
 			// 
 			// btnGenerateInputText
 			// 
@@ -201,9 +214,10 @@
 			this.btnEncode.Name = "btnEncode";
 			this.btnEncode.Size = new System.Drawing.Size(114, 23);
 			this.btnEncode.TabIndex = 4;
+			this.btnEncode.Tag = "encode";
 			this.btnEncode.Text = "Encode";
 			this.btnEncode.UseVisualStyleBackColor = true;
-			this.btnEncode.Click += new System.EventHandler(this.btnEncode_Click);
+			this.btnEncode.Click += new System.EventHandler(this.btnEncodeDecode_Click);
 			// 
 			// btnDecode
 			// 
@@ -212,9 +226,10 @@
 			this.btnDecode.Name = "btnDecode";
 			this.btnDecode.Size = new System.Drawing.Size(114, 23);
 			this.btnDecode.TabIndex = 5;
+			this.btnDecode.Tag = "decode";
 			this.btnDecode.Text = "Decode";
 			this.btnDecode.UseVisualStyleBackColor = true;
-			this.btnDecode.Click += new System.EventHandler(this.btnDecode_Click);
+			this.btnDecode.Click += new System.EventHandler(this.btnEncodeDecode_Click);
 			// 
 			// cmbMethod
 			// 
@@ -336,7 +351,7 @@
 			// 
 			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(582, 528);
+			this.label8.Location = new System.Drawing.Point(583, 528);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(75, 13);
 			this.label8.TabIndex = 23;
@@ -345,10 +360,10 @@
 			// tbOutputLength
 			// 
 			this.tbOutputLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbOutputLength.Location = new System.Drawing.Point(678, 525);
+			this.tbOutputLength.Location = new System.Drawing.Point(679, 525);
 			this.tbOutputLength.Name = "tbOutputLength";
 			this.tbOutputLength.ReadOnly = true;
-			this.tbOutputLength.Size = new System.Drawing.Size(67, 20);
+			this.tbOutputLength.Size = new System.Drawing.Size(66, 20);
 			this.tbOutputLength.TabIndex = 22;
 			this.tbOutputLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
@@ -365,10 +380,10 @@
 			// tbInputLength
 			// 
 			this.tbInputLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbInputLength.Location = new System.Drawing.Point(678, 499);
+			this.tbInputLength.Location = new System.Drawing.Point(679, 499);
 			this.tbInputLength.Name = "tbInputLength";
 			this.tbInputLength.ReadOnly = true;
-			this.tbInputLength.Size = new System.Drawing.Size(68, 20);
+			this.tbInputLength.Size = new System.Drawing.Size(66, 20);
 			this.tbInputLength.TabIndex = 20;
 			this.tbInputLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
@@ -385,7 +400,7 @@
 			// 
 			this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(583, 571);
+			this.label10.Location = new System.Drawing.Point(584, 580);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(30, 13);
 			this.label10.TabIndex = 26;
@@ -394,29 +409,40 @@
 			// tbTime
 			// 
 			this.tbTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbTime.Location = new System.Drawing.Point(619, 568);
+			this.tbTime.Location = new System.Drawing.Point(620, 577);
 			this.tbTime.Name = "tbTime";
 			this.tbTime.ReadOnly = true;
 			this.tbTime.Size = new System.Drawing.Size(127, 20);
 			this.tbTime.TabIndex = 25;
 			this.tbTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
-			// cbOnlyLettersAndDigits
+			// label12
 			// 
-			this.cbOnlyLettersAndDigits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.cbOnlyLettersAndDigits.AutoSize = true;
-			this.cbOnlyLettersAndDigits.Location = new System.Drawing.Point(275, 32);
-			this.cbOnlyLettersAndDigits.Name = "cbOnlyLettersAndDigits";
-			this.cbOnlyLettersAndDigits.Size = new System.Drawing.Size(132, 17);
-			this.cbOnlyLettersAndDigits.TabIndex = 27;
-			this.cbOnlyLettersAndDigits.Text = "Only Letters and Digits";
-			this.cbOnlyLettersAndDigits.UseVisualStyleBackColor = true;
+			this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(583, 554);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(96, 13);
+			this.label12.TabIndex = 28;
+			this.label12.Text = "Output Size (bytes)";
+			// 
+			// tbOutputSize
+			// 
+			this.tbOutputSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.tbOutputSize.Location = new System.Drawing.Point(679, 551);
+			this.tbOutputSize.Name = "tbOutputSize";
+			this.tbOutputSize.ReadOnly = true;
+			this.tbOutputSize.Size = new System.Drawing.Size(66, 20);
+			this.tbOutputSize.TabIndex = 27;
+			this.tbOutputSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(759, 679);
+			this.Controls.Add(this.label12);
+			this.Controls.Add(this.tbOutputSize);
 			this.Controls.Add(this.label10);
 			this.Controls.Add(this.tbTime);
 			this.Controls.Add(this.nudLineLength);
@@ -486,6 +512,8 @@
 		private System.Windows.Forms.NumericUpDown nudGeneratingTextCharCount;
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.CheckBox cbOnlyLettersAndDigits;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.TextBox tbOutputSize;
 	}
 }
 

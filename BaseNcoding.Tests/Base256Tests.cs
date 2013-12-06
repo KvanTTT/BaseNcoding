@@ -3,7 +3,7 @@
 namespace BaseNcoding.Tests
 {
 	[TestFixture]
-	public class Base256Tests : BaseNTests
+	public class Base256Tests : BaseTests
 	{
 		[SetUp]
 		public void SetUp()
