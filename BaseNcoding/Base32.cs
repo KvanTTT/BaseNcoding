@@ -104,65 +104,23 @@ namespace BaseNcoding
 
 		public override byte[] Decode(string data)
 		{
-			if (string.IsNullOrEmpty(data))
-				return new byte[0];
-
-			int lastSpecialInd = data.Length;
-			while (data[lastSpecialInd - 1] == Special)
-				lastSpecialInd--;
-			int tailLength = data.Length - lastSpecialInd;
-
-			byte[] result = new byte[(data.Length + 7) / 8 * 5 - tailLength];
-			int length5 = result.Length / 5 * 5;
-			int x1, x2, x3, x4, x5, x6, x7, x8;
-
-			int i, srcInd = 0;
-			for (i = 0; i < length5; i += 5)
+			unchecked
 			{
-				x1 = InvAlphabet[data[srcInd++]];
-				x2 = InvAlphabet[data[srcInd++]];
-				x3 = InvAlphabet[data[srcInd++]];
-				x4 = InvAlphabet[data[srcInd++]];
-				x5 = InvAlphabet[data[srcInd++]];
-				x6 = InvAlphabet[data[srcInd++]];
-				x7 = InvAlphabet[data[srcInd++]];
-				x8 = InvAlphabet[data[srcInd++]];
-				
-				result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
-				result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
-				result[i + 2] = (byte)((x4 << 4) | ((x5 >> 1) & 0xF));
-				result[i + 3] = (byte)((x5 << 7) | ((x6 << 2) & 0x7C) | ((x7 >> 3) & 0x03));
-				result[i + 4] = (byte)((x7 << 5) | (x8 & 0x1F));
-			}
+				if (string.IsNullOrEmpty(data))
+					return new byte[0];
 
-			switch (tailLength)
-			{
-				case 4:
-					x1 = InvAlphabet[data[srcInd++]];
-					x2 = InvAlphabet[data[srcInd++]];
-					result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
-					break;
-				case 3:
-					x1 = InvAlphabet[data[srcInd++]];
-					x2 = InvAlphabet[data[srcInd++]];
-					x3 = InvAlphabet[data[srcInd++]];
-					x4 = InvAlphabet[data[srcInd++]];
-				
-					result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
-					result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
-					break;
-				case 2:
-					x1 = InvAlphabet[data[srcInd++]];
-					x2 = InvAlphabet[data[srcInd++]];
-					x3 = InvAlphabet[data[srcInd++]];
-					x4 = InvAlphabet[data[srcInd++]];
-					x5 = InvAlphabet[data[srcInd++]];
-				
-					result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
-					result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
-					result[i + 2] = (byte)((x4 << 4) | ((x5 >> 1) & 0xF));
-					break;
-				case 1:
+				int lastSpecialInd = data.Length;
+				while (data[lastSpecialInd - 1] == Special)
+					lastSpecialInd--;
+				int tailLength = data.Length - lastSpecialInd;
+
+				byte[] result = new byte[(data.Length + 7) / 8 * 5 - tailLength];
+				int length5 = result.Length / 5 * 5;
+				int x1, x2, x3, x4, x5, x6, x7, x8;
+
+				int i, srcInd = 0;
+				for (i = 0; i < length5; i += 5)
+				{
 					x1 = InvAlphabet[data[srcInd++]];
 					x2 = InvAlphabet[data[srcInd++]];
 					x3 = InvAlphabet[data[srcInd++]];
@@ -170,15 +128,60 @@ namespace BaseNcoding
 					x5 = InvAlphabet[data[srcInd++]];
 					x6 = InvAlphabet[data[srcInd++]];
 					x7 = InvAlphabet[data[srcInd++]];
-				
+					x8 = InvAlphabet[data[srcInd++]];
+
 					result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
 					result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
 					result[i + 2] = (byte)((x4 << 4) | ((x5 >> 1) & 0xF));
 					result[i + 3] = (byte)((x5 << 7) | ((x6 << 2) & 0x7C) | ((x7 >> 3) & 0x03));
-					break;
-			}
+					result[i + 4] = (byte)((x7 << 5) | (x8 & 0x1F));
+				}
 
-			return result;
+				switch (tailLength)
+				{
+					case 4:
+						x1 = InvAlphabet[data[srcInd++]];
+						x2 = InvAlphabet[data[srcInd++]];
+						result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
+						break;
+					case 3:
+						x1 = InvAlphabet[data[srcInd++]];
+						x2 = InvAlphabet[data[srcInd++]];
+						x3 = InvAlphabet[data[srcInd++]];
+						x4 = InvAlphabet[data[srcInd++]];
+
+						result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
+						result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
+						break;
+					case 2:
+						x1 = InvAlphabet[data[srcInd++]];
+						x2 = InvAlphabet[data[srcInd++]];
+						x3 = InvAlphabet[data[srcInd++]];
+						x4 = InvAlphabet[data[srcInd++]];
+						x5 = InvAlphabet[data[srcInd++]];
+
+						result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
+						result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
+						result[i + 2] = (byte)((x4 << 4) | ((x5 >> 1) & 0xF));
+						break;
+					case 1:
+						x1 = InvAlphabet[data[srcInd++]];
+						x2 = InvAlphabet[data[srcInd++]];
+						x3 = InvAlphabet[data[srcInd++]];
+						x4 = InvAlphabet[data[srcInd++]];
+						x5 = InvAlphabet[data[srcInd++]];
+						x6 = InvAlphabet[data[srcInd++]];
+						x7 = InvAlphabet[data[srcInd++]];
+
+						result[i] = (byte)((x1 << 3) | ((x2 >> 2) & 0x07));
+						result[i + 1] = (byte)((x2 << 6) | ((x3 << 1) & 0x3E) | ((x4 >> 4) & 0x01));
+						result[i + 2] = (byte)((x4 << 4) | ((x5 >> 1) & 0xF));
+						result[i + 3] = (byte)((x5 << 7) | ((x6 << 2) & 0x7C) | ((x7 >> 3) & 0x03));
+						break;
+				}
+
+				return result;
+			}
 		}
 	}
 }

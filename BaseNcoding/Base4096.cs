@@ -62,55 +62,58 @@ namespace BaseNcoding
 
 		public override byte[] Decode(string data)
 		{
-			if (string.IsNullOrEmpty(data))
-				return new byte[0];
-
-			int lastSpecialInd = data.Length;
-			while (data[lastSpecialInd - 1] == Special)
-				lastSpecialInd--;
-			int tailLength = data.Length - lastSpecialInd;
-
-			byte[] result = new byte[data.Length / 2 * 3 - tailLength];
-
-			int i, srcInd = 0;
-			int x1, x2;
-			int length5 = (data.Length / 2 - 1) * 3;
-			for (i = 0; i < length5; i += 3)
+			unchecked
 			{
-				x1 = InvAlphabet[data[srcInd++]];
-				x2 = InvAlphabet[data[srcInd++]];
+				if (string.IsNullOrEmpty(data))
+					return new byte[0];
 
-				result[i] = (byte)x1;
-				result[i + 1] = (byte)((x1 >> 8) & 0x0F | (x2 << 4));
-				result[i + 2] = (byte)(x2 >> 4);
-			}
-			if (tailLength == 0)
-			{
-				x1 = InvAlphabet[data[srcInd++]];
-				x2 = InvAlphabet[data[srcInd++]];
+				int lastSpecialInd = data.Length;
+				while (data[lastSpecialInd - 1] == Special)
+					lastSpecialInd--;
+				int tailLength = data.Length - lastSpecialInd;
 
-				result[i] = (byte)x1;
-				result[i + 1] = (byte)((x1 >> 8) & 0x0F | (x2 << 4));
-				result[i + 2] = (byte)(x2 >> 4);
-			}
+				byte[] result = new byte[data.Length / 2 * 3 - tailLength];
 
-			switch (tailLength)
-			{
-				case 2:
-					x1 = InvAlphabet[data[srcInd++]];
-
-					result[i] = (byte)x1;
-					break;
-				case 1:
+				int i, srcInd = 0;
+				int x1, x2;
+				int length5 = (data.Length / 2 - 1) * 3;
+				for (i = 0; i < length5; i += 3)
+				{
 					x1 = InvAlphabet[data[srcInd++]];
 					x2 = InvAlphabet[data[srcInd++]];
 
 					result[i] = (byte)x1;
 					result[i + 1] = (byte)((x1 >> 8) & 0x0F | (x2 << 4));
-					break;
-			}
+					result[i + 2] = (byte)(x2 >> 4);
+				}
+				if (tailLength == 0)
+				{
+					x1 = InvAlphabet[data[srcInd++]];
+					x2 = InvAlphabet[data[srcInd++]];
 
-			return result;
+					result[i] = (byte)x1;
+					result[i + 1] = (byte)((x1 >> 8) & 0x0F | (x2 << 4));
+					result[i + 2] = (byte)(x2 >> 4);
+				}
+
+				switch (tailLength)
+				{
+					case 2:
+						x1 = InvAlphabet[data[srcInd++]];
+
+						result[i] = (byte)x1;
+						break;
+					case 1:
+						x1 = InvAlphabet[data[srcInd++]];
+						x2 = InvAlphabet[data[srcInd++]];
+
+						result[i] = (byte)x1;
+						result[i + 1] = (byte)((x1 >> 8) & 0x0F | (x2 << 4));
+						break;
+				}
+
+				return result;
+			}
 		}
 	}
 }

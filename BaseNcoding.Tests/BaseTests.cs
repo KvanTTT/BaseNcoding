@@ -29,14 +29,10 @@ namespace BaseNcoding.Tests
 				"приложениях, шрифтах, верстке и многоязычных компьютерных системах.";
 
 		public const string GreekString =
-				"Σὲ γνωρίζω ἀπὸ τὴν κόψη " +
-				"τοῦ σπαθιοῦ τὴν τρομερή, " +
-				"σὲ γνωρίζω ἀπὸ τὴν ὄψη " +
-				"ποὺ μὲ βία μετράει τὴ γῆ. " +
-				"᾿Απ᾿ τὰ κόκκαλα βγαλμένη " +
-				"τῶν ῾Ελλήνων τὰ ἱερά " +
-				"καὶ σὰν πρῶτα ἀνδρειωμένη " +
-				"χαῖρε, ὦ χαῖρε, ᾿Ελευθεριά!";
+				"Σὲ γνωρίζω ἀπὸ τὴν κόψη τοῦ σπαθιοῦ τὴν τρομερή, " +
+				"σὲ γνωρίζω ἀπὸ τὴν ὄψη ποὺ μὲ βία μετράει τὴ γῆ. " +
+				"᾿Απ᾿ τὰ κόκκαλα βγαλμένη τῶν ῾Ελλήνων τὰ ἱερά " +
+				"καὶ σὰν πρῶτα ἀνδρειωμένη χαῖρε, ὦ χαῖρε, ᾿Ελευθεριά!";
 
 		protected Base Converter;
 
@@ -80,7 +76,7 @@ namespace BaseNcoding.Tests
 			char testChar = 'a';
 			StringBuilder strBuilder = new StringBuilder();
 
-			if (Converter.HaveSpecial && Base.IsPowerOfTwo(Converter.BitsPerChar))
+			if (Converter.HaveSpecial && Converter.BitsPerChar % 1 == 0 && Base.IsPowerOf2((uint)Converter.BitsPerChar))
 			{
 				int bitsPerChar = (int)Converter.BitsPerChar;
 				int bitsPerByte = 8;

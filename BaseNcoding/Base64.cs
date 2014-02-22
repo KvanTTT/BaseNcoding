@@ -68,49 +68,52 @@ namespace BaseNcoding
 
 		public override byte[] Decode(string data)
 		{
-			if (string.IsNullOrEmpty(data))
-				return new byte[0];
-
-			int lastSpecialInd = data.Length;
-			while (data[lastSpecialInd - 1] == Special)
-				lastSpecialInd--;
-			int tailLength = data.Length - lastSpecialInd;
-
-			byte[] result = new byte[(data.Length + 3) / 4 * 3 - tailLength];
-			int length3 = result.Length / 3 * 3;
-			int x1, x2;
-
-			int i, srcInd = 0;
-			for (i = 0; i < length3; i += 3)
+			unchecked
 			{
-				x1 = InvAlphabet[data[srcInd++]];
-				x2 = InvAlphabet[data[srcInd++]];
-				result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+				if (string.IsNullOrEmpty(data))
+					return new byte[0];
 
-				x1 = InvAlphabet[data[srcInd++]];
-				result[i + 1] = (byte)((x2 << 4) | ((x1 >> 2) & 0xF));
+				int lastSpecialInd = data.Length;
+				while (data[lastSpecialInd - 1] == Special)
+					lastSpecialInd--;
+				int tailLength = data.Length - lastSpecialInd;
 
-				x2 = InvAlphabet[data[srcInd++]];
-				result[i + 2] = (byte)((x1 << 6) | (x2 & 0x3F));
-			}
+				byte[] result = new byte[(data.Length + 3) / 4 * 3 - tailLength];
+				int length3 = result.Length / 3 * 3;
+				int x1, x2;
 
-			switch (tailLength)
-			{
-				case 2:
+				int i, srcInd = 0;
+				for (i = 0; i < length3; i += 3)
+				{
 					x1 = InvAlphabet[data[srcInd++]];
 					x2 = InvAlphabet[data[srcInd++]];
 					result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
-					break;
-				case 1:
-					x1 = InvAlphabet[data[srcInd++]];
-					x2 = InvAlphabet[data[srcInd++]];
-					result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+
 					x1 = InvAlphabet[data[srcInd++]];
 					result[i + 1] = (byte)((x2 << 4) | ((x1 >> 2) & 0xF));
-					break;
-			}
 
-			return result;
+					x2 = InvAlphabet[data[srcInd++]];
+					result[i + 2] = (byte)((x1 << 6) | (x2 & 0x3F));
+				}
+
+				switch (tailLength)
+				{
+					case 2:
+						x1 = InvAlphabet[data[srcInd++]];
+						x2 = InvAlphabet[data[srcInd++]];
+						result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+						break;
+					case 1:
+						x1 = InvAlphabet[data[srcInd++]];
+						x2 = InvAlphabet[data[srcInd++]];
+						result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+						x1 = InvAlphabet[data[srcInd++]];
+						result[i + 1] = (byte)((x2 << 4) | ((x1 >> 2) & 0xF));
+						break;
+				}
+
+				return result;
+			}
 		}
 	}
 }

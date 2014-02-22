@@ -10,57 +10,44 @@ namespace BaseNcoding.Tests
 	public class BaseNTests
 	{
 		[Test]
-		public void Base64Test()
+		public void BaseNCompareToBase64()
 		{
-			var baseN = new BaseN(64, Base64.DefaultAlphabet, Base64.DefaultSpecial);
-			var base64 = new Base64();
+			string s = "aaa";
+			var converter = new BaseN(Base64.DefaultAlphabet);
+			string encoded = converter.EncodeString(s);
+			string base64standart = Convert.ToBase64String(Encoding.UTF8.GetBytes(s));
 
-			char testChar = 'a';
-			StringBuilder strBuilder = new StringBuilder();
-
-			int bitsPerChar = (int)base64.BitsPerChar;
-			int bitsPerByte = 8;
-			int charByteBitsLcm = Base.LCM(bitsPerByte, bitsPerChar);
-			int maxTailLength = charByteBitsLcm / bitsPerByte - 1;
-			for (int i = 0; i <= maxTailLength + 2; i++)
-			{
-				string str = strBuilder.ToString();
-
-				var encoded = baseN.EncodeString(str);
-				var decoded = baseN.DecodeToString(encoded);
-
-				Assert.AreEqual(str, decoded);
-
-				/*var encoded64 = base64.EncodeString(str);
-				var decoded64 = base64.DecodeToString(encoded64);
-				Assert.AreEqual(encoded64, encoded);
-				Assert.AreEqual(decoded64, decoded);*/
-
-				strBuilder.Append(testChar);
-			}
+			Assert.AreEqual(base64standart, encoded);
 		}
 
 		[Test]
-		public void Base85Test()
+		public void GetOptimalBitsCount()
 		{
-			var baseN = new BaseN(85, Base85.DefaultAlphabet, '\\');
+			int charsCountInBits;
+			Assert.AreEqual(5, BaseN.GetOptimalBitsCount2(32, out charsCountInBits));
+			Assert.AreEqual(6, BaseN.GetOptimalBitsCount2(64, out charsCountInBits));
+			Assert.AreEqual(32, BaseN.GetOptimalBitsCount2(85, out charsCountInBits));
+			Assert.AreEqual(13, BaseN.GetOptimalBitsCount2(91, out charsCountInBits));
+		}
 
-			char testChar = 'a';
-			StringBuilder strBuilder = new StringBuilder();
-
-			/*int bitsPerChar = (int)baseN.BitsPerChar;
-			int bitsPerByte = 8;
-			int charByteBitsLcm = Base.LCM(bitsPerByte, bitsPerChar);
-			int maxTailLength = charByteBitsLcm / bitsPerByte - 1;*/
-			for (int i = 0; i <= 10; i++)
+		[Test]
+		public void EncodDecodeBaseN()
+		{
+			byte testByte = 157;
+			List<byte> bytes = new List<byte>();
+			for (uint radix = 2; radix < 256; radix++)
 			{
-				string str = strBuilder.ToString();
-
-				var encoded = baseN.EncodeString(str);
-				var decoded = baseN.DecodeToString(encoded);
-
-				Assert.AreEqual(str, decoded);
-				strBuilder.Append(testChar);
+				var baseN = new BaseN(Alphabet.Generate((int)radix), 32);
+				int testBytesCount = Math.Max((baseN.BlockBitsCount + 7) / 8, baseN.CharsCountInBits);
+				bytes.Clear();
+				for (int i = 0; i <= testBytesCount + 1; i++)
+				{
+					var array = bytes.ToArray();
+					var encoded = baseN.Encode(array);
+					var decoded = baseN.Decode(encoded);
+					CollectionAssert.AreEqual(array, decoded);
+					bytes.Add(testByte);
+				}
 			}
 		}
 	}

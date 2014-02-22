@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alphabet.cs" />
     <Compile Include="Base1024.cs" />
     <Compile Include="Base128.cs" />
     <Compile Include="Base256.cs" />
@@ -50,7 +53,6 @@
     <Compile Include="Base91.cs" />
     <Compile Include="Base.cs" />
     <Compile Include="BaseN.cs" />
-    <Compile Include="BitsArray.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZBase32.cs" />
   </ItemGroup>

@@ -16,7 +16,7 @@ namespace BaseNcoding.Tests
 		[TestCase(Base64SampleString)]
 		[TestCase(RusString)]
 		[TestCase(GreekString)]
-		public void CompareWithStandartBase64(string str)
+		public void Base64CompareToStandart(string str)
 		{
 			string encoded = Converter.EncodeString(str);
 			string base64standart = Convert.ToBase64String(Encoding.UTF8.GetBytes(str));

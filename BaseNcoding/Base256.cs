@@ -32,12 +32,15 @@ namespace BaseNcoding
 
 		public override byte[] Decode(string data)
 		{
-			byte[] result = new byte[data.Length];
+			unchecked
+			{
+				byte[] result = new byte[data.Length];
 
-			for (int i = 0; i < data.Length; i++)
-				result[i] = (byte)InvAlphabet[data[i]];
+				for (int i = 0; i < data.Length; i++)
+					result[i] = (byte)InvAlphabet[data[i]];
 
-			return result;
+				return result;
+			}
 		}
 	}
 }

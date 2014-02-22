@@ -61,35 +61,38 @@ namespace BaseNcoding
 
 		public override byte[] Decode(string data)
 		{
-			int dbq = 0, dn = 0, dv = -1;
-
-			List<byte> result = new List<byte>(data.Length);
-			for (int i = 0; i < data.Length; ++i)
+			unchecked
 			{
-				if (InvAlphabet[data[i]] == -1)
-					continue;
-				if (dv == -1)
-					dv = InvAlphabet[data[i]];
-				else
+				int dbq = 0, dn = 0, dv = -1;
+
+				List<byte> result = new List<byte>(data.Length);
+				for (int i = 0; i < data.Length; ++i)
 				{
-					dv += InvAlphabet[data[i]] * 91;
-					dbq |= dv << dn;
-					dn += (dv & 8191) > 88 ? 13 : 14;
-					do
+					if (InvAlphabet[data[i]] == -1)
+						continue;
+					if (dv == -1)
+						dv = InvAlphabet[data[i]];
+					else
 					{
-						result.Add((byte)dbq);
-						dbq >>= 8;
-						dn -= 8;
+						dv += InvAlphabet[data[i]] * 91;
+						dbq |= dv << dn;
+						dn += (dv & 8191) > 88 ? 13 : 14;
+						do
+						{
+							result.Add((byte)dbq);
+							dbq >>= 8;
+							dn -= 8;
+						}
+						while (dn > 7);
+						dv = -1;
 					}
-					while (dn > 7);
-					dv = -1;
 				}
+
+				if (dv != -1)
+					result.Add((byte)(dbq | dv << dn));
+
+				return result.ToArray();
 			}
-
-			if (dv != -1)
-				result.Add((byte)(dbq | dv << dn));
-
-			return result.ToArray();
 		}
 	}
 }

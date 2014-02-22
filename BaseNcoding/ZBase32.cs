@@ -25,30 +25,32 @@ namespace BaseNcoding
 
 		public override string Encode(byte[] data)
 		{
-			var encodedResult = new StringBuilder((int)Math.Ceiling(data.Length * 8.0 / 5.0));
-
-			for (var i = 0; i < data.Length; i += 5)
+			unchecked
 			{
-				var byteCount = Math.Min(5, data.Length - i);
+				var encodedResult = new StringBuilder((int)Math.Ceiling(data.Length * 8.0 / 5.0));
 
-				ulong buffer = 0;
-				for (var j = 0; j < byteCount; ++j)
-					buffer = (buffer << 8) | data[i + j];
-
-				var bitCount = byteCount * 8;
-				while (bitCount > 0)
+				for (var i = 0; i < data.Length; i += 5)
 				{
-					var index = bitCount >= 5
-								? (int)(buffer >> (bitCount - 5)) & 0x1f
-								: (int)(buffer & (ulong)(0x1f >> (5 - bitCount))) << (5 - bitCount);
+					var byteCount = Math.Min(5, data.Length - i);
 
-					encodedResult.Append(DefaultAlphabet[index]);
-					bitCount -= 5;
+					ulong buffer = 0;
+					for (var j = 0; j < byteCount; ++j)
+						buffer = (buffer << 8) | data[i + j];
+
+					var bitCount = byteCount * 8;
+					while (bitCount > 0)
+					{
+						var index = bitCount >= 5
+									? (int)(buffer >> (bitCount - 5)) & 0x1f
+									: (int)(buffer & (ulong)(0x1f >> (5 - bitCount))) << (5 - bitCount);
+
+						encodedResult.Append(DefaultAlphabet[index]);
+						bitCount -= 5;
+					}
 				}
+
+				return encodedResult.ToString();
 			}
-
-			return encodedResult.ToString();
-
 		}
 
 		public override byte[] Decode(string data)

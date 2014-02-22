@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,10 +17,8 @@ namespace BaseNcoding
 
 		public double BitsPerChar
 		{
-			get
-			{
-				return Math.Log(CharsCount, 2);
-			}
+			get;
+			protected set;
 		}
 
 		public string Alphabet
@@ -63,6 +62,7 @@ namespace BaseNcoding
 			CharsCount = charsCount;
 			Alphabet = alphabet;
 			Special = special;
+			BitsPerChar = Math.Log(CharsCount, 2);
 
 			InvAlphabet = new int[Alphabet.Max() + 1];
 
@@ -94,7 +94,7 @@ namespace BaseNcoding
 		/// </summary>
 		/// <param name="x"></param>
 		/// <returns></returns>
-		public static bool IsPowerOfTwo(double x)
+		public static bool IsPowerOf2(uint x)
 		{
 			uint xint = (uint)x;
 			if (x - xint != 0)
@@ -138,10 +138,50 @@ namespace BaseNcoding
 			return x;
 		}
 
+		public static ulong IntPow(ulong x, int exp)
+		{
+			ulong result = 1;
+			for (int i = 0; i < exp; i++)
+				result *= x;
+			return result;
+		}
+
+		public static BigInteger BigIntPow(BigInteger x, int exp)
+		{
+			BigInteger result = 1;
+			for (int i = 0; i < exp; i++)
+				result *= x;
+			return result;
+		}
+
 		public static int LogBase2(uint x)
 		{
 			int r = 0;
 			while ((x >>= 1) != 0)
+				r++;
+			return r;
+		}
+
+		public static int LogBase2(ulong x)
+		{
+			int r = 0;
+			while ((x >>= 1) != 0)
+				r++;
+			return r;
+		}
+
+		public static int LogBaseN(uint x, uint n)
+		{
+			int r = 0;
+			while ((x /= n) != 0)
+				r++;
+			return r;
+		}
+
+		public static int LogBaseN(ulong x, uint n)
+		{
+			int r = 0;
+			while ((x /= n) != 0)
 				r++;
 			return r;
 		}
