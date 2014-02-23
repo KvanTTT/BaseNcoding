@@ -137,6 +137,7 @@ namespace BaseNcoding.GUI
 
 			nudGeneratingTextCharCount.Value = Settings.Default.GeneratingTextCharCount;
 			cbOnlyLettersAndDigits.Checked = Settings.Default.GenerateOnlyLettersAndDigits;
+			cbParallel.Checked = Settings.Default.Parallel;
 		}
 
 		private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -151,6 +152,7 @@ namespace BaseNcoding.GUI
 			Settings.Default.InputText = tbInput.Text;
 			Settings.Default.GeneratingTextCharCount = (int)nudGeneratingTextCharCount.Value;
 			Settings.Default.GenerateOnlyLettersAndDigits = cbOnlyLettersAndDigits.Checked;
+			Settings.Default.Parallel = cbParallel.Checked;
 
 			Settings.Default.Save();
 		}
@@ -187,15 +189,15 @@ namespace BaseNcoding.GUI
 				throw new ArgumentException("Special char should contains one symbol");
 			char special = string.IsNullOrWhiteSpace(tbSpecialChar.Text) ? (char)0 : tbSpecialChar.Text[0];
 			Encoding textEncoding = cmbTextEncoding.SelectedItem != null ?
-				(Encoding)((ComboBoxItem)cmbTextEncoding.SelectedItem).Value :
-				null;
+				(Encoding)((ComboBoxItem)cmbTextEncoding.SelectedItem).Value : null;
+			bool parallel = cbParallel.Checked;
 			switch (cmbMethod.SelectedItem.ToString())
 			{
 				case "Base32":
 					method = new Base32(alphabet, special, textEncoding);
 					break;
 				case "Base64":
-					method = new Base64(alphabet, special, textEncoding);
+					method = new Base64(alphabet, special, textEncoding, parallel);
 					break;
 				case "Base128":
 					method = new Base128(alphabet, special, textEncoding);
@@ -219,7 +221,7 @@ namespace BaseNcoding.GUI
 					method = new Base91(alphabet, special, textEncoding);
 					break;
 				case "BaseN":
-					method = new BaseN(alphabet, 32, textEncoding);
+					method = new BaseN(alphabet, 32, textEncoding, parallel);
 					break;
 			}
 			return method;

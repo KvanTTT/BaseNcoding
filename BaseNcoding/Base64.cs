@@ -16,54 +16,57 @@ namespace BaseNcoding
 			get { return true; }
 		}
 
-		public Base64(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
-			: base(64, alphabet, special, textEncoding)
+		public Base64(string alphabet = DefaultAlphabet, char special = DefaultSpecial,
+			Encoding textEncoding = null, bool parallel = false)
+			: base(64, alphabet, special, textEncoding, parallel)
 		{
 		}
 
 		public override string Encode(byte[] data)
 		{
-			StringBuilder result = new StringBuilder((data.Length + 2) / 3 * 4);
+			int resultLength = (data.Length + 2) / 3 * 4;
+			char[] result = new char[resultLength];
 
-			byte x1, x2;
-			int i;
-			string alphabet = Alphabet;
-
-			int length3 = (data.Length / 3) * 3;
-			for (i = 0; i < length3; i += 3)
+			int length3 = data.Length / 3;
+			if (!Parallel)
 			{
-				x1 = data[i];
-				result.Append(alphabet[x1 >> 2]);
-
-				x2 = data[i + 1];
-				result.Append(alphabet[((x1 << 4) & 0x30) | (x2 >> 4)]);
-
-				x1 = data[i + 2];
-				result.Append(alphabet[((x2 << 2) & 0x3C) | (x1 >> 6)]);
-				result.Append(alphabet[x1 & 0x3F]);
+				for (int i = 0; i < length3; i++)
+					EncodeBlock(data, result, i);
+			}
+			else
+			{
+				System.Threading.Tasks.Parallel.For(0, length3, i => EncodeBlock(data, result, i));
 			}
 
-			switch (data.Length - length3)
+			int ind;
+			int x1, x2;
+			int srcInd, dstInd;
+			switch (data.Length - length3 * 3)
 			{
 				case 1:
-					x1 = data[i];
-					result.Append(alphabet[x1 >> 2]);
-					result.Append(alphabet[(x1 << 4) & 0x30]);
-
-					result.Append(Special, 2);
+					ind = length3;
+					srcInd = ind * 3;
+					dstInd = ind * 4;
+					x1 = data[srcInd];
+					result[dstInd] = Alphabet[x1 >> 2];
+					result[dstInd + 1] = Alphabet[(x1 << 4) & 0x30];
+					result[dstInd + 2] = Special;
+					result[dstInd + 3] = Special;
 					break;
 				case 2:
-					x1 = data[i];
-					result.Append(alphabet[x1 >> 2]);
-					x2 = data[i + 1];
-					result.Append(alphabet[((x1 << 4) & 0x30) | (x2 >> 4)]);
-					result.Append(alphabet[(x2 << 2) & 0x3C]);
-
-					result.Append(Special);
+					ind = length3;
+					srcInd = ind * 3;
+					dstInd = ind * 4;
+					x1 = data[srcInd];
+					x2 = data[srcInd + 1];
+					result[dstInd] = Alphabet[x1 >> 2];
+					result[dstInd + 1] = Alphabet[((x1 << 4) & 0x30) | (x2 >> 4)];
+					result[dstInd + 2] = Alphabet[(x2 << 2) & 0x3C];
+					result[dstInd + 3] = Special;
 					break;
 			}
 
-			return result.ToString();
+			return new string(result);
 		}
 
 		public override byte[] Decode(string data)
@@ -78,41 +81,79 @@ namespace BaseNcoding
 					lastSpecialInd--;
 				int tailLength = data.Length - lastSpecialInd;
 
-				byte[] result = new byte[(data.Length + 3) / 4 * 3 - tailLength];
-				int length3 = result.Length / 3 * 3;
-				int x1, x2;
+				int resultLength = (data.Length + 3) / 4 * 3 - tailLength;
+				byte[] result = new byte[resultLength];
 
-				int i, srcInd = 0;
-				for (i = 0; i < length3; i += 3)
+				int length4 = (data.Length - tailLength) / 4;
+				if (!Parallel)
 				{
-					x1 = InvAlphabet[data[srcInd++]];
-					x2 = InvAlphabet[data[srcInd++]];
-					result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
-
-					x1 = InvAlphabet[data[srcInd++]];
-					result[i + 1] = (byte)((x2 << 4) | ((x1 >> 2) & 0xF));
-
-					x2 = InvAlphabet[data[srcInd++]];
-					result[i + 2] = (byte)((x1 << 6) | (x2 & 0x3F));
+					for (int i = 0; i < length4; i++)
+						DecodeBlock(data, result, i);
+				}
+				else
+				{
+					System.Threading.Tasks.Parallel.For(0, length4, i => DecodeBlock(data, result, i));
 				}
 
+				int ind;
+				int x1, x2, x3;
+				int srcInd, dstInd;
 				switch (tailLength)
 				{
 					case 2:
-						x1 = InvAlphabet[data[srcInd++]];
-						x2 = InvAlphabet[data[srcInd++]];
-						result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+						ind = length4;
+						srcInd = ind * 4;
+						dstInd = ind * 3;
+						x1 = InvAlphabet[data[srcInd]];
+						x2 = InvAlphabet[data[srcInd + 1]];
+						result[dstInd] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
 						break;
 					case 1:
-						x1 = InvAlphabet[data[srcInd++]];
-						x2 = InvAlphabet[data[srcInd++]];
-						result[i] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
-						x1 = InvAlphabet[data[srcInd++]];
-						result[i + 1] = (byte)((x2 << 4) | ((x1 >> 2) & 0xF));
+						ind = length4;
+						srcInd = ind * 4;
+						dstInd = ind * 3;
+						x1 = InvAlphabet[data[srcInd]];
+						x2 = InvAlphabet[data[srcInd + 1]];
+						x3 = InvAlphabet[data[srcInd + 2]];
+						result[dstInd] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+						result[dstInd + 1] = (byte)((x2 << 4) | ((x3 >> 2) & 0xF));
 						break;
 				}
 
 				return result;
+			}
+		}
+
+		private void EncodeBlock(byte[] src, char[] dst, int ind)
+		{
+			int srcInd = ind * 3;
+			int dstInd = ind * 4;
+
+			byte x1 = src[srcInd];
+			byte x2 = src[srcInd + 1];
+			byte x3 = src[srcInd + 2];
+
+			dst[dstInd] = Alphabet[x1 >> 2];
+			dst[dstInd + 1] = Alphabet[((x1 << 4) & 0x30) | (x2 >> 4)];
+			dst[dstInd + 2] = Alphabet[((x2 << 2) & 0x3C) | (x3 >> 6)];
+			dst[dstInd + 3] = Alphabet[x3 & 0x3F];
+		}
+
+		private void DecodeBlock(string src, byte[] dst, int ind)
+		{
+			unchecked
+			{
+				int srcInd = ind * 4;
+				int dstInd = ind * 3;
+
+				int x1 = InvAlphabet[src[srcInd]];
+				int x2 = InvAlphabet[src[srcInd + 1]];
+				int x3 = InvAlphabet[src[srcInd + 2]];
+				int x4 = InvAlphabet[src[srcInd + 3]];
+
+				dst[dstInd] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+				dst[dstInd + 1] = (byte)((x2 << 4) | ((x3 >> 2) & 0xF));
+				dst[dstInd + 2] = (byte)((x3 << 6) | (x4 & 0x3F));
 			}
 		}
 	}

@@ -44,9 +44,15 @@ namespace BaseNcoding
 			set;
 		}
 
+		public bool Parallel
+		{
+			get;
+			set;
+		}
+
 		protected int[] InvAlphabet;
 
-		public Base(uint charsCount, string alphabet, char special, Encoding encoding = null)
+		public Base(uint charsCount, string alphabet, char special, Encoding encoding = null, bool parallel = false)
 		{
 			if (alphabet.Length != charsCount)
 				throw new ArgumentException("Base string should contain " + charsCount + " chars");
@@ -73,6 +79,7 @@ namespace BaseNcoding
 				InvAlphabet[Alphabet[i]] = i;
 
 			Encoding = encoding ?? Encoding.UTF8;
+			Parallel = parallel;
 		}
 
 		public virtual string EncodeString(string data)

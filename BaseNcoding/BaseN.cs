@@ -34,8 +34,9 @@ namespace BaseNcoding
 			private set;
 		}
 
-		public BaseN(string alphabet, uint blockMaxBitsCount = 32, Encoding encoding = null)
-			: base((uint)alphabet.Length, alphabet, '\0', encoding)
+		public BaseN(string alphabet, uint blockMaxBitsCount = 32,
+			Encoding encoding = null, bool parallel = false)
+			: base((uint)alphabet.Length, alphabet, '\0', encoding, parallel)
 		{
 			BlockMaxBitsCount = blockMaxBitsCount;
 			int charsCountInBits;
@@ -71,18 +72,16 @@ namespace BaseNcoding
 
 			var result = new char[globalCharsCount];
 
-			ulong bits;
-			int bitInd, charInd;
-			for (int i = 0; i < iterationCount; i++)
+			if (!Parallel)
 			{
-				charInd = i * CharsCountInBits;
-				bitInd = i * BlockBitsCount;
-				bits = GetBits64(data, bitInd, BlockBitsCount);
-				EncodeBlock(result, charInd, CharsCountInBits, bits);
+				for (int i = 0; i < iterationCount; i++)
+					EncodeBlock(data, result, i);
 			}
+			else
+				System.Threading.Tasks.Parallel.For(0, iterationCount, i => EncodeBlock(data, result, i));
 			if (tailBitsLength != 0)
 			{
-				bits = GetBits64(data, mainBitsLength, tailBitsLength);
+				ulong bits = GetBits64(data, mainBitsLength, tailBitsLength);
 				EncodeBlock(result, mainCharsCount, tailCharsCount, bits);
 			}
 
@@ -103,22 +102,37 @@ namespace BaseNcoding
 
 			byte[] result = new byte[globalBitsLength / 8];
 
-			ulong bits;
-			int bitInd, charInd;
-			for (int i = 0; i < iterationCount; i++)
+			if (!Parallel)
 			{
-				charInd = i * CharsCountInBits;
-				bitInd = i * BlockBitsCount;
-				bits = DecodeBlock(data, charInd, CharsCountInBits);
-				AddBits64(result, bits, bitInd, BlockBitsCount);
+				for (int i = 0; i < iterationCount; i++)
+					DecodeBlock(data, result, i);
 			}
+			else
+				System.Threading.Tasks.Parallel.For(0, iterationCount, i => DecodeBlock(data, result, i));
+
 			if (tailCharsCount != 0)
 			{
-				bits = DecodeBlock(data, mainCharsCount, tailCharsCount);
+				ulong bits = DecodeBlock(data, mainCharsCount, tailCharsCount);
 				AddBits64(result, bits, mainBitsLength, tailBitsLength);
 			}
 			
 			return result;
+		}
+
+		private void EncodeBlock(byte[] src, char[] dst, int ind)
+		{
+			int charInd = ind * CharsCountInBits;
+			int bitInd = ind * BlockBitsCount;
+			ulong bits = GetBits64(src, bitInd, BlockBitsCount);
+			EncodeBlock(dst, charInd, CharsCountInBits, bits);
+		}
+
+		private void DecodeBlock(string src, byte[] dst, int ind)
+		{
+			int charInd = ind * CharsCountInBits;
+			int bitInd = ind * BlockBitsCount;
+			ulong bits = DecodeBlock(src, charInd, CharsCountInBits);
+			AddBits64(dst, bits, bitInd, BlockBitsCount);
 		}
 
 		private static ulong GetBits64(byte[] data, int bitPos, int bitsCount)
@@ -214,7 +228,7 @@ namespace BaseNcoding
 		}
 
 		public static int GetOptimalBitsCount2(uint charsCount, out int charsCountInBits,
-			uint maxBitsCount = 32, bool base2BitsCount = false)
+			uint maxBitsCount = 64, bool base2BitsCount = false)
 		{
 			int result = 0;
 			charsCountInBits = 0;
@@ -228,25 +242,14 @@ namespace BaseNcoding
 				if (base2BitsCount && n % 8 != 0)
 					continue;
 
-				ulong pow2n = (ulong)1 << n;
 				int l1 = (int)Math.Ceiling(n * charsCountLog);
-				int l2 = n / n1;
-				ulong pow = IntPow(uCharsCount, l1);
-				int l = l1;
-				do
+				double ratio = (double)n / l1;
+				if (ratio > maxRatio)
 				{
-					double ratio = (double)n / l;
-					if (pow2n <= pow && ratio > maxRatio)
-					{
-						maxRatio = ratio;
-						result = n;
-						charsCountInBits = l;
-					}
-
-					pow *= uCharsCount;
-					l++;
+					maxRatio = ratio;
+					result = n;
+					charsCountInBits = l1;
 				}
-				while (l <= l2);
 			}
 
 			return result;
@@ -258,32 +261,19 @@ namespace BaseNcoding
 			int result = 0;
 			charsCountInBits = 0;
 			int n1 = Base.LogBaseN(charsCount, radix);
-			BigInteger bigCharsCount = charsCount;
-			BigInteger bigRadix = radix;
 			double charsCountLog = Math.Log(radix, charsCount);
 			double maxRatio = 0;
 
 			for (int n = n1; n <= maxBitsCount; n++)
 			{
-				BigInteger powRadixN = BigIntPow(bigRadix, n);
 				int l1 = (int)Math.Ceiling(n * charsCountLog);
-				int l2 = n / n1;
-				BigInteger pow1 = BigIntPow(bigCharsCount, l1);
-				int l = l1;
-				do
+				double ratio = (double)n / l1;
+				if (ratio > maxRatio)
 				{
-					double ratio = (double)n / l;
-					if (powRadixN <= pow1 && ratio > maxRatio)
-					{
-						maxRatio = ratio;
-						result = n;
-						charsCountInBits = l;
-					}
-
-					pow1 *= bigCharsCount;
-					l++;
+					maxRatio = ratio;
+					result = n;
+					charsCountInBits = l1;
 				}
-				while (l <= l2);
 			}
 
 			return result;

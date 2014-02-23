@@ -35,8 +35,10 @@ namespace BaseNcoding.Tests
 		{
 			byte testByte = 157;
 			List<byte> bytes = new List<byte>();
-			for (uint radix = 2; radix < 256; radix++)
+			for (uint radix = 2; radix < 1000; radix++)
 			{
+				int charsCountInBits;
+
 				var baseN = new BaseN(Alphabet.Generate((int)radix), 32);
 				int testBytesCount = Math.Max((baseN.BlockBitsCount + 7) / 8, baseN.CharsCountInBits);
 				bytes.Clear();

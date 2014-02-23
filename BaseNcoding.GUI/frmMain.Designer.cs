@@ -64,6 +64,7 @@
 			this.nudAlphabetLength = new System.Windows.Forms.NumericUpDown();
 			this.label13 = new System.Windows.Forms.Label();
 			this.btnGenerateAlphabet = new System.Windows.Forms.Button();
+			this.cbParallel = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -300,11 +301,11 @@
 			// tbAlphabet
 			// 
 			this.tbAlphabet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbAlphabet.Location = new System.Drawing.Point(589, 177);
+			this.tbAlphabet.Location = new System.Drawing.Point(590, 187);
 			this.tbAlphabet.Multiline = true;
 			this.tbAlphabet.Name = "tbAlphabet";
 			this.tbAlphabet.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.tbAlphabet.Size = new System.Drawing.Size(161, 194);
+			this.tbAlphabet.Size = new System.Drawing.Size(161, 185);
 			this.tbAlphabet.TabIndex = 15;
 			this.tbAlphabet.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 			this.tbAlphabet.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbTextBox_KeyDown);
@@ -477,19 +478,30 @@
 			// btnGenerateAlphabet
 			// 
 			this.btnGenerateAlphabet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnGenerateAlphabet.Location = new System.Drawing.Point(675, 136);
+			this.btnGenerateAlphabet.Location = new System.Drawing.Point(678, 135);
 			this.btnGenerateAlphabet.Name = "btnGenerateAlphabet";
-			this.btnGenerateAlphabet.Size = new System.Drawing.Size(75, 23);
+			this.btnGenerateAlphabet.Size = new System.Drawing.Size(72, 23);
 			this.btnGenerateAlphabet.TabIndex = 31;
 			this.btnGenerateAlphabet.Text = "Generate";
 			this.btnGenerateAlphabet.UseVisualStyleBackColor = true;
 			this.btnGenerateAlphabet.Click += new System.EventHandler(this.btnGenerateAlphabet_Click);
+			// 
+			// cbParallel
+			// 
+			this.cbParallel.AutoSize = true;
+			this.cbParallel.Location = new System.Drawing.Point(678, 164);
+			this.cbParallel.Name = "cbParallel";
+			this.cbParallel.Size = new System.Drawing.Size(60, 17);
+			this.cbParallel.TabIndex = 32;
+			this.cbParallel.Text = "Parallel";
+			this.cbParallel.UseVisualStyleBackColor = true;
 			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(759, 679);
+			this.Controls.Add(this.cbParallel);
 			this.Controls.Add(this.btnGenerateAlphabet);
 			this.Controls.Add(this.nudAlphabetLength);
 			this.Controls.Add(this.label13);
@@ -570,6 +582,7 @@
 		private System.Windows.Forms.NumericUpDown nudAlphabetLength;
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Button btnGenerateAlphabet;
+		private System.Windows.Forms.CheckBox cbParallel;
 	}
 }
 

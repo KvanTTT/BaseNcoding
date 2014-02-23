@@ -15,7 +15,8 @@ namespace BaseNcoding
 			get { return false; }
 		}
 
-		public Base256(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
+		public Base256(string alphabet = DefaultAlphabet, char special = DefaultSpecial,
+			Encoding textEncoding = null)
 			: base(256, alphabet, special, textEncoding)
 		{
 		}
