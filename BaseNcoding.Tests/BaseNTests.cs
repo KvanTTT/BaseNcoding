@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -37,8 +38,8 @@ namespace BaseNcoding.Tests
 			List<byte> bytes = new List<byte>();
 			for (uint radix = 2; radix < 1000; radix++)
 			{
-				var baseN = new BaseN(Alphabet.Generate((int)radix), 64);
-				int testBytesCount = Math.Max((baseN.BlockBitsCount + 7) / 8, (int)baseN.CharsCountInBits);
+				var baseN = new BaseN(StringGenerator.GetAlphabet((int)radix), 64);
+				int testBytesCount = Math.Max((baseN.BlockBitsCount + 7) / 8, (int)baseN.BlockCharsCount);
 				bytes.Clear();
 				for (int i = 0; i <= testBytesCount + 1; i++)
 				{
@@ -58,8 +59,8 @@ namespace BaseNcoding.Tests
 			List<byte> bytes = new List<byte>();
 			for (uint radix = 2; radix < 1000; radix++)
 			{
-				var baseN = new BaseBigN(Alphabet.Generate((int)radix), 256);
-				int testBytesCount = Math.Max((baseN.BlockBitsCount + 7) / 8, baseN.CharsCountInBits);
+				var baseN = new BaseBigN(StringGenerator.GetAlphabet((int)radix), 256);
+				int testBytesCount = Math.Max((baseN.BlockBitsCount + 7) / 8, baseN.BlockCharsCount);
 				bytes.Clear();
 				for (int i = 0; i <= testBytesCount + 1; i++)
 				{
@@ -70,6 +71,28 @@ namespace BaseNcoding.Tests
 					bytes.Add(testByte);
 				}
 			}
+		}
+
+		[Test]
+		public void EncodeDecodeParallel()
+		{
+			var randomString = StringGenerator.GetRandom(10000000, true);
+			var baseN = new BaseN(StringGenerator.GetAlphabet(85));
+
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+			var baseNEncoded = baseN.EncodeString(randomString);
+			stopwatch.Stop();
+			var baseNTime = stopwatch.Elapsed;
+
+			stopwatch.Restart();
+			baseN.Parallel = true;
+			var baseNEncodedParallel = baseN.EncodeString(randomString);
+			stopwatch.Stop();
+			var baseNParallelTime = stopwatch.Elapsed;
+
+			CollectionAssert.AreEqual(baseNEncoded, baseNEncodedParallel);
+			Assert.Less(baseNParallelTime, baseNTime);
 		}
 	}
 }

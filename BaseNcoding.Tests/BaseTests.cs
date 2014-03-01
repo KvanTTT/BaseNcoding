@@ -76,9 +76,9 @@ namespace BaseNcoding.Tests
 			char testChar = 'a';
 			StringBuilder strBuilder = new StringBuilder();
 
-			if (Converter.HaveSpecial && Converter.BitsPerChar % 1 == 0 && Base.IsPowerOf2((uint)Converter.BitsPerChar))
+			if (Converter.HaveSpecial && Converter.BitsPerChars % 1 == 0 && Base.IsPowerOf2((uint)Converter.BitsPerChars))
 			{
-				int bitsPerChar = (int)Converter.BitsPerChar;
+				int bitsPerChar = (int)Converter.BitsPerChars;
 				int bitsPerByte = 8;
 				int charByteBitsLcm = Base.LCM(bitsPerByte, bitsPerChar);
 				int maxTailLength = charByteBitsLcm / bitsPerByte - 1;

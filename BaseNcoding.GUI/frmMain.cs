@@ -85,14 +85,14 @@ namespace BaseNcoding.GUI
 				new ComboBoxItem("ZBase32", "ZBase32"),
 				new ComboBoxItem("Base85", "Base85"),
 				new ComboBoxItem("Base91", "Base91"),
-				new ComboBoxItem("BaseN", "BaseN")
+				new ComboBoxItem("BaseN", "BaseN"),
+				new ComboBoxItem("BaseBigN", "BaseBigN")
 			};
 			cmbMethod.Items.AddRange(methods);
 
 			cmbSample.Items.AddRange(Samples);
 
 			var encodings = Encoding.GetEncodings();
-			//cmbTextEncoding.Items.AddRange(encodings.Select(encoding => new ComboBoxItem(encoding.DisplayName, encoding)).ToArray());
 			var textEncodingItems = new ComboBoxItem[]
 			{
 				new ComboBoxItem(Encoding.UTF8.EncodingName, Encoding.UTF8),
@@ -138,6 +138,7 @@ namespace BaseNcoding.GUI
 			nudGeneratingTextCharCount.Value = Settings.Default.GeneratingTextCharCount;
 			cbOnlyLettersAndDigits.Checked = Settings.Default.GenerateOnlyLettersAndDigits;
 			cbParallel.Checked = Settings.Default.Parallel;
+			nudMaxBitsCount.Value = Settings.Default.MaxBitsCount;
 		}
 
 		private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -153,6 +154,7 @@ namespace BaseNcoding.GUI
 			Settings.Default.GeneratingTextCharCount = (int)nudGeneratingTextCharCount.Value;
 			Settings.Default.GenerateOnlyLettersAndDigits = cbOnlyLettersAndDigits.Checked;
 			Settings.Default.Parallel = cbParallel.Checked;
+			Settings.Default.MaxBitsCount = (int)nudMaxBitsCount.Value;
 
 			Settings.Default.Save();
 		}
@@ -221,9 +223,15 @@ namespace BaseNcoding.GUI
 					method = new Base91(alphabet, special, textEncoding);
 					break;
 				case "BaseN":
-					method = new BaseN(alphabet, 32, textEncoding, parallel);
+					method = new BaseN(alphabet, (uint)nudMaxBitsCount.Value, textEncoding, parallel);
+					break;
+				case "BaseBigN":
+					method = new BaseBigN(alphabet, (uint)nudMaxBitsCount.Value, textEncoding, parallel);
 					break;
 			}
+			tbBitsPerChars.Text = method.BlockBitsCount + "/" + method.BlockCharsCount;
+			tbRatio.Text = ((double)method.BlockBitsCount / method.BlockCharsCount).ToString("0.000000");
+			nudAlphabetLength.Value = method.CharsCount;
 			return method;
 		}
 
@@ -232,6 +240,7 @@ namespace BaseNcoding.GUI
 			cbPrefixPostfix.Enabled = false;
 			cbPrefixPostfix.Checked = false;
 			nudAlphabetLength.Enabled = false;
+			nudMaxBitsCount.Enabled = false;
 			switch (cmbMethod.SelectedItem.ToString())
 			{
 				case "Base32":
@@ -272,12 +281,14 @@ namespace BaseNcoding.GUI
 					tbSpecialChar.Text = Base91.DefaultSpecial.ToString();
 					break;
 				case "BaseN":
-					tbAlphabet.Text = Alphabet.Generate((int)nudAlphabetLength.Value);
+				case "BaseBigN":
+					tbAlphabet.Text = StringGenerator.GetAlphabet((int)nudAlphabetLength.Value);
 					tbSpecialChar.Text = "";
 					nudAlphabetLength.Enabled = true;
+					nudMaxBitsCount.Enabled = true;
 					break;
 			}
-			nudAlphabetLength.Value = GetMethod().CharsCount;
+			var encoder = GetMethod();
 			cmbSample_SelectedIndexChanged(sender, e);
 		}
 
@@ -317,36 +328,16 @@ namespace BaseNcoding.GUI
 
 		private void btnGenerateInputText_Click(object sender, EventArgs e)
 		{
-			tbInput.Text = RandomString((int)nudGeneratingTextCharCount.Value, cbOnlyLettersAndDigits.Checked);
+			tbInput.Text = StringGenerator.GetRandom((int)nudGeneratingTextCharCount.Value, cbOnlyLettersAndDigits.Checked);
 			tbOutput.Clear();
 			tbOutputLength.Text = "0";
 			tbOutputSize.Text = "0";
 		}
 
-		public static string RandomString(int size, bool onlyLettersAndDigits)
-		{
-			Random r = new Random();
-			if (onlyLettersAndDigits)
-			{
-				string lettersAndDigits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-				StringBuilder result = new StringBuilder(size);
-				for (int i = 0; i < size; i++)
-					result.Append(lettersAndDigits[r.Next(lettersAndDigits.Length)]);
-				return result.ToString();
-			}
-			else
-			{
-				var data = new byte[size];
-				for (int i = 0; i < size; i++)
-					data[i] = (byte)r.Next(32, 127);
-				var encoding = new ASCIIEncoding();
-				return encoding.GetString(data);
-			}
-		}
-
 		private void btnGenerateAlphabet_Click(object sender, EventArgs e)
 		{
-			tbAlphabet.Text = Alphabet.Generate((int)nudAlphabetLength.Value);
+			tbAlphabet.Text = StringGenerator.GetAlphabet((int)nudAlphabetLength.Value);
+			GetMethod();
 		}
 	}
 }

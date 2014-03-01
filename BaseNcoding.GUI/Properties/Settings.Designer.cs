@@ -153,5 +153,17 @@ namespace BaseNcoding.GUI.Properties {
                 this["Parallel"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("64")]
+        public int MaxBitsCount {
+            get {
+                return ((int)(this["MaxBitsCount"]));
+            }
+            set {
+                this["MaxBitsCount"] = value;
+            }
+        }
     }
 }

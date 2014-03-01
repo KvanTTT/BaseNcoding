@@ -15,7 +15,21 @@ namespace BaseNcoding
 			protected set;
 		}
 
-		public double BitsPerChar
+		public double BitsPerChars
+		{
+			get
+			{
+				return (double)BlockBitsCount / BlockCharsCount;
+			}
+		}
+
+		public int BlockBitsCount
+		{
+			get;
+			protected set;
+		}
+
+		public int BlockCharsCount
 		{
 			get;
 			protected set;
@@ -68,7 +82,9 @@ namespace BaseNcoding
 			CharsCount = charsCount;
 			Alphabet = alphabet;
 			Special = special;
-			BitsPerChar = Math.Log(CharsCount, 2);
+			int bitsPerChar = LogBase2(charsCount);
+			BlockBitsCount = LCM(bitsPerChar, 8);
+			BlockCharsCount = BlockBitsCount / bitsPerChar;
 
 			InvAlphabet = new int[Alphabet.Max() + 1];
 

@@ -30,12 +30,17 @@ namespace BaseNcoding
 			int length3 = data.Length / 3;
 			if (!Parallel)
 			{
-				for (int i = 0; i < length3; i++)
-					EncodeBlock(data, result, i);
+				EncodeBlock(data, result, 0, length3);
 			}
 			else
 			{
-				System.Threading.Tasks.Parallel.For(0, length3, i => EncodeBlock(data, result, i));
+				int processorCount = Math.Min(length3, Environment.ProcessorCount);
+				System.Threading.Tasks.Parallel.For(0, processorCount, i =>
+				{
+					int beginInd = i * length3 / processorCount;
+					int endInd = (i + 1) * length3 / processorCount;
+					EncodeBlock(data, result, beginInd, endInd);
+				});
 			}
 
 			int ind;
@@ -87,12 +92,17 @@ namespace BaseNcoding
 				int length4 = (data.Length - tailLength) / 4;
 				if (!Parallel)
 				{
-					for (int i = 0; i < length4; i++)
-						DecodeBlock(data, result, i);
+					DecodeBlock(data, result, 0, length4);
 				}
 				else
 				{
-					System.Threading.Tasks.Parallel.For(0, length4, i => DecodeBlock(data, result, i));
+					int processorCount = Math.Min(length4, Environment.ProcessorCount);
+					System.Threading.Tasks.Parallel.For(0, processorCount, i =>
+					{
+						int beginInd = i * length4 / processorCount;
+						int endInd = (i + 1) * length4 / processorCount;
+						DecodeBlock(data, result, beginInd, endInd);
+					});
 				}
 
 				int ind;
@@ -124,36 +134,42 @@ namespace BaseNcoding
 			}
 		}
 
-		private void EncodeBlock(byte[] src, char[] dst, int ind)
+		private void EncodeBlock(byte[] src, char[] dst, int beginInd, int endInd)
 		{
-			int srcInd = ind * 3;
-			int dstInd = ind * 4;
+			for (int ind = beginInd; ind < endInd; ind++)
+			{
+				int srcInd = ind * 3;
+				int dstInd = ind * 4;
 
-			byte x1 = src[srcInd];
-			byte x2 = src[srcInd + 1];
-			byte x3 = src[srcInd + 2];
+				byte x1 = src[srcInd];
+				byte x2 = src[srcInd + 1];
+				byte x3 = src[srcInd + 2];
 
-			dst[dstInd] = Alphabet[x1 >> 2];
-			dst[dstInd + 1] = Alphabet[((x1 << 4) & 0x30) | (x2 >> 4)];
-			dst[dstInd + 2] = Alphabet[((x2 << 2) & 0x3C) | (x3 >> 6)];
-			dst[dstInd + 3] = Alphabet[x3 & 0x3F];
+				dst[dstInd] = Alphabet[x1 >> 2];
+				dst[dstInd + 1] = Alphabet[((x1 << 4) & 0x30) | (x2 >> 4)];
+				dst[dstInd + 2] = Alphabet[((x2 << 2) & 0x3C) | (x3 >> 6)];
+				dst[dstInd + 3] = Alphabet[x3 & 0x3F];
+			}
 		}
 
-		private void DecodeBlock(string src, byte[] dst, int ind)
+		private void DecodeBlock(string src, byte[] dst, int beginInd, int endInd)
 		{
 			unchecked
 			{
-				int srcInd = ind * 4;
-				int dstInd = ind * 3;
+				for (int ind = beginInd; ind < endInd; ind++)
+				{
+					int srcInd = ind * 4;
+					int dstInd = ind * 3;
 
-				int x1 = InvAlphabet[src[srcInd]];
-				int x2 = InvAlphabet[src[srcInd + 1]];
-				int x3 = InvAlphabet[src[srcInd + 2]];
-				int x4 = InvAlphabet[src[srcInd + 3]];
+					int x1 = InvAlphabet[src[srcInd]];
+					int x2 = InvAlphabet[src[srcInd + 1]];
+					int x3 = InvAlphabet[src[srcInd + 2]];
+					int x4 = InvAlphabet[src[srcInd + 3]];
 
-				dst[dstInd] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
-				dst[dstInd + 1] = (byte)((x2 << 4) | ((x3 >> 2) & 0xF));
-				dst[dstInd + 2] = (byte)((x3 << 6) | (x4 & 0x3F));
+					dst[dstInd] = (byte)((x1 << 2) | ((x2 >> 4) & 0x3));
+					dst[dstInd + 1] = (byte)((x2 << 4) | ((x3 >> 2) & 0xF));
+					dst[dstInd + 2] = (byte)((x3 << 6) | (x4 & 0x3F));
+				}
 			}
 		}
 	}

@@ -30,6 +30,8 @@ namespace BaseNcoding
 			: base(85, alphabet, special, textEncoding)
 		{
 			PrefixPostfix = prefixPostfix;
+			BlockBitsCount = 32;
+			BlockCharsCount = 5;
 		}
 
 		public override string Encode(byte[] data)

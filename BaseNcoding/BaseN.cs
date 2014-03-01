@@ -10,25 +10,9 @@ namespace BaseNcoding
 	{
 		private ulong[] _powN;
 
-		public int BlockBitsCount
-		{
-			get;
-			private set;
-		}
+		
 
 		public uint BlockMaxBitsCount
-		{
-			get;
-			private set;
-		}
-
-		public double Ratio
-		{
-			get;
-			private set;
-		}
-
-		public int CharsCountInBits
 		{
 			get;
 			private set;
@@ -41,13 +25,12 @@ namespace BaseNcoding
 			BlockMaxBitsCount = blockMaxBitsCount;
 			uint charsCountInBits;
 			BlockBitsCount = GetOptimalBitsCount(CharsCount, out charsCountInBits, blockMaxBitsCount);
-			BitsPerChar = (double)BlockBitsCount / charsCountInBits;
-			CharsCountInBits = (int)charsCountInBits;
-			_powN = new ulong[CharsCountInBits];
+			BlockCharsCount = (int)charsCountInBits;
+			_powN = new ulong[BlockCharsCount];
 			ulong pow = 1;
-			for (int i = 0; i < CharsCountInBits - 1; i++)
+			for (int i = 0; i < BlockCharsCount - 1; i++)
 			{
-				_powN[CharsCountInBits - 1 - i] = pow;
+				_powN[BlockCharsCount - 1 - i] = pow;
 				pow *= CharsCount;
 			}
 			_powN[0] = pow;
@@ -66,20 +49,28 @@ namespace BaseNcoding
 			int mainBitsLength = (data.Length * 8 / BlockBitsCount) * BlockBitsCount;
 			int tailBitsLength = data.Length * 8 - mainBitsLength;
 			int globalBitsLength = mainBitsLength + tailBitsLength;
-			int mainCharsCount = mainBitsLength * CharsCountInBits / BlockBitsCount;
-			int tailCharsCount = (tailBitsLength * CharsCountInBits + BlockBitsCount - 1) / BlockBitsCount;
+			int mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
+			int tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
 			int globalCharsCount = mainCharsCount + tailCharsCount;
-			int iterationCount = mainCharsCount / CharsCountInBits;
+			int iterationCount = mainCharsCount / BlockCharsCount;
 
 			var result = new char[globalCharsCount];
 
 			if (!Parallel)
 			{
-				for (int i = 0; i < iterationCount; i++)
-					EncodeBlock(data, result, i);
+				EncodeBlock(data, result, 0, iterationCount);
 			}
 			else
-				System.Threading.Tasks.Parallel.For(0, iterationCount, i => EncodeBlock(data, result, i));
+			{
+				int processorCount = Math.Min(iterationCount, Environment.ProcessorCount);
+				System.Threading.Tasks.Parallel.For(0, processorCount, i =>
+				{
+					int beginInd = i * iterationCount / processorCount;
+					int endInd = (i + 1) * iterationCount / processorCount;
+					EncodeBlock(data, result, beginInd, endInd);
+				});
+			}
+
 			if (tailBitsLength != 0)
 			{
 				ulong bits = GetBits64(data, mainBitsLength, tailBitsLength);
@@ -94,31 +85,38 @@ namespace BaseNcoding
 			if (string.IsNullOrEmpty(data))
 				return new byte[0];
 
-			int globalBitsLength = ((data.Length - 1) * BlockBitsCount / CharsCountInBits + 8) / 8 * 8;
+			int globalBitsLength = ((data.Length - 1) * BlockBitsCount / BlockCharsCount + 8) / 8 * 8;
 			int mainBitsLength = globalBitsLength / BlockBitsCount * BlockBitsCount;
 			int tailBitsLength = globalBitsLength - mainBitsLength;
-			int mainCharsCount = mainBitsLength * CharsCountInBits / BlockBitsCount;
-			int tailCharsCount = (tailBitsLength * CharsCountInBits + BlockBitsCount - 1) / BlockBitsCount;
+			int mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
+			int tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
 			ulong tailBits = DecodeBlock(data, mainCharsCount, tailCharsCount);
 			if (tailBits >> tailBitsLength != 0)
 			{
 				globalBitsLength += 8;
 				mainBitsLength = globalBitsLength / BlockBitsCount * BlockBitsCount;
 				tailBitsLength = globalBitsLength - mainBitsLength;
-				mainCharsCount = mainBitsLength * CharsCountInBits / BlockBitsCount;
-				tailCharsCount = (tailBitsLength * CharsCountInBits + BlockBitsCount - 1) / BlockBitsCount;
+				mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
+				tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
 			}
-			int iterationCount = mainCharsCount / CharsCountInBits;
+			int iterationCount = mainCharsCount / BlockCharsCount;
 
 			byte[] result = new byte[globalBitsLength / 8];
 
 			if (!Parallel)
 			{
-				for (int i = 0; i < iterationCount; i++)
-					DecodeBlock(data, result, i);
+				DecodeBlock(data, result, 0, iterationCount);
 			}
 			else
-				System.Threading.Tasks.Parallel.For(0, iterationCount, i => DecodeBlock(data, result, i));
+			{
+				int processorCount = Math.Min(iterationCount, Environment.ProcessorCount);
+				System.Threading.Tasks.Parallel.For(0, processorCount, i =>
+				{
+					int beginInd = i * iterationCount / processorCount;
+					int endInd = (i + 1) * iterationCount / processorCount;
+					DecodeBlock(data, result, beginInd, endInd);
+				});
+			}
 
 			if (tailCharsCount != 0)
 			{
@@ -129,20 +127,26 @@ namespace BaseNcoding
 			return result;
 		}
 
-		private void EncodeBlock(byte[] src, char[] dst, int ind)
+		private void EncodeBlock(byte[] src, char[] dst, int beginInd, int endInd)
 		{
-			int charInd = ind * (int)CharsCountInBits;
-			int bitInd = ind * BlockBitsCount;
-			ulong bits = GetBits64(src, bitInd, BlockBitsCount);
-			EncodeBlock(dst, charInd, (int)CharsCountInBits, bits);
+			for (int ind = beginInd; ind < endInd; ind++)
+			{
+				int charInd = ind * (int)BlockCharsCount;
+				int bitInd = ind * BlockBitsCount;
+				ulong bits = GetBits64(src, bitInd, BlockBitsCount);
+				EncodeBlock(dst, charInd, (int)BlockCharsCount, bits);
+			}
 		}
 
-		private void DecodeBlock(string src, byte[] dst, int ind)
+		private void DecodeBlock(string src, byte[] dst, int beginInd, int endInd)
 		{
-			int charInd = ind * (int)CharsCountInBits;
-			int bitInd = ind * BlockBitsCount;
-			ulong bits = DecodeBlock(src, charInd, (int)CharsCountInBits);
-			AddBits64(dst, bits, bitInd, BlockBitsCount);
+			for (int ind = beginInd; ind < endInd; ind++)
+			{
+				int charInd = ind * (int)BlockCharsCount;
+				int bitInd = ind * BlockBitsCount;
+				ulong bits = DecodeBlock(src, charInd, (int)BlockCharsCount);
+				AddBits64(dst, bits, bitInd, BlockBitsCount);
+			}
 		}
 
 		private static ulong GetBits64(byte[] data, int bitPos, int bitsCount)
@@ -236,7 +240,7 @@ namespace BaseNcoding
 		{
 			ulong result = 0;
 			for (int i = 0; i < count; i++)
-				result += (ulong)InvAlphabet[data[ind + i]] * _powN[CharsCountInBits - 1 - i];
+				result += (ulong)InvAlphabet[data[ind + i]] * _powN[BlockCharsCount - 1 - i];
 			return result;
 		}
 	}

@@ -18,6 +18,8 @@ namespace BaseNcoding
 		public Base91(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
 			: base(91, alphabet, special, textEncoding)
 		{
+			BlockBitsCount = 13;
+			BlockCharsCount = 2;
 		}
 
 		public override string Encode(byte[] data)
