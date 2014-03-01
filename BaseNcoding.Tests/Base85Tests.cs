@@ -22,15 +22,10 @@ namespace BaseNcoding.Tests
 		{
 			var converter = Converter as Base85;
 			converter.PrefixPostfix = true;
-
 			string encoded = converter.EncodeString(str);
-
 			Assert.IsTrue(encoded.Contains(Base85.Prefix) && encoded.Contains(Base85.Postfix));
-
 			string decoded = converter.DecodeToString(encoded);
-
 			Assert.AreEqual(str, decoded);
-
 			converter.PrefixPostfix = false;
 		}
 	}

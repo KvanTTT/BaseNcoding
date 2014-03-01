@@ -52,6 +52,7 @@
     <Compile Include="Base85.cs" />
     <Compile Include="Base91.cs" />
     <Compile Include="Base.cs" />
+    <Compile Include="BaseBigN.cs" />
     <Compile Include="BaseN.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZBase32.cs" />

@@ -192,5 +192,57 @@ namespace BaseNcoding
 				r++;
 			return r;
 		}
+
+		public static int GetOptimalBitsCount2(uint charsCount, out uint charsCountInBits,
+			uint maxBitsCount = 64, bool base2BitsCount = false)
+		{
+			int result = 0;
+			charsCountInBits = 0;
+			int n1 = Base.LogBase2(charsCount);
+			ulong uCharsCount = (ulong)charsCount;
+			double charsCountLog = Math.Log(2, charsCount);
+			double maxRatio = 0;
+
+			for (int n = n1; n <= maxBitsCount; n++)
+			{
+				if (base2BitsCount && n % 8 != 0)
+					continue;
+
+				uint l1 = (uint)Math.Ceiling(n * charsCountLog);
+				double ratio = (double)n / l1;
+				if (ratio > maxRatio)
+				{
+					maxRatio = ratio;
+					result = n;
+					charsCountInBits = l1;
+				}
+			}
+
+			return result;
+		}
+
+		public static int GetOptimalBitsCount(uint charsCount, out uint charsCountInBits,
+			uint maxBitsCount = 64, uint radix = 2)
+		{
+			int result = 0;
+			charsCountInBits = 0;
+			int n1 = Base.LogBaseN(charsCount, radix);
+			double charsCountLog = Math.Log(radix, charsCount);
+			double maxRatio = 0;
+
+			for (int n = n1; n <= maxBitsCount; n++)
+			{
+				uint l1 = (uint)Math.Ceiling(n * charsCountLog);
+				double ratio = (double)n / l1;
+				if (ratio > maxRatio)
+				{
+					maxRatio = ratio;
+					result = n;
+					charsCountInBits = l1;
+				}
+			}
+
+			return result;
+		}
 	}
 }

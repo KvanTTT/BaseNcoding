@@ -23,7 +23,7 @@ namespace BaseNcoding.Tests
 		[Test]
 		public void GetOptimalBitsCount()
 		{
-			int charsCountInBits;
+			uint charsCountInBits;
 			Assert.AreEqual(5, BaseN.GetOptimalBitsCount2(32, out charsCountInBits));
 			Assert.AreEqual(6, BaseN.GetOptimalBitsCount2(64, out charsCountInBits));
 			Assert.AreEqual(32, BaseN.GetOptimalBitsCount2(85, out charsCountInBits));
@@ -31,15 +31,34 @@ namespace BaseNcoding.Tests
 		}
 
 		[Test]
-		public void EncodDecodeBaseN()
+		public void EncodeDecodeBaseN()
 		{
 			byte testByte = 157;
 			List<byte> bytes = new List<byte>();
 			for (uint radix = 2; radix < 1000; radix++)
 			{
-				int charsCountInBits;
+				var baseN = new BaseN(Alphabet.Generate((int)radix), 64);
+				int testBytesCount = Math.Max((baseN.BlockBitsCount + 7) / 8, (int)baseN.CharsCountInBits);
+				bytes.Clear();
+				for (int i = 0; i <= testBytesCount + 1; i++)
+				{
+					var array = bytes.ToArray();
+					var encoded = baseN.Encode(array);
+					var decoded = baseN.Decode(encoded);
+					CollectionAssert.AreEqual(array, decoded);
+					bytes.Add(testByte);
+				}
+			}
+		}
 
-				var baseN = new BaseN(Alphabet.Generate((int)radix), 32);
+		[Test]
+		public void EncodeDecodeBaseBigN()
+		{
+			byte testByte = 157;
+			List<byte> bytes = new List<byte>();
+			for (uint radix = 2; radix < 1000; radix++)
+			{
+				var baseN = new BaseBigN(Alphabet.Generate((int)radix), 256);
 				int testBytesCount = Math.Max((baseN.BlockBitsCount + 7) / 8, baseN.CharsCountInBits);
 				bytes.Clear();
 				for (int i = 0; i <= testBytesCount + 1; i++)

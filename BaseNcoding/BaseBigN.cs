@@ -6,9 +6,10 @@ using System.Text;
 
 namespace BaseNcoding
 {
-	public class BaseN : Base
+	public class BaseBigN : Base
 	{
-		private ulong[] _powN;
+		private BigInteger[] _powN;
+		private static byte[] two_in_power_n_minus_1;
 
 		public int BlockBitsCount
 		{
@@ -22,29 +23,34 @@ namespace BaseNcoding
 			private set;
 		}
 
-		public double Ratio
-		{
-			get;
-			private set;
-		}
-
 		public int CharsCountInBits
 		{
 			get;
 			private set;
 		}
 
-		public BaseN(string alphabet, uint blockMaxBitsCount = 32,
+		static BaseBigN()
+		{
+			two_in_power_n_minus_1 = new byte[8];
+			int a = 2;
+			for (int i = 0; i < 8; i++)
+			{
+				two_in_power_n_minus_1[i] = (byte)(a - 1);
+				a *= 2;
+			}
+		}
+
+		public BaseBigN(string alphabet, uint blockMaxBitsCount = 64,
 			Encoding encoding = null, bool parallel = false)
 			: base((uint)alphabet.Length, alphabet, '\0', encoding, parallel)
 		{
 			BlockMaxBitsCount = blockMaxBitsCount;
 			uint charsCountInBits;
-			BlockBitsCount = GetOptimalBitsCount(CharsCount, out charsCountInBits, blockMaxBitsCount);
+			BlockBitsCount = GetOptimalBitsCount(CharsCount, out charsCountInBits, BlockMaxBitsCount, 2);
 			BitsPerChar = (double)BlockBitsCount / charsCountInBits;
 			CharsCountInBits = (int)charsCountInBits;
-			_powN = new ulong[CharsCountInBits];
-			ulong pow = 1;
+			_powN = new BigInteger[CharsCountInBits];
+			BigInteger pow = 1;
 			for (int i = 0; i < CharsCountInBits - 1; i++)
 			{
 				_powN[CharsCountInBits - 1 - i] = pow;
@@ -82,7 +88,7 @@ namespace BaseNcoding
 				System.Threading.Tasks.Parallel.For(0, iterationCount, i => EncodeBlock(data, result, i));
 			if (tailBitsLength != 0)
 			{
-				ulong bits = GetBits64(data, mainBitsLength, tailBitsLength);
+				BigInteger bits = GetBitsN(data, mainBitsLength, tailBitsLength);
 				EncodeBlock(result, mainCharsCount, tailCharsCount, bits);
 			}
 
@@ -99,7 +105,7 @@ namespace BaseNcoding
 			int tailBitsLength = globalBitsLength - mainBitsLength;
 			int mainCharsCount = mainBitsLength * CharsCountInBits / BlockBitsCount;
 			int tailCharsCount = (tailBitsLength * CharsCountInBits + BlockBitsCount - 1) / BlockBitsCount;
-			ulong tailBits = DecodeBlock(data, mainCharsCount, tailCharsCount);
+			BigInteger tailBits = DecodeBlock(data, mainCharsCount, tailCharsCount);
 			if (tailBits >> tailBitsLength != 0)
 			{
 				globalBitsLength += 8;
@@ -122,8 +128,8 @@ namespace BaseNcoding
 
 			if (tailCharsCount != 0)
 			{
-				ulong bits = DecodeBlock(data, mainCharsCount, tailCharsCount);
-				AddBits64(result, bits, mainBitsLength, tailBitsLength);
+				BigInteger bits = DecodeBlock(data, mainCharsCount, tailCharsCount);
+				AddBitsN(result, bits, mainBitsLength, tailBitsLength);
 			}
 			
 			return result;
@@ -131,23 +137,23 @@ namespace BaseNcoding
 
 		private void EncodeBlock(byte[] src, char[] dst, int ind)
 		{
-			int charInd = ind * (int)CharsCountInBits;
+			int charInd = ind * CharsCountInBits;
 			int bitInd = ind * BlockBitsCount;
-			ulong bits = GetBits64(src, bitInd, BlockBitsCount);
-			EncodeBlock(dst, charInd, (int)CharsCountInBits, bits);
+			BigInteger bits = GetBitsN(src, bitInd, BlockBitsCount);
+			EncodeBlock(dst, charInd, CharsCountInBits, bits);
 		}
 
 		private void DecodeBlock(string src, byte[] dst, int ind)
 		{
-			int charInd = ind * (int)CharsCountInBits;
+			int charInd = ind * CharsCountInBits;
 			int bitInd = ind * BlockBitsCount;
-			ulong bits = DecodeBlock(src, charInd, (int)CharsCountInBits);
-			AddBits64(dst, bits, bitInd, BlockBitsCount);
+			BigInteger bits = DecodeBlock(src, charInd, CharsCountInBits);
+			AddBitsN(dst, bits, bitInd, BlockBitsCount);
 		}
 
-		private static ulong GetBits64(byte[] data, int bitPos, int bitsCount)
+		private static BigInteger GetBitsN(byte[] data, int bitPos, int bitsCount)
 		{
-			ulong result = 0;
+			BigInteger result = 0;
 
 			int currentBitPos = bitPos;
 			int currentBytePos = bitPos / 8;
@@ -155,7 +161,7 @@ namespace BaseNcoding
 			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
 			if (xLength != 0)
 			{
-				result = ((ulong)data[currentBytePos] << 56 + currentBitInBytePos) >> 64 - xLength << bitsCount - xLength;
+				result = (((BigInteger)data[currentBytePos] >> 8 - xLength - currentBitInBytePos) & two_in_power_n_minus_1[7 - currentBitInBytePos]) << bitsCount - xLength;
 
 				currentBytePos += (currentBitInBytePos + xLength) / 8;
 				currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
@@ -168,7 +174,7 @@ namespace BaseNcoding
 				while (x2Length > 0)
 				{
 					xLength += x2Length;
-					result |= (ulong)data[currentBytePos] >> 8 - x2Length << bitsCount - xLength;
+					result |= (BigInteger)(data[currentBytePos] >> 8 - x2Length) << bitsCount - xLength;
 
 					currentBytePos += (currentBitInBytePos + x2Length) / 8;
 					currentBitInBytePos = (currentBitInBytePos + x2Length) % 8;
@@ -183,47 +189,46 @@ namespace BaseNcoding
 			return result;
 		}
 
-		private static void AddBits64(byte[] data, ulong value, int bitPos, int bitsCount)
+		private static void AddBitsN(byte[] data, BigInteger value, int bitPos, int bitsCount)
 		{
-			unchecked
+			int currentBitPos = bitPos;
+			int currentBytePos = bitPos / 8;
+			int currentBitInBytePos = bitPos % 8;
+
+			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
+			if (xLength != 0)
 			{
-				int currentBitPos = bitPos;
-				int currentBytePos = bitPos / 8;
-				int currentBitInBytePos = bitPos % 8;
+				byte x1 = (byte)((value >> bitsCount + currentBitInBytePos - 8) & two_in_power_n_minus_1[7 - currentBitInBytePos]);
+				data[currentBytePos] |= x1;
 
-				int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
-				if (xLength != 0)
+				currentBytePos += (currentBitInBytePos + xLength) / 8;
+				currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
+				currentBitPos += xLength;
+
+				int x2Length = bitsCount - xLength;
+				if (x2Length > 8)
+					x2Length = 8;
+
+				while (x2Length > 0)
 				{
-					byte x1 = (byte)(value << 64 - bitsCount >> 56 + currentBitInBytePos);
-					data[currentBytePos] |= x1;
+					xLength += x2Length;
+					byte x2 = (byte)((value >> bitsCount - xLength << 8 - x2Length) & 0xFF);
+					var b = value >> bitsCount - xLength;
+					data[currentBytePos] |= x2;
 
-					currentBytePos += (currentBitInBytePos + xLength) / 8;
-					currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
-					currentBitPos += xLength;
+					currentBytePos += (currentBitInBytePos + x2Length) / 8;
+					currentBitInBytePos = (currentBitInBytePos + x2Length) % 8;
+					currentBitPos += x2Length;
 
-					int x2Length = bitsCount - xLength;
+					x2Length = bitsCount - xLength;
 					if (x2Length > 8)
 						x2Length = 8;
-
-					while (x2Length > 0)
-					{
-						xLength += x2Length;
-						byte x2 = (byte)(value >> bitsCount - xLength << 8 - x2Length);
-						data[currentBytePos] |= x2;
-
-						currentBytePos += (currentBitInBytePos + x2Length) / 8;
-						currentBitInBytePos = (currentBitInBytePos + x2Length) % 8;
-						currentBitPos += x2Length;
-
-						x2Length = bitsCount - xLength;
-						if (x2Length > 8)
-							x2Length = 8;
-					}
 				}
+				var a = value >> bitsCount - xLength;
 			}
 		}
 
-		private void EncodeBlock(char[] chars, int ind, int count, ulong block)
+		private void EncodeBlock(char[] chars, int ind, int count, BigInteger block)
 		{
 			for (int i = 0; i < count; i++)
 			{
@@ -232,11 +237,11 @@ namespace BaseNcoding
 			}
 		}
 
-		private ulong DecodeBlock(string data, int ind, int count)
+		private BigInteger DecodeBlock(string data, int ind, int count)
 		{
-			ulong result = 0;
+			BigInteger result = 0;
 			for (int i = 0; i < count; i++)
-				result += (ulong)InvAlphabet[data[ind + i]] * _powN[CharsCountInBits - 1 - i];
+				result += InvAlphabet[data[ind + i]] * _powN[CharsCountInBits - 1 - i];
 			return result;
 		}
 	}
