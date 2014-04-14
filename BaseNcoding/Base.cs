@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BaseNcoding
@@ -107,7 +108,7 @@ namespace BaseNcoding
 
 		public virtual string DecodeToString(string data)
 		{
-			return Encoding.GetString(Decode(data));
+			return Encoding.GetString(Decode(Regex.Replace(data, @"\r\n?|\n", "")));
 		}
 
 		public abstract byte[] Decode(string data);

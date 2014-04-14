@@ -9,7 +9,13 @@ namespace BaseNcoding
 	public class BaseBigN : Base
 	{
 		private BigInteger[] _powN;
-		private static byte[] two_in_power_n_minus_1;
+		private static byte[] two_in_power_n;
+
+		public bool ReverseOrder
+		{
+			get;
+			private set;
+		}
 
 		public uint BlockMaxBitsCount
 		{
@@ -17,19 +23,24 @@ namespace BaseNcoding
 			private set;
 		}
 
+		public override bool HaveSpecial
+		{
+			get { return false; }
+		}
+
 		static BaseBigN()
 		{
-			two_in_power_n_minus_1 = new byte[8];
+			two_in_power_n = new byte[8];
 			int a = 2;
 			for (int i = 0; i < 8; i++)
 			{
-				two_in_power_n_minus_1[i] = (byte)(a - 1);
+				two_in_power_n[i] = (byte)(a - 1);
 				a *= 2;
 			}
 		}
 
 		public BaseBigN(string alphabet, uint blockMaxBitsCount = 64,
-			Encoding encoding = null, bool parallel = false)
+			Encoding encoding = null, bool reverseOrder = false, bool parallel = false)
 			: base((uint)alphabet.Length, alphabet, '\0', encoding, parallel)
 		{
 			BlockMaxBitsCount = blockMaxBitsCount;
@@ -44,16 +55,12 @@ namespace BaseNcoding
 				pow *= CharsCount;
 			}
 			_powN[0] = pow;
-		}
-
-		public override bool HaveSpecial
-		{
-			get { return false; }
+			ReverseOrder = reverseOrder;
 		}
 
 		public override string Encode(byte[] data)
 		{
-			if (data == null || data.Length == 0)
+			if (data == null)
 				return "";
 
 			int mainBitsLength = (data.Length * 8 / BlockBitsCount) * BlockBitsCount;
@@ -84,7 +91,7 @@ namespace BaseNcoding
 			if (tailBitsLength != 0)
 			{
 				BigInteger bits = GetBitsN(data, mainBitsLength, tailBitsLength);
-				EncodeBlock(result, mainCharsCount, tailCharsCount, bits);
+				BitsToChars(result, mainCharsCount, tailCharsCount, bits);
 			}
 
 			return new string(result);
@@ -100,7 +107,7 @@ namespace BaseNcoding
 			int tailBitsLength = globalBitsLength - mainBitsLength;
 			int mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
 			int tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
-			BigInteger tailBits = DecodeBlock(data, mainCharsCount, tailCharsCount);
+			BigInteger tailBits = CharsToBits(data, mainCharsCount, tailCharsCount);
 			if (tailBits >> tailBitsLength != 0)
 			{
 				globalBitsLength += 8;
@@ -130,7 +137,7 @@ namespace BaseNcoding
 
 			if (tailCharsCount != 0)
 			{
-				BigInteger bits = DecodeBlock(data, mainCharsCount, tailCharsCount);
+				BigInteger bits = CharsToBits(data, mainCharsCount, tailCharsCount);
 				AddBitsN(result, bits, mainBitsLength, tailBitsLength);
 			}
 			
@@ -144,7 +151,7 @@ namespace BaseNcoding
 				int charInd = ind * (int)BlockCharsCount;
 				int bitInd = ind * BlockBitsCount;
 				BigInteger bits = GetBitsN(src, bitInd, BlockBitsCount);
-				EncodeBlock(dst, charInd, (int)BlockCharsCount, bits);
+				BitsToChars(dst, charInd, (int)BlockCharsCount, bits);
 			}
 		}
 
@@ -154,7 +161,7 @@ namespace BaseNcoding
 			{
 				int charInd = ind * (int)BlockCharsCount;
 				int bitInd = ind * BlockBitsCount;
-				BigInteger bits = DecodeBlock(src, charInd, (int)BlockCharsCount);
+				BigInteger bits = CharsToBits(src, charInd, (int)BlockCharsCount);
 				AddBitsN(dst, bits, bitInd, BlockBitsCount);
 			}
 		}
@@ -169,7 +176,7 @@ namespace BaseNcoding
 			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
 			if (xLength != 0)
 			{
-				result = (((BigInteger)data[currentBytePos] >> 8 - xLength - currentBitInBytePos) & two_in_power_n_minus_1[7 - currentBitInBytePos]) << bitsCount - xLength;
+				result = (((BigInteger)data[currentBytePos] >> 8 - xLength - currentBitInBytePos) & two_in_power_n[7 - currentBitInBytePos]) << bitsCount - xLength;
 
 				currentBytePos += (currentBitInBytePos + xLength) / 8;
 				currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
@@ -206,7 +213,7 @@ namespace BaseNcoding
 			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
 			if (xLength != 0)
 			{
-				byte x1 = (byte)((value >> bitsCount + currentBitInBytePos - 8) & two_in_power_n_minus_1[7 - currentBitInBytePos]);
+				byte x1 = (byte)((value >> bitsCount + currentBitInBytePos - 8) & two_in_power_n[7 - currentBitInBytePos]);
 				data[currentBytePos] |= x1;
 
 				currentBytePos += (currentBitInBytePos + xLength) / 8;
@@ -221,7 +228,6 @@ namespace BaseNcoding
 				{
 					xLength += x2Length;
 					byte x2 = (byte)((value >> bitsCount - xLength << 8 - x2Length) & 0xFF);
-					var b = value >> bitsCount - xLength;
 					data[currentBytePos] |= x2;
 
 					currentBytePos += (currentBitInBytePos + x2Length) / 8;
@@ -232,24 +238,23 @@ namespace BaseNcoding
 					if (x2Length > 8)
 						x2Length = 8;
 				}
-				var a = value >> bitsCount - xLength;
 			}
 		}
 
-		private void EncodeBlock(char[] chars, int ind, int count, BigInteger block)
+		private void BitsToChars(char[] chars, int ind, int count, BigInteger block)
 		{
 			for (int i = 0; i < count; i++)
 			{
-				chars[ind + i] = Alphabet[(int)(block % CharsCount)];
+				chars[ind + (!ReverseOrder ? i : count - 1 - i)] = Alphabet[(int)(block % CharsCount)];
 				block /= CharsCount;
 			}
 		}
 
-		private BigInteger DecodeBlock(string data, int ind, int count)
+		private BigInteger CharsToBits(string data, int ind, int count)
 		{
 			BigInteger result = 0;
 			for (int i = 0; i < count; i++)
-				result += InvAlphabet[data[ind + i]] * _powN[BlockCharsCount - 1 - i];
+				result += InvAlphabet[data[ind + (!ReverseOrder ? i : count - 1 - i)]] * _powN[BlockCharsCount - 1 - i];
 			return result;
 		}
 	}

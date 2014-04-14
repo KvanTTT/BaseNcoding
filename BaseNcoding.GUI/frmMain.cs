@@ -139,6 +139,7 @@ namespace BaseNcoding.GUI
 			cbOnlyLettersAndDigits.Checked = Settings.Default.GenerateOnlyLettersAndDigits;
 			cbParallel.Checked = Settings.Default.Parallel;
 			nudMaxBitsCount.Value = Settings.Default.MaxBitsCount;
+			cbReverseOrder.Checked = Settings.Default.ReverseOrder;
 		}
 
 		private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -155,6 +156,7 @@ namespace BaseNcoding.GUI
 			Settings.Default.GenerateOnlyLettersAndDigits = cbOnlyLettersAndDigits.Checked;
 			Settings.Default.Parallel = cbParallel.Checked;
 			Settings.Default.MaxBitsCount = (int)nudMaxBitsCount.Value;
+			Settings.Default.ReverseOrder = cbReverseOrder.Checked;
 
 			Settings.Default.Save();
 		}
@@ -223,10 +225,10 @@ namespace BaseNcoding.GUI
 					method = new Base91(alphabet, special, textEncoding);
 					break;
 				case "BaseN":
-					method = new BaseN(alphabet, (uint)nudMaxBitsCount.Value, textEncoding, parallel);
+					method = new BaseN(alphabet, (uint)nudMaxBitsCount.Value, textEncoding, cbReverseOrder.Checked, parallel);
 					break;
 				case "BaseBigN":
-					method = new BaseBigN(alphabet, (uint)nudMaxBitsCount.Value, textEncoding, parallel);
+					method = new BaseBigN(alphabet, (uint)nudMaxBitsCount.Value, textEncoding, cbReverseOrder.Checked, parallel);
 					break;
 			}
 			tbBitsPerChars.Text = method.BlockBitsCount + "/" + method.BlockCharsCount;

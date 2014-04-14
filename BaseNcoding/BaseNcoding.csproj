@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alphabet.cs" />
+    <Compile Include="StringGenerator.cs" />
     <Compile Include="Base1024.cs" />
     <Compile Include="Base128.cs" />
     <Compile Include="Base256.cs" />

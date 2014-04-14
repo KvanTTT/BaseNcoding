@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<header>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" href="http://bootswatch.com/simplex/bootstrap.min.css" /> <!-- flatly -->
+	<link rel="stylesheet" href="res/main.css" type="text/css" />
+</header>
+<body>
+<div class="wrapper">
+  <div class="container">
+    <div class="row content_header">
+		<h1>BaseNcode</h1>
+		<p class="lead">Implementation of BaseN algorithm for text encoding.</p>
+    </div>
+	<div class="row content_body">
+		<div class="col-md-offset-2 col-md-6 fields">
+		  <div class="input">
+			<h3>Input</h3>
+			<textarea id="input"></textarea>
+		  </div>
+		  <div class="output">
+			<h3>Output</h3>
+			<textarea id="output" readonly="true"></textarea>
+		  </div>
+		  <div id="info" class="alert alert-info" >
+		  </div>
+		  <div align="center">
+			<input id="convert" class="btn btn-info" value="Convert"/>
+		  </div>
+		</div>
+		<div class="col-md-4 options">
+		  <h3>Options</h3>
+		  <div>
+			<h4>Mode</h4>
+			<div id="btnEncodeDecode" class="btn-group" data-toggle="buttons-radio">
+				<button type="button" id="btnEncode" class="btn">Encode</button>
+				<button type="button" id="btnDecode" class="btn">Decode</button>
+			</div>
+		  </div>
+		  <div>
+			<h4>Base</h4>
+			<input id="base" name="base" value="85"/>
+		  </div>
+		  <div>
+			<h4>Max Bits Count</h4>
+			<input id="maxBitsCount" name="maxBitsCount" value="64"/>
+		  </div>
+		  <div>
+			<h4>Order</h4>
+			<div class="btn-group" data-toggle="buttons-radio">
+				<button type="button" id="btnReverseOrder" class="btn">Reverse</button>
+			</div>
+		  </div>
+		  <div>
+			<h4>Alphabet</h4>
+			<textarea id="alphabet" style="width:212px; height:130px">!"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstu</textarea>
+			<div style="margin-top: 20px">
+				<p>Generate alphabet with length</p>
+				<div class="btn-group">
+				  <button type="button" class="btn btn-success gen_alphabet" value="32">32</button>
+				  <button type="button" class="btn btn-success gen_alphabet" value="64">64</button>
+				  <button type="button" class="btn btn-success gen_alphabet" value="85">85</button>
+				  <button type="button" class="btn btn-success gen_alphabet" value="91">91</button>
+				</div>
+			</div>
+		  </div>
+		</div>
+	</div>
+  </div>
+  <div class="navbar-fixed-bottom">
+    <div class="navbar-inner">
+      <div class="container">
+		<p>Designed by Ivan Kochurkin (KvanTTT) &#169 2014</p>
+		<p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a></p>
+		<p>Source available on github: <a href="https://github.com/KvanTTT/BaseNcoding" target="_blank">BaseNcoding</a></p>
+      </div>
+    </div>
+  </div>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="res/jsbn.js"></script>
+  <script src="res/jsbn2.js"></script>
+  <script src="res/BaseN.js"></script>
+  <script src="res/main.js"></script>
+</body>
+</html>

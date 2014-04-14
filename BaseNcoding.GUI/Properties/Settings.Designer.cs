@@ -165,5 +165,17 @@ namespace BaseNcoding.GUI.Properties {
                 this["MaxBitsCount"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ReverseOrder {
+            get {
+                return ((bool)(this["ReverseOrder"]));
+            }
+            set {
+                this["ReverseOrder"] = value;
+            }
+        }
     }
 }

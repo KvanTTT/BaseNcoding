@@ -71,6 +71,7 @@
 			this.nudMaxBitsCount = new System.Windows.Forms.NumericUpDown();
 			this.label16 = new System.Windows.Forms.Label();
 			this.tbRatio = new System.Windows.Forms.TextBox();
+			this.cbReverseOrder = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -321,7 +322,7 @@
 			// 
 			this.cbPrefixPostfix.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbPrefixPostfix.AutoSize = true;
-			this.cbPrefixPostfix.Location = new System.Drawing.Point(600, 431);
+			this.cbPrefixPostfix.Location = new System.Drawing.Point(599, 414);
 			this.cbPrefixPostfix.Name = "cbPrefixPostfix";
 			this.cbPrefixPostfix.Size = new System.Drawing.Size(83, 17);
 			this.cbPrefixPostfix.TabIndex = 16;
@@ -453,7 +454,7 @@
 			this.nudAlphabetLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.nudAlphabetLength.Location = new System.Drawing.Point(687, 58);
 			this.nudAlphabetLength.Maximum = new decimal(new int[] {
-            4096,
+            8192,
             0,
             0,
             0});
@@ -573,11 +574,23 @@
 			this.tbRatio.TabIndex = 38;
 			this.tbRatio.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
+			// cbReverseOrder
+			// 
+			this.cbReverseOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.cbReverseOrder.AutoSize = true;
+			this.cbReverseOrder.Location = new System.Drawing.Point(599, 437);
+			this.cbReverseOrder.Name = "cbReverseOrder";
+			this.cbReverseOrder.Size = new System.Drawing.Size(173, 17);
+			this.cbReverseOrder.TabIndex = 40;
+			this.cbReverseOrder.Text = "Reverse Order (for BaseN only)";
+			this.cbReverseOrder.UseVisualStyleBackColor = true;
+			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(768, 707);
+			this.Controls.Add(this.cbReverseOrder);
 			this.Controls.Add(this.label16);
 			this.Controls.Add(this.tbRatio);
 			this.Controls.Add(this.nudMaxBitsCount);
@@ -673,6 +686,7 @@
 		private System.Windows.Forms.NumericUpDown nudMaxBitsCount;
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.TextBox tbRatio;
+		private System.Windows.Forms.CheckBox cbReverseOrder;
 	}
 }
 

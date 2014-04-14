@@ -10,16 +10,25 @@ namespace BaseNcoding
 	{
 		private ulong[] _powN;
 
-		
-
 		public uint BlockMaxBitsCount
 		{
 			get;
 			private set;
 		}
 
+		public override bool HaveSpecial
+		{
+			get { return false; }
+		}
+
+		public bool ReverseOrder
+		{
+			get;
+			private set;
+		}
+
 		public BaseN(string alphabet, uint blockMaxBitsCount = 32,
-			Encoding encoding = null, bool parallel = false)
+			Encoding encoding = null, bool reverseOrder = false, bool parallel = false)
 			: base((uint)alphabet.Length, alphabet, '\0', encoding, parallel)
 		{
 			BlockMaxBitsCount = blockMaxBitsCount;
@@ -34,11 +43,7 @@ namespace BaseNcoding
 				pow *= CharsCount;
 			}
 			_powN[0] = pow;
-		}
-
-		public override bool HaveSpecial
-		{
-			get { return false; }
+			ReverseOrder = reverseOrder;
 		}
 
 		public override string Encode(byte[] data)
@@ -57,9 +62,7 @@ namespace BaseNcoding
 			var result = new char[globalCharsCount];
 
 			if (!Parallel)
-			{
 				EncodeBlock(data, result, 0, iterationCount);
-			}
 			else
 			{
 				int processorCount = Math.Min(iterationCount, Environment.ProcessorCount);
@@ -231,7 +234,7 @@ namespace BaseNcoding
 		{
 			for (int i = 0; i < count; i++)
 			{
-				chars[ind + i] = Alphabet[(int)(block % CharsCount)];
+				chars[ind + (!ReverseOrder ? i : count - 1 - i)] = Alphabet[(int)(block % CharsCount)];
 				block /= CharsCount;
 			}
 		}
@@ -240,7 +243,7 @@ namespace BaseNcoding
 		{
 			ulong result = 0;
 			for (int i = 0; i < count; i++)
-				result += (ulong)InvAlphabet[data[ind + i]] * _powN[BlockCharsCount - 1 - i];
+				result += (ulong)InvAlphabet[data[ind + (!ReverseOrder ? i : count - 1 - i)]] * _powN[BlockCharsCount - 1 - i];
 			return result;
 		}
 	}

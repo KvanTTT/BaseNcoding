@@ -22,6 +22,16 @@ namespace BaseNcoding.Tests
 		}
 
 		[Test]
+		public void ReverseOrder()
+		{
+			var converter = new BaseN(StringGenerator.GetAlphabet(54), 32, null, true);
+			var original = "sdfrewwekjthkjh";
+			var encoded = converter.EncodeString(original);
+			var decoded = converter.DecodeToString(encoded);
+			Assert.AreEqual(original, decoded);
+		}
+
+		[Test]
 		public void GetOptimalBitsCount()
 		{
 			uint charsCountInBits;
@@ -29,6 +39,16 @@ namespace BaseNcoding.Tests
 			Assert.AreEqual(6, BaseN.GetOptimalBitsCount2(64, out charsCountInBits));
 			Assert.AreEqual(32, BaseN.GetOptimalBitsCount2(85, out charsCountInBits));
 			Assert.AreEqual(13, BaseN.GetOptimalBitsCount2(91, out charsCountInBits));
+
+			StringBuilder builder = new StringBuilder();
+			for (int i = 2; i <= 256; i++)
+			{
+				var bits = BaseBigN.GetOptimalBitsCount2((uint)i, out charsCountInBits, 512);
+				double ratio = (double)bits / charsCountInBits;
+
+				builder.AppendLine(bits + "	" + charsCountInBits + "	" + ratio.ToString("0.0000000"));
+			}
+			string str = builder.ToString();
 		}
 
 		[Test]
