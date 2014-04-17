@@ -16,7 +16,7 @@ Idea of developed algorithm based on base85 encoding, except of block size is no
 
 For optimal block size calculation following considerations has been used:
 
-![System for щptimal block size calculation](http://habrastorage.org/getpro/habr/post_images/6af/516/5a4/6af5165a4b4516d3deaa8736375238ff.png)
+![System for щptimal block size calculation](http://habrastorage.org/files/429/57f/bc1/42957fbc17e947fbaaff404dd81694ce.png)
 
 In this system:
 
@@ -25,6 +25,7 @@ In this system:
 * **b** — One digit radix base (2 in most cases).
 * **n** — Bits count in radix **b** for representation of **k** chars of alphabet **A**.
 * **r** — Compression ratio (greater is better).
+* **mbc** - Max block bits count.
 * **⌊x⌋** — the largest integer not greater than x (floor).
 * **⌈x⌉** — the smallest integer not less than x (ceiling).
 
