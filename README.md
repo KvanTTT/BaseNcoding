@@ -20,11 +20,11 @@ For optimal block size calculation following considerations has been used:
 
 In this system:
 
-* **a** - Length of alphabet **A**.
-* **k** - Count of encoding chars.
-* **b** - One digit radix base (2 in most cases).
-* **n** - Bits count in radix **b** for representation of **k** chars of alphabet **A**.
-* **r** - Compression ratio (greater is better).
+* **a** — Length of alphabet **A**.
+* **k** — Count of encoding chars.
+* **b** — One digit radix base (2 in most cases).
+* **n** — Bits count in radix **b** for representation of **k** chars of alphabet **A**.
+* **r** — Compression ratio (greater is better).
 * **⌊x⌋** — the largest integer not greater than x (floor).
 * **⌈x⌉** — the smallest integer not less than x (ceiling).
 
