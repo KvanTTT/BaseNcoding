@@ -64,7 +64,7 @@ $(function() {
 			for (var i = 0; i < alphabet.length; i++) {
 				for (var j = i + 1; j < alphabet.length; j++) {
 					if (alphabet[i] === alphabet[j]) {
-						throw new Error("Alphabet should contain distinct chars");
+						throw new Error("Alphabet should contains distinct chars");
 					}
 				}
 			}

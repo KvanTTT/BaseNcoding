@@ -170,7 +170,6 @@ namespace BaseNcoding
 		{
 			BigInteger result = 0;
 
-			int currentBitPos = bitPos;
 			int currentBytePos = bitPos / 8;
 			int currentBitInBytePos = bitPos % 8;
 			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
@@ -180,7 +179,6 @@ namespace BaseNcoding
 
 				currentBytePos += (currentBitInBytePos + xLength) / 8;
 				currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
-				currentBitPos += xLength;
 
 				int x2Length = bitsCount - xLength;
 				if (x2Length > 8)
@@ -193,7 +191,6 @@ namespace BaseNcoding
 
 					currentBytePos += (currentBitInBytePos + x2Length) / 8;
 					currentBitInBytePos = (currentBitInBytePos + x2Length) % 8;
-					currentBitPos += x2Length;
 
 					x2Length = bitsCount - xLength;
 					if (x2Length > 8)
@@ -206,7 +203,6 @@ namespace BaseNcoding
 
 		private static void AddBitsN(byte[] data, BigInteger value, int bitPos, int bitsCount)
 		{
-			int currentBitPos = bitPos;
 			int currentBytePos = bitPos / 8;
 			int currentBitInBytePos = bitPos % 8;
 
@@ -218,7 +214,6 @@ namespace BaseNcoding
 
 				currentBytePos += (currentBitInBytePos + xLength) / 8;
 				currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
-				currentBitPos += xLength;
 
 				int x2Length = bitsCount - xLength;
 				if (x2Length > 8)
@@ -232,7 +227,6 @@ namespace BaseNcoding
 
 					currentBytePos += (currentBitInBytePos + x2Length) / 8;
 					currentBitInBytePos = (currentBitInBytePos + x2Length) % 8;
-					currentBitPos += x2Length;
 
 					x2Length = bitsCount - xLength;
 					if (x2Length > 8)
