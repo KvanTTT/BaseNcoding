@@ -68,7 +68,7 @@ $(function() {
 					}
 				}
 			}
-			baseN = new BaseN(alphabet, $('#maxBitsCount').val(), $('#btnReverseOrder').hasClass('active'));
+			baseN = new BaseN(alphabet, $('#maxBitsCount').val(), $('#btnReverseOrder').hasClass('active'), $('#btnOneBigNumber').hasClass('active'));
 			
 			var input = $('#input').val();
 			var converted;
@@ -79,6 +79,7 @@ $(function() {
 			}
 			
 			$('#output').val(converted);
+			printBlockSize();
 		}
 		catch (er) {
 			alert(er.message);
@@ -87,9 +88,11 @@ $(function() {
 });
 
 function rebuildBase() {
-	baseN = new BaseN($('#alphabet').val(), parseInt($('#maxBitsCount').val()), $('#btnReverseOrder').hasClass('active'));
-	$('#info').html('<strong>Block size: ' + baseN.blockBitsCount + ' bits per ' + baseN.blockCharsCount + ' chars. Redundancy: ' + ((baseN.blockCharsCount * 8) / baseN.blockBitsCount).toFixed(4) + '</strong>');
+	baseN = new BaseN($('#alphabet').val(), parseInt($('#maxBitsCount').val()), $('#btnReverseOrder').hasClass('active'), $('#btnOneBigNumber').hasClass('active'));
+	printBlockSize();
 	$('#output').val('');
 }
-  
- 
+
+function printBlockSize() {
+	$('#info').html('<strong>Block size: ' + baseN.blockBitsCount + ' bits per ' + baseN.blockCharsCount + ' chars. Redundancy: ' + ((baseN.blockCharsCount * 8) / baseN.blockBitsCount).toFixed(4) + '</strong>');
+}

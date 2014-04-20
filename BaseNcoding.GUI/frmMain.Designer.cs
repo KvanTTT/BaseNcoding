@@ -72,6 +72,7 @@
 			this.label16 = new System.Windows.Forms.Label();
 			this.tbRatio = new System.Windows.Forms.TextBox();
 			this.cbReverseOrder = new System.Windows.Forms.CheckBox();
+			this.cbMaxCompression = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -113,7 +114,7 @@
 			// 
 			this.cbOnlyLettersAndDigits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbOnlyLettersAndDigits.AutoSize = true;
-			this.cbOnlyLettersAndDigits.Location = new System.Drawing.Point(284, 32);
+			this.cbOnlyLettersAndDigits.Location = new System.Drawing.Point(270, 32);
 			this.cbOnlyLettersAndDigits.Name = "cbOnlyLettersAndDigits";
 			this.cbOnlyLettersAndDigits.Size = new System.Drawing.Size(132, 17);
 			this.cbOnlyLettersAndDigits.TabIndex = 27;
@@ -123,7 +124,7 @@
 			// btnGenerateInputText
 			// 
 			this.btnGenerateInputText.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnGenerateInputText.Location = new System.Drawing.Point(433, 27);
+			this.btnGenerateInputText.Location = new System.Drawing.Point(419, 27);
 			this.btnGenerateInputText.Name = "btnGenerateInputText";
 			this.btnGenerateInputText.Size = new System.Drawing.Size(132, 24);
 			this.btnGenerateInputText.TabIndex = 26;
@@ -134,7 +135,7 @@
 			// nudGeneratingTextCharCount
 			// 
 			this.nudGeneratingTextCharCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.nudGeneratingTextCharCount.Location = new System.Drawing.Point(360, 5);
+			this.nudGeneratingTextCharCount.Location = new System.Drawing.Point(346, 5);
 			this.nudGeneratingTextCharCount.Maximum = new decimal(new int[] {
             10000000,
             0,
@@ -155,7 +156,7 @@
 			this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label11.AutoSize = true;
 			this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label11.Location = new System.Drawing.Point(281, 6);
+			this.label11.Location = new System.Drawing.Point(267, 6);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(73, 16);
 			this.label11.TabIndex = 5;
@@ -223,7 +224,7 @@
 			// btnEncode
 			// 
 			this.btnEncode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnEncode.Location = new System.Drawing.Point(648, 503);
+			this.btnEncode.Location = new System.Drawing.Point(646, 510);
 			this.btnEncode.Name = "btnEncode";
 			this.btnEncode.Size = new System.Drawing.Size(114, 23);
 			this.btnEncode.TabIndex = 4;
@@ -235,7 +236,7 @@
 			// btnDecode
 			// 
 			this.btnDecode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnDecode.Location = new System.Drawing.Point(648, 532);
+			this.btnDecode.Location = new System.Drawing.Point(646, 539);
 			this.btnDecode.Name = "btnDecode";
 			this.btnDecode.Size = new System.Drawing.Size(114, 23);
 			this.btnDecode.TabIndex = 5;
@@ -259,7 +260,7 @@
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(595, 86);
+			this.label3.Location = new System.Drawing.Point(596, 85);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(86, 13);
 			this.label3.TabIndex = 10;
@@ -300,7 +301,7 @@
 			// 
 			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(596, 167);
+			this.label6.Location = new System.Drawing.Point(598, 168);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(49, 13);
 			this.label6.TabIndex = 14;
@@ -309,11 +310,11 @@
 			// tbAlphabet
 			// 
 			this.tbAlphabet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbAlphabet.Location = new System.Drawing.Point(600, 190);
+			this.tbAlphabet.Location = new System.Drawing.Point(600, 192);
 			this.tbAlphabet.Multiline = true;
 			this.tbAlphabet.Name = "tbAlphabet";
 			this.tbAlphabet.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.tbAlphabet.Size = new System.Drawing.Size(161, 173);
+			this.tbAlphabet.Size = new System.Drawing.Size(161, 142);
 			this.tbAlphabet.TabIndex = 15;
 			this.tbAlphabet.Text = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 			this.tbAlphabet.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbTextBox_KeyDown);
@@ -322,7 +323,7 @@
 			// 
 			this.cbPrefixPostfix.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbPrefixPostfix.AutoSize = true;
-			this.cbPrefixPostfix.Location = new System.Drawing.Point(599, 414);
+			this.cbPrefixPostfix.Location = new System.Drawing.Point(598, 385);
 			this.cbPrefixPostfix.Name = "cbPrefixPostfix";
 			this.cbPrefixPostfix.Size = new System.Drawing.Size(83, 17);
 			this.cbPrefixPostfix.TabIndex = 16;
@@ -332,7 +333,7 @@
 			// btnSwapInputOutput
 			// 
 			this.btnSwapInputOutput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSwapInputOutput.Location = new System.Drawing.Point(598, 519);
+			this.btnSwapInputOutput.Location = new System.Drawing.Point(596, 526);
 			this.btnSwapInputOutput.Name = "btnSwapInputOutput";
 			this.btnSwapInputOutput.Size = new System.Drawing.Size(40, 23);
 			this.btnSwapInputOutput.TabIndex = 17;
@@ -344,7 +345,7 @@
 			// 
 			this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(597, 457);
+			this.label7.Location = new System.Drawing.Point(595, 464);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(76, 13);
 			this.label7.TabIndex = 19;
@@ -355,7 +356,7 @@
 			this.cmbTextEncoding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cmbTextEncoding.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cmbTextEncoding.FormattingEnabled = true;
-			this.cmbTextEncoding.Location = new System.Drawing.Point(601, 473);
+			this.cmbTextEncoding.Location = new System.Drawing.Point(599, 480);
 			this.cmbTextEncoding.Name = "cmbTextEncoding";
 			this.cmbTextEncoding.Size = new System.Drawing.Size(160, 21);
 			this.cmbTextEncoding.TabIndex = 18;
@@ -477,7 +478,7 @@
 			// 
 			this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(594, 60);
+			this.label13.Location = new System.Drawing.Point(596, 60);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(31, 13);
 			this.label13.TabIndex = 29;
@@ -486,7 +487,7 @@
 			// btnGenerateAlphabet
 			// 
 			this.btnGenerateAlphabet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnGenerateAlphabet.Location = new System.Drawing.Point(688, 161);
+			this.btnGenerateAlphabet.Location = new System.Drawing.Point(689, 163);
 			this.btnGenerateAlphabet.Name = "btnGenerateAlphabet";
 			this.btnGenerateAlphabet.Size = new System.Drawing.Size(72, 23);
 			this.btnGenerateAlphabet.TabIndex = 31;
@@ -498,7 +499,7 @@
 			// 
 			this.cbParallel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbParallel.AutoSize = true;
-			this.cbParallel.Location = new System.Drawing.Point(701, 561);
+			this.cbParallel.Location = new System.Drawing.Point(699, 568);
 			this.cbParallel.Name = "cbParallel";
 			this.cbParallel.Size = new System.Drawing.Size(60, 17);
 			this.cbParallel.TabIndex = 32;
@@ -509,7 +510,7 @@
 			// 
 			this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(597, 372);
+			this.label14.Location = new System.Drawing.Point(597, 343);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(73, 13);
 			this.label14.TabIndex = 34;
@@ -518,7 +519,7 @@
 			// tbBitsPerChars
 			// 
 			this.tbBitsPerChars.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbBitsPerChars.Location = new System.Drawing.Point(688, 369);
+			this.tbBitsPerChars.Location = new System.Drawing.Point(688, 340);
 			this.tbBitsPerChars.Name = "tbBitsPerChars";
 			this.tbBitsPerChars.ReadOnly = true;
 			this.tbBitsPerChars.Size = new System.Drawing.Size(72, 20);
@@ -558,7 +559,7 @@
 			// 
 			this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(598, 398);
+			this.label16.Location = new System.Drawing.Point(598, 369);
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(32, 13);
 			this.label16.TabIndex = 39;
@@ -567,7 +568,7 @@
 			// tbRatio
 			// 
 			this.tbRatio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbRatio.Location = new System.Drawing.Point(688, 395);
+			this.tbRatio.Location = new System.Drawing.Point(688, 366);
 			this.tbRatio.Name = "tbRatio";
 			this.tbRatio.ReadOnly = true;
 			this.tbRatio.Size = new System.Drawing.Size(72, 20);
@@ -578,18 +579,30 @@
 			// 
 			this.cbReverseOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.cbReverseOrder.AutoSize = true;
-			this.cbReverseOrder.Location = new System.Drawing.Point(599, 437);
+			this.cbReverseOrder.Location = new System.Drawing.Point(598, 408);
 			this.cbReverseOrder.Name = "cbReverseOrder";
 			this.cbReverseOrder.Size = new System.Drawing.Size(173, 17);
 			this.cbReverseOrder.TabIndex = 40;
 			this.cbReverseOrder.Text = "Reverse Order (for BaseN only)";
 			this.cbReverseOrder.UseVisualStyleBackColor = true;
 			// 
+			// cbMaxCompression
+			// 
+			this.cbMaxCompression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.cbMaxCompression.AutoSize = true;
+			this.cbMaxCompression.Location = new System.Drawing.Point(598, 431);
+			this.cbMaxCompression.Name = "cbMaxCompression";
+			this.cbMaxCompression.Size = new System.Drawing.Size(109, 17);
+			this.cbMaxCompression.TabIndex = 42;
+			this.cbMaxCompression.Text = "Max Compression";
+			this.cbMaxCompression.UseVisualStyleBackColor = true;
+			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(768, 707);
+			this.Controls.Add(this.cbMaxCompression);
 			this.Controls.Add(this.cbReverseOrder);
 			this.Controls.Add(this.label16);
 			this.Controls.Add(this.tbRatio);
@@ -687,6 +700,7 @@
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.TextBox tbRatio;
 		private System.Windows.Forms.CheckBox cbReverseOrder;
+		private System.Windows.Forms.CheckBox cbMaxCompression;
 	}
 }
 

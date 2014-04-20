@@ -94,6 +94,27 @@ namespace BaseNcoding.Tests
 		}
 
 		[Test]
+		public void EncodeDecodeBaseBigNMaxCompression()
+		{
+			byte testByte = 157;
+			List<byte> bytes = new List<byte>();
+			for (uint radix = 2; radix < 1000; radix++)
+			{
+				var baseN = new BaseBigN(StringGenerator.GetAlphabet((int)radix), 256, null, false, false, true);
+				int testBytesCount = Math.Max((baseN.BlockBitsCount + 7) / 8, baseN.BlockCharsCount);
+				bytes.Clear();
+				for (int i = 0; i <= testBytesCount + 1; i++)
+				{
+					var array = bytes.ToArray();
+					var encoded = baseN.Encode(array);
+					var decoded = baseN.Decode(encoded);
+					CollectionAssert.AreEqual(array, decoded);
+					bytes.Add(testByte);
+				}
+			}
+		}
+
+		[Test]
 		public void EncodeDecodeParallel()
 		{
 			var randomString = StringGenerator.GetRandom(10000000, true);

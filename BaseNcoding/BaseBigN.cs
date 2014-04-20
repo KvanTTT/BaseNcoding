@@ -23,6 +23,12 @@ namespace BaseNcoding
 			private set;
 		}
 
+		public bool MaxCompression
+		{
+			get;
+			private set;
+		}
+
 		public override bool HaveSpecial
 		{
 			get { return false; }
@@ -40,43 +46,51 @@ namespace BaseNcoding
 		}
 
 		public BaseBigN(string alphabet, uint blockMaxBitsCount = 64,
-			Encoding encoding = null, bool reverseOrder = false, bool parallel = false)
+			Encoding encoding = null, bool reverseOrder = false, bool parallel = false,
+			bool maxCompression = false)
 			: base((uint)alphabet.Length, alphabet, '\0', encoding, parallel)
 		{
 			BlockMaxBitsCount = blockMaxBitsCount;
 			uint charsCountInBits;
 			BlockBitsCount = GetOptimalBitsCount(CharsCount, out charsCountInBits, BlockMaxBitsCount, 2);
 			BlockCharsCount = (int)charsCountInBits;
-			_powN = new BigInteger[BlockCharsCount];
-			BigInteger pow = 1;
-			for (int i = 0; i < BlockCharsCount - 1; i++)
-			{
-				_powN[BlockCharsCount - 1 - i] = pow;
-				pow *= CharsCount;
-			}
-			_powN[0] = pow;
+
+			PreparePowN(BlockCharsCount);
+
 			ReverseOrder = reverseOrder;
+			MaxCompression = maxCompression;
 		}
 
 		public override string Encode(byte[] data)
 		{
-			if (data == null)
+			if (data == null || data.Length == 0)
 				return "";
 
-			int mainBitsLength = (data.Length * 8 / BlockBitsCount) * BlockBitsCount;
+			int blockBitsCount, blockCharsCount;
+			if (!MaxCompression)
+			{
+				blockBitsCount = BlockBitsCount;
+				blockCharsCount = BlockCharsCount;
+			}
+			else
+			{
+				blockBitsCount = data.Length * 8;
+				blockCharsCount = (int)Math.Ceiling(blockBitsCount * Math.Log(2, Alphabet.Length));
+				PreparePowN(blockCharsCount);
+			}
+
+			int mainBitsLength = (data.Length * 8 / blockBitsCount) * blockBitsCount;
 			int tailBitsLength = data.Length * 8 - mainBitsLength;
 			int globalBitsLength = mainBitsLength + tailBitsLength;
-			int mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
-			int tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
+			int mainCharsCount = mainBitsLength * blockCharsCount / blockBitsCount;
+			int tailCharsCount = (tailBitsLength * blockCharsCount + blockBitsCount - 1) / blockBitsCount;
 			int globalCharsCount = mainCharsCount + tailCharsCount;
-			int iterationCount = mainCharsCount / BlockCharsCount;
+			int iterationCount = mainCharsCount / blockCharsCount;
 
 			var result = new char[globalCharsCount];
 
 			if (!Parallel)
-			{
-				EncodeBlock(data, result, 0, iterationCount);
-			}
+				EncodeBlock(data, result, 0, iterationCount, blockBitsCount, blockCharsCount);
 			else
 			{
 				int processorCount = Math.Min(iterationCount, Environment.ProcessorCount);
@@ -84,7 +98,7 @@ namespace BaseNcoding
 				{
 					int beginInd = i * iterationCount / processorCount;
 					int endInd = (i + 1) * iterationCount / processorCount;
-					EncodeBlock(data, result, beginInd, endInd);
+					EncodeBlock(data, result, beginInd, endInd, blockBitsCount, blockCharsCount);
 				});
 			}
 
@@ -102,28 +116,39 @@ namespace BaseNcoding
 			if (string.IsNullOrEmpty(data))
 				return new byte[0];
 
-			int globalBitsLength = ((data.Length - 1) * BlockBitsCount / BlockCharsCount + 8) / 8 * 8;
-			int mainBitsLength = globalBitsLength / BlockBitsCount * BlockBitsCount;
+			int blockBitsCount, blockCharsCount;
+			if (!MaxCompression)
+			{
+				blockBitsCount = BlockBitsCount;
+				blockCharsCount = BlockCharsCount;
+			}
+			else
+			{
+				blockCharsCount = data.Length;
+				blockBitsCount = (int)(blockCharsCount / Math.Log(2, Alphabet.Length)) / 8 * 8;
+				PreparePowN(blockCharsCount);
+			}
+
+			int globalBitsLength = ((data.Length - 1) * blockBitsCount / blockCharsCount + 8) / 8 * 8;
+			int mainBitsLength = globalBitsLength / blockBitsCount * blockBitsCount;
 			int tailBitsLength = globalBitsLength - mainBitsLength;
-			int mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
-			int tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
+			int mainCharsCount = mainBitsLength * blockCharsCount / blockBitsCount;
+			int tailCharsCount = (tailBitsLength * blockCharsCount + blockBitsCount - 1) / blockBitsCount;
 			BigInteger tailBits = CharsToBits(data, mainCharsCount, tailCharsCount);
 			if (tailBits >> tailBitsLength != 0)
 			{
 				globalBitsLength += 8;
-				mainBitsLength = globalBitsLength / BlockBitsCount * BlockBitsCount;
+				mainBitsLength = globalBitsLength / blockBitsCount * blockBitsCount;
 				tailBitsLength = globalBitsLength - mainBitsLength;
-				mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
-				tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
+				mainCharsCount = mainBitsLength * blockCharsCount / blockBitsCount;
+				tailCharsCount = (tailBitsLength * blockCharsCount + blockBitsCount - 1) / blockBitsCount;
 			}
-			int iterationCount = mainCharsCount / BlockCharsCount;
+			int iterationCount = mainCharsCount / blockCharsCount;
 
 			byte[] result = new byte[globalBitsLength / 8];
 
 			if (!Parallel)
-			{
-				DecodeBlock(data, result, 0, iterationCount);
-			}
+				DecodeBlock(data, result, 0, iterationCount, blockBitsCount, blockCharsCount);
 			else
 			{
 				int processorCount = Math.Min(iterationCount, Environment.ProcessorCount);
@@ -131,7 +156,7 @@ namespace BaseNcoding
 				{
 					int beginInd = i * iterationCount / processorCount;
 					int endInd = (i + 1) * iterationCount / processorCount;
-					DecodeBlock(data, result, beginInd, endInd);
+					DecodeBlock(data, result, beginInd, endInd, blockBitsCount, blockCharsCount);
 				});
 			}
 
@@ -144,25 +169,25 @@ namespace BaseNcoding
 			return result;
 		}
 
-		private void EncodeBlock(byte[] src, char[] dst, int beginInd, int endInd)
+		private void EncodeBlock(byte[] src, char[] dst, int beginInd, int endInd, int blockBitsCount, int blockCharsCount)
 		{
 			for (int ind = beginInd; ind < endInd; ind++)
 			{
-				int charInd = ind * (int)BlockCharsCount;
-				int bitInd = ind * BlockBitsCount;
-				BigInteger bits = GetBitsN(src, bitInd, BlockBitsCount);
-				BitsToChars(dst, charInd, (int)BlockCharsCount, bits);
+				int charInd = ind * (int)blockCharsCount;
+				int bitInd = ind * blockBitsCount;
+				BigInteger bits = GetBitsN(src, bitInd, blockBitsCount);
+				BitsToChars(dst, charInd, (int)blockCharsCount, bits);
 			}
 		}
 
-		private void DecodeBlock(string src, byte[] dst, int beginInd, int endInd)
+		private void DecodeBlock(string src, byte[] dst, int beginInd, int endInd, int blockBitsCount, int blockCharsCount)
 		{
 			for (int ind = beginInd; ind < endInd; ind++)
 			{
-				int charInd = ind * (int)BlockCharsCount;
-				int bitInd = ind * BlockBitsCount;
-				BigInteger bits = CharsToBits(src, charInd, (int)BlockCharsCount);
-				AddBitsN(dst, bits, bitInd, BlockBitsCount);
+				int charInd = ind * (int)blockCharsCount;
+				int bitInd = ind * blockBitsCount;
+				BigInteger bits = CharsToBits(src, charInd, (int)blockCharsCount);
+				AddBitsN(dst, bits, bitInd, blockBitsCount);
 			}
 		}
 
@@ -248,8 +273,21 @@ namespace BaseNcoding
 		{
 			BigInteger result = 0;
 			for (int i = 0; i < count; i++)
-				result += InvAlphabet[data[ind + (!ReverseOrder ? i : count - 1 - i)]] * _powN[BlockCharsCount - 1 - i];
+				result += InvAlphabet[data[ind + (!ReverseOrder ? i : count - 1 - i)]] * _powN[_powN.Length - 1 - i];
 			return result;
+		}
+
+		private void PreparePowN(int blockCharsCount)
+		{
+			_powN = new BigInteger[blockCharsCount];
+			BigInteger pow = 1;
+			for (int i = 0; i < blockCharsCount - 1; i++)
+			{
+				_powN[blockCharsCount - 1 - i] = pow;
+				pow *= CharsCount;
+			}
+			if (blockCharsCount > 0)
+				_powN[0] = pow;
 		}
 	}
 }

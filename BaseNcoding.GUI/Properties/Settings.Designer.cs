@@ -177,5 +177,17 @@ namespace BaseNcoding.GUI.Properties {
                 this["ReverseOrder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MaxCompression {
+            get {
+                return ((bool)(this["MaxCompression"]));
+            }
+            set {
+                this["MaxCompression"] = value;
+            }
+        }
     }
 }
