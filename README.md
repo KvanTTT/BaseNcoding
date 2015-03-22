@@ -41,4 +41,4 @@ Algorithm has parallel version.
 
 BaseN algorithm is licensed under the Apache 2.0 License.
 
-More detail explanation available [on Russian](http://habrahabr.ru/post/204778/).
+More detail explanation available [on Russian](http://habrahabr.ru/post/219993/).
