@@ -30,7 +30,7 @@ namespace BaseNcoding.Tests
 			string encoded = Converter.EncodeString(str);
 			string decoded = Converter.DecodeToString(encoded);
 
-			Assert.AreEqual(str, encoded);
+			Assert.AreEqual(str, decoded);
 		}
 	}
 }
