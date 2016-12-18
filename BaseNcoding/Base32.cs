@@ -17,7 +17,7 @@ namespace BaseNcoding
 		}
 
 		public Base32(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
-			: base(32, alphabet, special, textEncoding)
+		: base(32, alphabet, special, textEncoding)
 		{
 		}
 
@@ -58,7 +58,7 @@ namespace BaseNcoding
 					result.Append(Alphabet[x1 >> 3]);
 					result.Append(Alphabet[(x1 << 2) & 0x1C]);
 
-					result.Append(Special, 4);
+					result.Append(Special, 6);
 					break;
 				case 2:
 					x1 = data[i];
@@ -68,7 +68,7 @@ namespace BaseNcoding
 					result.Append(Alphabet[(x2 >> 1) & 0x1F]);
 					result.Append(Alphabet[(x2 << 4) & 0x10]);
 
-					result.Append(Special, 3);
+					result.Append(Special, 4);
 					break;
 				case 3:
 					x1 = data[i];
@@ -80,7 +80,7 @@ namespace BaseNcoding
 					result.Append(Alphabet[((x2 << 4) & 0x10) | (x1 >> 4)]);
 					result.Append(Alphabet[(x1 << 1) & 0x1E]);
 
-					result.Append(Special, 2);
+					result.Append(Special, 3);
 					break;
 				case 4:
 					x1 = data[i];
@@ -109,12 +109,35 @@ namespace BaseNcoding
 				if (string.IsNullOrEmpty(data))
 					return new byte[0];
 
+				int additionalBytes = 0, diff = 0, tempLen = 0;
+
+
 				int lastSpecialInd = data.Length;
 				while (data[lastSpecialInd - 1] == Special)
 					lastSpecialInd--;
 				int tailLength = data.Length - lastSpecialInd;
 
-				byte[] result = new byte[(data.Length + 7) / 8 * 5 - tailLength];
+				switch (tailLength)
+				{
+					case 6:
+						additionalBytes = 4;
+						break;
+					case 4:
+						additionalBytes = 3;
+						break;
+					case 3:
+						additionalBytes = 2;
+						break;
+					case 1:
+						additionalBytes = 1;
+						break;
+				}
+
+				diff = tailLength - additionalBytes;
+				tailLength = additionalBytes;
+				tempLen = data.Length - diff;
+
+				byte[] result = new byte[(tempLen + 7) / 8 * 5 - tailLength];
 				int length5 = result.Length / 5 * 5;
 				int x1, x2, x3, x4, x5, x6, x7, x8;
 

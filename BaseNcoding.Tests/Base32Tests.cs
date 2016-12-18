@@ -12,5 +12,25 @@ namespace BaseNcoding.Tests
 		{
 			Converter = new Base32();
 		}
+
+		public const string Base32SampleString = "Ronald";
+		public const string Base32SampleStringResult = "KJXW4YLMMQ======";
+
+		[TestCase(Base32SampleString)]
+		public void Base32EncodeCompareEncodedAndExpected(string str)
+		{
+			string encoded = Converter.EncodeString(str);
+
+			Assert.AreEqual(Base32SampleStringResult, encoded);
+		}
+
+		[TestCase(Base32SampleString)]
+		public void Base32CompareSourceAndDecoded(string str)
+		{
+			string encoded = Converter.EncodeString(str);
+			string decoded = Converter.DecodeToString(encoded);
+
+			Assert.AreEqual(str, decoded);
+		}
 	}
 }
