@@ -17,7 +17,7 @@ namespace BaseNcoding.Tests
 		public const string Base32SampleStringResult = "KJXW4YLMMQ======";
 
 		[TestCase(Base32SampleString)]
-		public void Base32EncodeCompareToConstantValue(string str)
+		public void Base32EncodeCompareEncodedAndExpected(string str)
 		{
 			string encoded = Converter.EncodeString(str);
 
