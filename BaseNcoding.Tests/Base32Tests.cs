@@ -25,7 +25,7 @@ namespace BaseNcoding.Tests
 		}
 
 		[TestCase(Base32SampleString)]
-		public void Base32CompareEncodeAndDecode(string str)
+		public void Base32CompareSourceAndDecoded(string str)
 		{
 			string encoded = Converter.EncodeString(str);
 			string decoded = Converter.DecodeToString(encoded);
