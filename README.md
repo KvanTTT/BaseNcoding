@@ -7,7 +7,7 @@ This library implement algorithm for general case, that is custom alphabet can b
 
 Idea of developed algorithm based on base85 encoding, except of block size is not constant, but calculated depending on alphabet length.
 
-###Steps of algorithm
+### Steps of algorithm
  * Calculation of block size in bits and chars.
  * Conversation of input string to byte array (using UTF8 Encoding).
  * Splitting byte array on n-bit groups.
@@ -37,7 +37,7 @@ One can see that known base64, base85, base91 encodings has been developed in go
 For bits block to chars block BigNumbers are using.
 Algorithm has parallel version.
 
-###License
+### License
 
 BaseN algorithm is licensed under the Apache 2.0 License.
 
