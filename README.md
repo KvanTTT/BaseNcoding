@@ -176,10 +176,10 @@ Diagram of an optimal block size and alphabet length dependence has been calcula
 | 94 | 13 | 2 | 6.5 | 1.0786 |
 
 </details>
-
+<br>
 One can see that known base64, base85, base91 encodings has been developed in good points (minimal block size with good compression ratio).
 
-Big numbers ([C# BitInteger](https://msdn.microsoft.com/en-us/library/system.numerics.biginteger(v=vs.110).aspx) and [JavaScript jsbn](https://github.com/andyperlitch/jsbn) used for some calculations.
+Big numbers ([C# BitInteger](https://msdn.microsoft.com/en-us/library/system.numerics.biginteger(v=vs.110).aspx) and [JavaScript jsbn](https://github.com/andyperlitch/jsbn)) used for some calculations.
 
 Algorithm also has a parallel version.
 
