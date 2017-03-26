@@ -33,6 +33,8 @@ In this system:
 * **⌊x⌋** — The largest integer not greater than x (floor).
 * **⌈x⌉** — The smallest integer not less than x (ceiling).
 
+See implementation in `GetOptimalBitsCount` method.
+
 ## Tail bits processing
 
 The most difficult problem in this project which nevertheless has been solved with only integer calculations.
@@ -175,7 +177,7 @@ Diagram of an optimal block size and alphabet length dependence has been calcula
 
 </details>
 
-One can see that known base64, base85, base91 encodings has been developed in good points (minimal block size with good compression ratio). See implementation in `GetOptimalBitsCount` method.
+One can see that known base64, base85, base91 encodings has been developed in good points (minimal block size with good compression ratio).
 
 Big numbers ([C# BitInteger](https://msdn.microsoft.com/en-us/library/system.numerics.biginteger(v=vs.110).aspx) and [JavaScript jsbn](https://github.com/andyperlitch/jsbn) used for some calculations.
 
