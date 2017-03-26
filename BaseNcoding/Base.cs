@@ -243,19 +243,19 @@ namespace BaseNcoding
 		{
 			int result = 0;
 			charsCountInBits = 0;
-			int n1 = Base.LogBaseN(charsCount, radix);
+			int n0 = Base.LogBaseN(charsCount, radix);
 			double charsCountLog = Math.Log(radix, charsCount);
 			double maxRatio = 0;
 
-			for (int n = n1; n <= maxBitsCount; n++)
+			for (int n = n0; n <= maxBitsCount; n++)
 			{
-				uint l1 = (uint)Math.Ceiling(n * charsCountLog);
-				double ratio = (double)n / l1;
+				uint k = (uint)Math.Ceiling(n * charsCountLog);
+				double ratio = (double)n / k;
 				if (ratio > maxRatio)
 				{
 					maxRatio = ratio;
 					result = n;
-					charsCountInBits = l1;
+					charsCountInBits = k;
 				}
 			}
 

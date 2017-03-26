@@ -53,13 +53,13 @@ namespace BaseNcoding
 
 			int mainBitsLength = (data.Length * 8 / BlockBitsCount) * BlockBitsCount;
 			int tailBitsLength = data.Length * 8 - mainBitsLength;
-			int globalBitsLength = mainBitsLength + tailBitsLength;
+			int totalBitsLength = mainBitsLength + tailBitsLength;
 			int mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
 			int tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
-			int globalCharsCount = mainCharsCount + tailCharsCount;
+			int totalCharsCount = mainCharsCount + tailCharsCount;
 			int iterationCount = mainCharsCount / BlockCharsCount;
 
-			var result = new char[globalCharsCount];
+			var result = new char[totalCharsCount];
 
 			if (!Parallel)
 				EncodeBlock(data, result, 0, iterationCount);
@@ -88,23 +88,23 @@ namespace BaseNcoding
 			if (string.IsNullOrEmpty(data))
 				return new byte[0];
 
-			int globalBitsLength = ((data.Length - 1) * BlockBitsCount / BlockCharsCount + 8) / 8 * 8;
-			int mainBitsLength = globalBitsLength / BlockBitsCount * BlockBitsCount;
-			int tailBitsLength = globalBitsLength - mainBitsLength;
+			int totalBitsLength = ((data.Length - 1) * BlockBitsCount / BlockCharsCount + 8) / 8 * 8;
+			int mainBitsLength = totalBitsLength / BlockBitsCount * BlockBitsCount;
+			int tailBitsLength = totalBitsLength - mainBitsLength;
 			int mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
 			int tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
 			ulong tailBits = CharsToBits(data, mainCharsCount, tailCharsCount);
 			if (tailBits >> tailBitsLength != 0)
 			{
-				globalBitsLength += 8;
-				mainBitsLength = globalBitsLength / BlockBitsCount * BlockBitsCount;
-				tailBitsLength = globalBitsLength - mainBitsLength;
+				totalBitsLength += 8;
+				mainBitsLength = totalBitsLength / BlockBitsCount * BlockBitsCount;
+				tailBitsLength = totalBitsLength - mainBitsLength;
 				mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
 				tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
 			}
 			int iterationCount = mainCharsCount / BlockCharsCount;
 
-			byte[] result = new byte[globalBitsLength / 8];
+			byte[] result = new byte[totalBitsLength / 8];
 
 			if (!Parallel)
 			{
