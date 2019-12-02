@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BaseNcoding
 {
@@ -11,7 +8,7 @@ namespace BaseNcoding
 		public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 		public const char DefaultSpecial = '=';
 
-		public override bool HaveSpecial
+		public override bool HasSpecial
 		{
 			get { return true; }
 		}

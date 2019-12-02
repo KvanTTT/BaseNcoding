@@ -1,76 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace BaseNcoding
 {
 	public abstract class Base
 	{
-		public uint CharsCount
-		{
-			get;
-			protected set;
-		}
+		public uint CharsCount { get; }
 
-		public double BitsPerChars
-		{
-			get
-			{
-				return (double)BlockBitsCount / BlockCharsCount;
-			}
-		}
+		public double BitsPerChars => (double)BlockBitsCount / BlockCharsCount;
 
-		public int BlockBitsCount
-		{
-			get;
-			protected set;
-		}
+		public int BlockBitsCount { get; protected set; }
 
-		public int BlockCharsCount
-		{
-			get;
-			protected set;
-		}
+		public int BlockCharsCount { get; protected set; }
 
-		public string Alphabet
-		{
-			get;
-			protected set;
-		}
+		public string Alphabet { get; }
 
-		public char Special
-		{
-			get;
-			protected set;
-		}
+		public char Special { get; }
 
-		public abstract bool HaveSpecial
-		{
-			get;
-		}
+		public abstract bool HasSpecial { get; }
 
-		public Encoding Encoding
-		{
-			get;
-			set;
-		}
+		public Encoding Encoding { get; set; }
 
-		public bool Parallel
-		{
-			get;
-			set;
-		}
+		public bool Parallel { get; set; }
 
-		protected int[] InvAlphabet;
+		protected readonly int[] InvAlphabet;
 
 		public Base(uint charsCount, string alphabet, char special, Encoding encoding = null, bool parallel = false)
 		{
 			if (alphabet.Length != charsCount)
-				throw new ArgumentException("Base string should contain " + charsCount + " chars");
+				throw new ArgumentException($"Base string should contain {charsCount} chars");
 
 			for (int i = 0; i < charsCount; i++)
 				for (int j = i + 1; j < charsCount; j++)
@@ -120,7 +81,7 @@ namespace BaseNcoding
 		/// <returns></returns>
 		public static bool IsPowerOf2(uint x)
 		{
-			uint xint = (uint)x;
+			uint xint = x;
 			if (x - xint != 0)
 				return false;
 
@@ -215,8 +176,7 @@ namespace BaseNcoding
 		{
 			int result = 0;
 			charsCountInBits = 0;
-			int n1 = Base.LogBase2(charsCount);
-			ulong uCharsCount = (ulong)charsCount;
+			int n1 = LogBase2(charsCount);
 			double charsCountLog = Math.Log(2, charsCount);
 			double maxRatio = 0;
 
@@ -243,7 +203,7 @@ namespace BaseNcoding
 		{
 			int result = 0;
 			charsCountInBits = 0;
-			int n0 = Base.LogBaseN(charsCount, radix);
+			int n0 = LogBaseN(charsCount, radix);
 			double charsCountLog = Math.Log(radix, charsCount);
 			double maxRatio = 0;
 

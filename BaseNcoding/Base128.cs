@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace BaseNcoding
 {
@@ -11,10 +7,7 @@ namespace BaseNcoding
 		public const string DefaultAlphabet = "!#$%()*,.0123456789:;-@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_abcdefghijklmnopqrstuvwxyz{|}~¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎ";
 		public const char DefaultSpecial = '=';
 
-		public override bool HaveSpecial
-		{
-			get { return true; }
-		}
+		public override bool HasSpecial => true;
 
 		public Base128(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
 			: base(128, alphabet, special, textEncoding)
@@ -61,7 +54,7 @@ namespace BaseNcoding
 					x1 = data[i];
 					result.Append(Alphabet[x1 >> 1]);
 					result.Append(Alphabet[(x1 << 6) & 0x40]);
-					
+
 					result.Append(Special, 6);
 					break;
 				case 2:

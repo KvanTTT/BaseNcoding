@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace BaseNcoding
 {
 	public static class StringGenerator
 	{
+		private const string LettersAndDigits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
 		public static string GetAlphabet(int charsCount)
 		{
 			var result = new StringBuilder(charsCount);
@@ -32,20 +32,17 @@ namespace BaseNcoding
 			Random r = new Random();
 			if (onlyLettersAndDigits)
 			{
-				string lettersAndDigits = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-				StringBuilder result = new StringBuilder(size);
+				var result = new char[size];
 				for (int i = 0; i < size; i++)
-					result.Append(lettersAndDigits[r.Next(lettersAndDigits.Length)]);
-				return result.ToString();
+					result[i] = LettersAndDigits[r.Next(LettersAndDigits.Length)];
+				return new string(result);
 			}
-			else
-			{
-				var data = new byte[size];
-				for (int i = 0; i < size; i++)
-					data[i] = (byte)r.Next(32, 127);
-				var encoding = new ASCIIEncoding();
-				return encoding.GetString(data);
-			}
+
+			var data = new byte[size];
+			for (int i = 0; i < size; i++)
+				data[i] = (byte) r.Next(32, 127);
+			var encoding = new ASCIIEncoding();
+			return encoding.GetString(data);
 		}
 	}
 }

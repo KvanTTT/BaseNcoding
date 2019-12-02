@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace BaseNcoding
@@ -10,10 +8,7 @@ namespace BaseNcoding
 		public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\"";
 		public const char DefaultSpecial = (char)0;
 
-		public override bool HaveSpecial
-		{
-			get { return false; }
-		}
+		public override bool HasSpecial => false;
 
 		public Base91(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
 			: base(91, alphabet, special, textEncoding)

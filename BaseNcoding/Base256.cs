@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace BaseNcoding
 {
@@ -10,10 +7,7 @@ namespace BaseNcoding
 		public const string DefaultAlphabet = "!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~ ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁł";
 		public const char DefaultSpecial = (char)0;
 
-		public override bool HaveSpecial
-		{
-			get { return false; }
-		}
+		public override bool HasSpecial => false;
 
 		public Base256(string alphabet = DefaultAlphabet, char special = DefaultSpecial,
 			Encoding textEncoding = null)
@@ -23,12 +17,12 @@ namespace BaseNcoding
 
 		public override string Encode(byte[] data)
 		{
-			StringBuilder result = new StringBuilder(data.Length);
+			var result = new char[data.Length];
 
 			for (int i = 0; i < data.Length; i++)
-				result.Append(Alphabet[data[i]]);
+				result[i] = Alphabet[data[i]];
 
-			return result.ToString();
+			return new string(result);
 		}
 
 		public override byte[] Decode(string data)

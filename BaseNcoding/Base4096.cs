@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 namespace BaseNcoding
 {
@@ -16,7 +13,7 @@ namespace BaseNcoding
 		{
 		}
 
-		public override bool HaveSpecial
+		public override bool HasSpecial
 		{
 			get { return true; }
 		}

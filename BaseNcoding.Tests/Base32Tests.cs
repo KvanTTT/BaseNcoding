@@ -1,6 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
-using System.Text;
 
 namespace BaseNcoding.Tests
 {
@@ -13,8 +11,8 @@ namespace BaseNcoding.Tests
 			Converter = new Base32();
 		}
 
-		public const string Base32SampleString = "Ronald";
-		public const string Base32SampleStringResult = "KJXW4YLMMQ======";
+		private const string Base32SampleString = "Ronald";
+		private const string Base32SampleStringResult = "KJXW4YLMMQ======";
 
 		[TestCase(Base32SampleString)]
 		public void Base32EncodeCompareEncodedAndExpected(string str)

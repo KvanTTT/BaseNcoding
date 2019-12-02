@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Text;
 
@@ -9,30 +7,15 @@ namespace BaseNcoding
 	public class BaseBigN : Base
 	{
 		private BigInteger[] _powN;
-		private static byte[] two_in_power_n;
+		private static readonly byte[] two_in_power_n;
 
-		public bool ReverseOrder
-		{
-			get;
-			private set;
-		}
+		public bool ReverseOrder { get; }
 
-		public uint BlockMaxBitsCount
-		{
-			get;
-			private set;
-		}
+		public uint BlockMaxBitsCount { get; }
 
-		public bool MaxCompression
-		{
-			get;
-			private set;
-		}
+		public bool MaxCompression { get; }
 
-		public override bool HaveSpecial
-		{
-			get { return false; }
-		}
+		public override bool HasSpecial => false;
 
 		static BaseBigN()
 		{
@@ -51,8 +34,7 @@ namespace BaseNcoding
 			: base((uint)alphabet.Length, alphabet, '\0', encoding, parallel)
 		{
 			BlockMaxBitsCount = blockMaxBitsCount;
-			uint charsCountInBits;
-			BlockBitsCount = GetOptimalBitsCount(CharsCount, out charsCountInBits, BlockMaxBitsCount, 2);
+			BlockBitsCount = GetOptimalBitsCount(CharsCount, out var charsCountInBits, BlockMaxBitsCount, 2);
 			BlockCharsCount = (int)charsCountInBits;
 
 			PreparePowN(BlockCharsCount);
@@ -79,9 +61,8 @@ namespace BaseNcoding
 				PreparePowN(blockCharsCount);
 			}
 
-			int mainBitsLength = (data.Length * 8 / blockBitsCount) * blockBitsCount;
+			int mainBitsLength = data.Length * 8 / blockBitsCount * blockBitsCount;
 			int tailBitsLength = data.Length * 8 - mainBitsLength;
-			int totalBitsLength = mainBitsLength + tailBitsLength;
 			int mainCharsCount = mainBitsLength * blockCharsCount / blockBitsCount;
 			int tailCharsCount = (tailBitsLength * blockCharsCount + blockBitsCount - 1) / blockBitsCount;
 			int totalCharsCount = mainCharsCount + tailCharsCount;
@@ -165,7 +146,7 @@ namespace BaseNcoding
 				BigInteger bits = CharsToBits(data, mainCharsCount, tailCharsCount);
 				AddBitsN(result, bits, mainBitsLength, tailBitsLength);
 			}
-			
+
 			return result;
 		}
 
@@ -173,10 +154,10 @@ namespace BaseNcoding
 		{
 			for (int ind = beginInd; ind < endInd; ind++)
 			{
-				int charInd = ind * (int)blockCharsCount;
+				int charInd = ind * blockCharsCount;
 				int bitInd = ind * blockBitsCount;
 				BigInteger bits = GetBitsN(src, bitInd, blockBitsCount);
-				BitsToChars(dst, charInd, (int)blockCharsCount, bits);
+				BitsToChars(dst, charInd, blockCharsCount, bits);
 			}
 		}
 
@@ -184,9 +165,9 @@ namespace BaseNcoding
 		{
 			for (int ind = beginInd; ind < endInd; ind++)
 			{
-				int charInd = ind * (int)blockCharsCount;
+				int charInd = ind * blockCharsCount;
 				int bitInd = ind * blockBitsCount;
-				BigInteger bits = CharsToBits(src, charInd, (int)blockCharsCount);
+				BigInteger bits = CharsToBits(src, charInd, blockCharsCount);
 				AddBitsN(dst, bits, bitInd, blockBitsCount);
 			}
 		}

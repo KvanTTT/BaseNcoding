@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 using System.Text;
 
 namespace BaseNcoding
@@ -10,30 +7,18 @@ namespace BaseNcoding
 	{
 		private ulong[] _powN;
 
-		public uint BlockMaxBitsCount
-		{
-			get;
-			private set;
-		}
+		public uint BlockMaxBitsCount { get; }
 
-		public override bool HaveSpecial
-		{
-			get { return false; }
-		}
+		public override bool HasSpecial => false;
 
-		public bool ReverseOrder
-		{
-			get;
-			private set;
-		}
+		public bool ReverseOrder { get; }
 
 		public BaseN(string alphabet, uint blockMaxBitsCount = 32,
 			Encoding encoding = null, bool reverseOrder = false, bool parallel = false)
 			: base((uint)alphabet.Length, alphabet, '\0', encoding, parallel)
 		{
 			BlockMaxBitsCount = blockMaxBitsCount;
-			uint charsCountInBits;
-			BlockBitsCount = GetOptimalBitsCount(CharsCount, out charsCountInBits, blockMaxBitsCount);
+			BlockBitsCount = GetOptimalBitsCount(CharsCount, out var charsCountInBits, blockMaxBitsCount);
 			BlockCharsCount = (int)charsCountInBits;
 			_powN = new ulong[BlockCharsCount];
 			ulong pow = 1;
@@ -51,9 +36,8 @@ namespace BaseNcoding
 			if (data == null || data.Length == 0)
 				return "";
 
-			int mainBitsLength = (data.Length * 8 / BlockBitsCount) * BlockBitsCount;
+			int mainBitsLength = data.Length * 8 / BlockBitsCount * BlockBitsCount;
 			int tailBitsLength = data.Length * 8 - mainBitsLength;
-			int totalBitsLength = mainBitsLength + tailBitsLength;
 			int mainCharsCount = mainBitsLength * BlockCharsCount / BlockBitsCount;
 			int tailCharsCount = (tailBitsLength * BlockCharsCount + BlockBitsCount - 1) / BlockBitsCount;
 			int totalCharsCount = mainCharsCount + tailCharsCount;
@@ -126,7 +110,7 @@ namespace BaseNcoding
 				ulong bits = CharsToBits(data, mainCharsCount, tailCharsCount);
 				AddBits64(result, bits, mainBitsLength, tailBitsLength);
 			}
-			
+
 			return result;
 		}
 
@@ -134,10 +118,10 @@ namespace BaseNcoding
 		{
 			for (int ind = beginInd; ind < endInd; ind++)
 			{
-				int charInd = ind * (int)BlockCharsCount;
+				int charInd = ind * BlockCharsCount;
 				int bitInd = ind * BlockBitsCount;
 				ulong bits = GetBits64(src, bitInd, BlockBitsCount);
-				BitsToChars(dst, charInd, (int)BlockCharsCount, bits);
+				BitsToChars(dst, charInd, BlockCharsCount, bits);
 			}
 		}
 
@@ -145,9 +129,9 @@ namespace BaseNcoding
 		{
 			for (int ind = beginInd; ind < endInd; ind++)
 			{
-				int charInd = ind * (int)BlockCharsCount;
+				int charInd = ind * BlockCharsCount;
 				int bitInd = ind * BlockBitsCount;
-				ulong bits = CharsToBits(src, charInd, (int)BlockCharsCount);
+				ulong bits = CharsToBits(src, charInd, BlockCharsCount);
 				AddBits64(dst, bits, bitInd, BlockBitsCount);
 			}
 		}

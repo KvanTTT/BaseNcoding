@@ -16,12 +16,12 @@ namespace BaseNcoding.Tests
 		[TestCase(Base64SampleString)]
 		[TestCase(RusString)]
 		[TestCase(GreekString)]
-		public void Base64CompareToStandart(string str)
+		public void Base64CompareToStandard(string str)
 		{
 			string encoded = Converter.EncodeString(str);
-			string base64standart = Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
+			string base64Standard = Convert.ToBase64String(Encoding.UTF8.GetBytes(str));
 
-			Assert.AreEqual(base64standart, encoded);
+			Assert.AreEqual(base64Standard, encoded);
 		}
 	}
 }

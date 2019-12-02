@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace BaseNcoding
@@ -13,10 +12,7 @@ namespace BaseNcoding
 		public const string DefaultAlphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
 		public const char DefaultSpecial = (char)0;
 
-		public override bool HaveSpecial
-		{
-			get { return false; }
-		}
+		public override bool HasSpecial => false;
 
 		public ZBase32(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
 			: base(32, alphabet, special, textEncoding)

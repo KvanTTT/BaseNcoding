@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace BaseNcoding
@@ -10,21 +8,14 @@ namespace BaseNcoding
 	{
 		public const string DefaultAlphabet = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstu";
 		public const char DefaultSpecial = (char)0;
-		private static uint[] Pow85 = { 85 * 85 * 85 * 85, 85 * 85 * 85, 85 * 85, 85, 1 };
-		
+		private static readonly uint[] Pow85 = { 85 * 85 * 85 * 85, 85 * 85 * 85, 85 * 85, 85, 1 };
+
 		public const string Prefix = "<~";
 		public const string Postfix = "~>";
 
-		public override bool HaveSpecial
-		{
-			get { return false; }
-		}
+		public override bool HasSpecial => false;
 
-		public bool PrefixPostfix
-		{
-			get;
-			set;
-		}
+		public bool PrefixPostfix { get; set; }
 
 		public Base85(string alphabet = DefaultAlphabet, char special = DefaultSpecial, bool prefixPostfix = false, Encoding textEncoding = null)
 			: base(85, alphabet, special, textEncoding)
@@ -40,13 +31,14 @@ namespace BaseNcoding
 			{
 				byte[] encodedBlock = new byte[5];
 				int decodedBlockLength = 4;
-				int resultLength = (int)(data.Length * (encodedBlock.Length / decodedBlockLength));
+				int resultLength = data.Length * (encodedBlock.Length / decodedBlockLength);
 				if (PrefixPostfix)
 					resultLength += Prefix.Length + Postfix.Length;
-				StringBuilder sb = new StringBuilder(resultLength);
+				char[] result = new char[resultLength];
+				int resultInd = 0;
 
 				if (PrefixPostfix)
-					sb.Append(Prefix);
+					CopyString(Prefix, result, ref resultInd);
 
 				int count = 0;
 				uint tuple = 0;
@@ -56,26 +48,26 @@ namespace BaseNcoding
 					{
 						tuple |= b;
 						if (tuple == 0)
-							sb.Append('z');
+							result[resultInd++] = 'z';
 						else
-							EncodeBlock(encodedBlock.Length, sb, encodedBlock, tuple);
+							EncodeBlock(encodedBlock.Length, result, ref resultInd, encodedBlock, tuple);
 						tuple = 0;
 						count = 0;
 					}
 					else
 					{
-						tuple |= (uint)(b << (24 - (count * 8)));
+						tuple |= (uint)(b << (24 - count * 8));
 						count++;
 					}
 				}
 
 				if (count > 0)
-					EncodeBlock(count + 1, sb, encodedBlock, tuple);
+					EncodeBlock(count + 1, result, ref resultInd, encodedBlock, tuple);
 
 				if (PrefixPostfix)
-					sb.Append(Postfix);
+					CopyString(Postfix, result, ref resultInd);
 
-				return sb.ToString();
+				return new string(result);
 			}
 		}
 
@@ -95,13 +87,13 @@ namespace BaseNcoding
 
 				MemoryStream ms = new MemoryStream();
 				int count = 0;
-				bool processChar = false;
 
 				uint tuple = 0;
-				int encidedBlockLength = 5;
+				int encodedBlockLength = 5;
 				byte[] decodedBlock = new byte[4];
 				foreach (char c in dataWithoutPrefixPostfix)
 				{
+					bool processChar;
 					switch (c)
 					{
 						case 'z':
@@ -125,7 +117,7 @@ namespace BaseNcoding
 					{
 						tuple += (uint)InvAlphabet[c] * Pow85[count];
 						count++;
-						if (count == encidedBlockLength)
+						if (count == encodedBlockLength)
 						{
 							DecodeBlock(decodedBlock.Length, decodedBlock, tuple);
 							ms.Write(decodedBlock, 0, decodedBlock.Length);
@@ -154,9 +146,15 @@ namespace BaseNcoding
 			}
 		}
 
-		#region Private
+		private static void CopyString(string source, char[] dest, ref int destInd)
+		{
+			for (int i = 0; i < source.Length; i++)
+			{
+				dest[destInd++] = source[i];
+			}
+		}
 
-		private void EncodeBlock(int count, StringBuilder sb, byte[] encodedBlock, uint tuple)
+		private void EncodeBlock(int count, char[] result, ref int resultInd, byte[] encodedBlock, uint tuple)
 		{
 			unchecked
 			{
@@ -167,7 +165,7 @@ namespace BaseNcoding
 				}
 
 				for (int i = 0; i < count; i++)
-					sb.Append(Alphabet[encodedBlock[i]]);
+					result[resultInd++] = Alphabet[encodedBlock[i]];
 			}
 		}
 
@@ -179,7 +177,5 @@ namespace BaseNcoding
 					decodedBlock[i] = (byte)(tuple >> 24 - (i * 8));
 			}
 		}
-
-		#endregion
 	}
 }
