@@ -201,17 +201,8 @@ namespace BaseNcoding.GUI
 				case "Base64":
 					method = new Base64(alphabet, special, textEncoding, parallel);
 					break;
-				case "Base128":
-					method = new Base128(alphabet, special, textEncoding);
-					break;
 				case "Base256":
 					method = new Base256(alphabet, special, textEncoding);
-					break;
-				case "Base1024":
-					method = new Base1024(alphabet, special, textEncoding);
-					break;
-				case "Base4096":
-					method = new Base4096(alphabet, special, textEncoding);
 					break;
 				case "ZBase32":
 					method = new ZBase32(alphabet, special, textEncoding);
@@ -252,21 +243,9 @@ namespace BaseNcoding.GUI
 					tbAlphabet.Text = Base64.DefaultAlphabet;
 					tbSpecialChar.Text = Base64.DefaultSpecial.ToString();
 					break;
-				case "Base128":
-					tbAlphabet.Text = Base128.DefaultAlphabet;
-					tbSpecialChar.Text = Base128.DefaultSpecial.ToString();
-					break;
 				case "Base256":
 					tbAlphabet.Text = Base256.DefaultAlphabet;
 					tbSpecialChar.Text = Base256.DefaultSpecial.ToString();
-					break;
-				case "Base1024":
-					tbAlphabet.Text = Base1024.DefaultAlphabet;
-					tbSpecialChar.Text = Base1024.DefaultSpecial.ToString();
-					break;
-				case "Base4096":
-					tbAlphabet.Text = Base4096.DefaultAlphabet;
-					tbSpecialChar.Text = Base4096.DefaultSpecial.ToString();
 					break;
 				case "ZBase32":
 					tbAlphabet.Text = ZBase32.DefaultAlphabet;
