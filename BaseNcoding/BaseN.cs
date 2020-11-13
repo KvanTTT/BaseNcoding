@@ -5,7 +5,7 @@ namespace BaseNcoding
 {
 	public class BaseN : Base
 	{
-		private ulong[] _powN;
+		private readonly ulong[] _powN;
 
 		public uint BlockMaxBitsCount { get; }
 
@@ -46,7 +46,9 @@ namespace BaseNcoding
 			var result = new char[totalCharsCount];
 
 			if (!Parallel)
+			{
 				EncodeBlock(data, result, 0, iterationCount);
+			}
 			else
 			{
 				int processorCount = Math.Min(iterationCount, Environment.ProcessorCount);
@@ -140,8 +142,8 @@ namespace BaseNcoding
 		{
 			ulong result = 0;
 
-			int currentBytePos = bitPos / 8;
-			int currentBitInBytePos = bitPos % 8;
+			int currentBytePos = Math.DivRem(bitPos, 8, out int currentBitInBytePos);
+
 			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
 			if (xLength != 0)
 			{
@@ -175,8 +177,7 @@ namespace BaseNcoding
 		{
 			unchecked
 			{
-				int currentBytePos = bitPos / 8;
-				int currentBitInBytePos = bitPos % 8;
+				int currentBytePos = Math.DivRem(bitPos, 8, out int currentBitInBytePos);
 
 				int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
 				if (xLength != 0)
@@ -184,8 +185,7 @@ namespace BaseNcoding
 					byte x1 = (byte)(value << 64 - bitsCount >> 56 + currentBitInBytePos);
 					data[currentBytePos] |= x1;
 
-					currentBytePos += (currentBitInBytePos + xLength) / 8;
-					currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
+					currentBytePos += Math.DivRem(currentBitInBytePos + xLength, 8, out currentBitInBytePos);
 
 					int x2Length = bitsCount - xLength;
 					if (x2Length > 8)
@@ -197,8 +197,7 @@ namespace BaseNcoding
 						byte x2 = (byte)(value >> bitsCount - xLength << 8 - x2Length);
 						data[currentBytePos] |= x2;
 
-						currentBytePos += (currentBitInBytePos + x2Length) / 8;
-						currentBitInBytePos = (currentBitInBytePos + x2Length) % 8;
+						currentBytePos += Math.DivRem(currentBitInBytePos + x2Length, 8, out currentBitInBytePos);
 
 						x2Length = bitsCount - xLength;
 						if (x2Length > 8)
@@ -210,10 +209,13 @@ namespace BaseNcoding
 
 		private void BitsToChars(char[] chars, int ind, int count, ulong block)
 		{
+			ulong result = block;
 			for (int i = 0; i < count; i++)
 			{
-				chars[ind + (!ReverseOrder ? i : count - 1 - i)] = Alphabet[(int)(block % CharsCount)];
-				block /= CharsCount;
+				ulong quotient = result / CharsCount;
+				ulong remainder = result - quotient * CharsCount;
+				result = quotient;
+				chars[ind + (!ReverseOrder ? i : count - 1 - i)] = Alphabet[(int)remainder];
 			}
 		}
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace BaseNcoding
@@ -41,16 +42,19 @@ namespace BaseNcoding
 						ebq >>= 14;
 						en -= 14;
 					}
-					result.Append(Alphabet[ev % 91]);
-					result.Append(Alphabet[ev / 91]);
+
+					int quotient = Math.DivRem(ev, 91, out int remainder);
+					result.Append(Alphabet[remainder]);
+					result.Append(Alphabet[quotient]);
 				}
 			}
 
 			if (en > 0)
 			{
-				result.Append(Alphabet[ebq % 91]);
+				int quotient = Math.DivRem(ebq, 91, out int remainder);
+				result.Append(Alphabet[remainder]);
 				if (en > 7 || ebq > 90)
-					result.Append(Alphabet[ebq / 91]);
+					result.Append(Alphabet[quotient]);
 			}
 
 			return result.ToString();

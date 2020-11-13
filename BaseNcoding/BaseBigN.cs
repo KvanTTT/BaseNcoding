@@ -7,7 +7,7 @@ namespace BaseNcoding
 	public class BaseBigN : Base
 	{
 		private BigInteger[] _powN;
-		private static readonly byte[] two_in_power_n;
+		private static readonly BigInteger[] _twoInPowerN;
 
 		public bool ReverseOrder { get; }
 
@@ -19,11 +19,11 @@ namespace BaseNcoding
 
 		static BaseBigN()
 		{
-			two_in_power_n = new byte[8];
+			_twoInPowerN = new BigInteger[8];
 			int a = 2;
 			for (int i = 0; i < 8; i++)
 			{
-				two_in_power_n[i] = (byte)(a - 1);
+				_twoInPowerN[i] = a - 1;
 				a *= 2;
 			}
 		}
@@ -61,8 +61,9 @@ namespace BaseNcoding
 				PreparePowN(blockCharsCount);
 			}
 
-			int mainBitsLength = data.Length * 8 / blockBitsCount * blockBitsCount;
-			int tailBitsLength = data.Length * 8 - mainBitsLength;
+			int data8 = data.Length * 8;
+			int mainBitsLength = data8 / blockBitsCount * blockBitsCount;
+			int tailBitsLength = data8 - mainBitsLength;
 			int mainCharsCount = mainBitsLength * blockCharsCount / blockBitsCount;
 			int tailCharsCount = (tailBitsLength * blockCharsCount + blockBitsCount - 1) / blockBitsCount;
 			int totalCharsCount = mainCharsCount + tailCharsCount;
@@ -176,15 +177,13 @@ namespace BaseNcoding
 		{
 			BigInteger result = 0;
 
-			int currentBytePos = bitPos / 8;
-			int currentBitInBytePos = bitPos % 8;
+			int currentBytePos = Math.DivRem(bitPos, 8, out int currentBitInBytePos);
 			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
 			if (xLength != 0)
 			{
-				result = (((BigInteger)data[currentBytePos] >> 8 - xLength - currentBitInBytePos) & two_in_power_n[7 - currentBitInBytePos]) << bitsCount - xLength;
+				result = (((BigInteger)data[currentBytePos] >> 8 - xLength - currentBitInBytePos) & _twoInPowerN[7 - currentBitInBytePos]) << bitsCount - xLength;
 
-				currentBytePos += (currentBitInBytePos + xLength) / 8;
-				currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
+				currentBytePos += Math.DivRem(currentBitInBytePos + xLength, 8, out currentBitInBytePos);
 
 				int x2Length = bitsCount - xLength;
 				if (x2Length > 8)
@@ -195,8 +194,7 @@ namespace BaseNcoding
 					xLength += x2Length;
 					result |= (BigInteger)(data[currentBytePos] >> 8 - x2Length) << bitsCount - xLength;
 
-					currentBytePos += (currentBitInBytePos + x2Length) / 8;
-					currentBitInBytePos = (currentBitInBytePos + x2Length) % 8;
+					currentBytePos += Math.DivRem(currentBitInBytePos + x2Length, 8, out currentBitInBytePos);
 
 					x2Length = bitsCount - xLength;
 					if (x2Length > 8)
@@ -209,17 +207,15 @@ namespace BaseNcoding
 
 		private static void AddBitsN(byte[] data, BigInteger value, int bitPos, int bitsCount)
 		{
-			int currentBytePos = bitPos / 8;
-			int currentBitInBytePos = bitPos % 8;
+			int currentBytePos = Math.DivRem(bitPos, 8, out int currentBitInBytePos);
 
 			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
 			if (xLength != 0)
 			{
-				byte x1 = (byte)((value >> bitsCount + currentBitInBytePos - 8) & two_in_power_n[7 - currentBitInBytePos]);
+				byte x1 = (byte)((value >> bitsCount + currentBitInBytePos - 8) & _twoInPowerN[7 - currentBitInBytePos]);
 				data[currentBytePos] |= x1;
 
-				currentBytePos += (currentBitInBytePos + xLength) / 8;
-				currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
+				currentBytePos += Math.DivRem(currentBitInBytePos + xLength, 8, out currentBitInBytePos);
 
 				int x2Length = bitsCount - xLength;
 				if (x2Length > 8)
@@ -231,8 +227,7 @@ namespace BaseNcoding
 					byte x2 = (byte)((value >> bitsCount - xLength << 8 - x2Length) & 0xFF);
 					data[currentBytePos] |= x2;
 
-					currentBytePos += (currentBitInBytePos + x2Length) / 8;
-					currentBitInBytePos = (currentBitInBytePos + x2Length) % 8;
+					currentBytePos += Math.DivRem(currentBitInBytePos + x2Length, 8, out currentBitInBytePos);
 
 					x2Length = bitsCount - xLength;
 					if (x2Length > 8)
@@ -243,10 +238,11 @@ namespace BaseNcoding
 
 		private void BitsToChars(char[] chars, int ind, int count, BigInteger block)
 		{
+			BigInteger quotient = block;
 			for (int i = 0; i < count; i++)
 			{
-				chars[ind + (!ReverseOrder ? i : count - 1 - i)] = Alphabet[(int)(block % CharsCount)];
-				block /= CharsCount;
+				quotient = BigInteger.DivRem(quotient, CharsCount, out BigInteger remainder);
+				chars[ind + (!ReverseOrder ? i : count - 1 - i)] = Alphabet[(int)remainder];
 			}
 		}
 

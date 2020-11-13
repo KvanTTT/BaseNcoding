@@ -149,9 +149,7 @@ namespace BaseNcoding
 		private static void CopyString(string source, char[] dest, ref int destInd)
 		{
 			for (int i = 0; i < source.Length; i++)
-			{
 				dest[destInd++] = source[i];
-			}
 		}
 
 		private void EncodeBlock(int count, char[] result, ref int resultInd, byte[] encodedBlock, uint tuple)
@@ -160,8 +158,10 @@ namespace BaseNcoding
 			{
 				for (int i = encodedBlock.Length - 1; i >= 0; i--)
 				{
-					encodedBlock[i] = (byte)(tuple % 85);
-					tuple /= 85;
+					uint quotient = tuple % 85;
+					uint remainder = tuple - quotient * 85;
+					tuple = quotient;
+					encodedBlock[i] = (byte)remainder;
 				}
 
 				for (int i = 0; i < count; i++)
@@ -174,7 +174,7 @@ namespace BaseNcoding
 			unchecked
 			{
 				for (int i = 0; i < bytes; i++)
-					decodedBlock[i] = (byte)(tuple >> 24 - (i * 8));
+					decodedBlock[i] = (byte)(tuple >> 24 - i * 8);
 			}
 		}
 	}
