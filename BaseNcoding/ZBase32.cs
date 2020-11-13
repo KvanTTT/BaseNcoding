@@ -7,7 +7,7 @@ namespace BaseNcoding
 	/// <summary>
 	/// From: https://github.com/denxc/ZBase32Encoder/blob/master/ZBase32Encoder/ZBase32Encoder/ZBase32Encoder.cs
 	/// </summary>
-	public class ZBase32 : Base
+	public unsafe class ZBase32 : Base
 	{
 		public const string DefaultAlphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
 		public const char DefaultSpecial = (char)0;
@@ -56,10 +56,32 @@ namespace BaseNcoding
 
 			var result = new List<byte>((int)Math.Ceiling(data.Length * 5.0 / 8.0));
 
-			var index = new int[8];
+			var index = stackalloc int[8];
 			for (var i = 0; i < data.Length; )
 			{
-				i = CreateIndexByOctetAndMovePosition(ref data, i, ref index);
+				int currentPosition = i;
+
+				var k = 0;
+				while (k < 8)
+				{
+					if (currentPosition >= data.Length)
+					{
+						index[k++] = -1;
+						continue;
+					}
+
+					if (InvAlphabet[data[currentPosition]] == -1)
+					{
+						currentPosition++;
+						continue;
+					}
+
+					index[k] = data[currentPosition];
+					k++;
+					currentPosition++;
+				}
+
+				i = currentPosition;
 
 				var shortByteCount = 0;
 				ulong buffer = 0;
@@ -78,31 +100,6 @@ namespace BaseNcoding
 			}
 
 			return result.ToArray();
-		}
-
-		private int CreateIndexByOctetAndMovePosition(ref string data, int currentPosition, ref int[] index)
-		{
-			var j = 0;
-			while (j < 8)
-			{
-				if (currentPosition >= data.Length)
-				{
-					index[j++] = -1;
-					continue;
-				}
-
-				if (InvAlphabet[data[currentPosition]] == -1)
-				{
-					currentPosition++;
-					continue;
-				}
-
-				index[j] = data[currentPosition];
-				j++;
-				currentPosition++;
-			}
-
-			return currentPosition;
 		}
 	}
 }
