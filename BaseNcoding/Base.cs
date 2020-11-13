@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -45,7 +44,7 @@ namespace BaseNcoding
 			Alphabet = alphabet;
 			Special = special;
 			int bitsPerChar = LogBase2(charsCount);
-			BlockBitsCount = LCM(bitsPerChar, 8);
+			BlockBitsCount = Lcm(bitsPerChar, 8);
 			BlockCharsCount = BlockBitsCount / bitsPerChar;
 
 			InvAlphabet = new int[Alphabet.Max() + 1];
@@ -67,7 +66,7 @@ namespace BaseNcoding
 
 		public abstract string Encode(byte[] data);
 
-		public virtual string DecodeToString(string data)
+		public string DecodeToString(string data)
 		{
 			return Encoding.GetString(Decode(Regex.Replace(data, @"\r\n?|\n", "")));
 		}
@@ -91,7 +90,7 @@ namespace BaseNcoding
 		/// <summary>
 		/// From: http://stackoverflow.com/a/13569863/1046374
 		/// </summary>
-		public static int LCM(int a, int b)
+		public static int Lcm(int a, int b)
 		{
 			int num1, num2;
 			if (a > b)
@@ -106,40 +105,16 @@ namespace BaseNcoding
 			}
 
 			for (int i = 1; i <= num2; i++)
-				if ((num1 * i) % num2 == 0)
-					return i * num1;
+			{
+				int mult = num1 * i;
+				if (mult % num2 == 0)
+					return mult;
+			}
+
 			return num2;
 		}
 
-		public static uint NextPowOf2(uint x)
-		{
-			x--;
-			x |= x >> 1;
-			x |= x >> 2;
-			x |= x >> 4;
-			x |= x >> 8;
-			x |= x >> 16;
-			x++;
-			return x;
-		}
-
-		public static ulong IntPow(ulong x, int exp)
-		{
-			ulong result = 1;
-			for (int i = 0; i < exp; i++)
-				result *= x;
-			return result;
-		}
-
-		public static BigInteger BigIntPow(BigInteger x, int exp)
-		{
-			BigInteger result = 1;
-			for (int i = 0; i < exp; i++)
-				result *= x;
-			return result;
-		}
-
-		public static int LogBase2(uint x)
+		private static int LogBase2(uint x)
 		{
 			int r = 0;
 			while ((x >>= 1) != 0)
@@ -147,23 +122,7 @@ namespace BaseNcoding
 			return r;
 		}
 
-		public static int LogBase2(ulong x)
-		{
-			int r = 0;
-			while ((x >>= 1) != 0)
-				r++;
-			return r;
-		}
-
-		public static int LogBaseN(uint x, uint n)
-		{
-			int r = 0;
-			while ((x /= n) != 0)
-				r++;
-			return r;
-		}
-
-		public static int LogBaseN(ulong x, uint n)
+		private static int LogBaseN(uint x, uint n)
 		{
 			int r = 0;
 			while ((x /= n) != 0)
@@ -198,7 +157,7 @@ namespace BaseNcoding
 			return result;
 		}
 
-		public static int GetOptimalBitsCount(uint charsCount, out uint charsCountInBits,
+		protected static int GetOptimalBitsCount(uint charsCount, out uint charsCountInBits,
 			uint maxBitsCount = 64, uint radix = 2)
 		{
 			int result = 0;

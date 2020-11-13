@@ -78,7 +78,7 @@ namespace BaseNcoding.Tests
 			{
 				int bitsPerChar = (int) Converter.BitsPerChars;
 				int bitsPerByte = 8;
-				int charByteBitsLcm = Base.LCM(bitsPerByte, bitsPerChar);
+				int charByteBitsLcm = Base.Lcm(bitsPerByte, bitsPerChar);
 				int maxTailLength = charByteBitsLcm / bitsPerByte - 1;
 				for (int i = 0; i <= maxTailLength + 2; i++)
 				{

@@ -7,10 +7,7 @@ namespace BaseNcoding
 		public const string DefaultAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 		public const char DefaultSpecial = '=';
 
-		public override bool HasSpecial
-		{
-			get { return true; }
-		}
+		public override bool HasSpecial => true;
 
 		public Base32(string alphabet = DefaultAlphabet, char special = DefaultSpecial, Encoding textEncoding = null)
 		: base(32, alphabet, special, textEncoding)
