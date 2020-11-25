@@ -7,7 +7,6 @@ namespace BaseNcoding
 	public class BaseBigN : Base
 	{
 		private BigInteger[] _powN;
-		private static readonly BigInteger[] _twoInPowerN;
 
 		public bool ReverseOrder { get; }
 
@@ -16,17 +15,6 @@ namespace BaseNcoding
 		public bool MaxCompression { get; }
 
 		public override bool HasSpecial => false;
-
-		static BaseBigN()
-		{
-			_twoInPowerN = new BigInteger[8];
-			int a = 2;
-			for (int i = 0; i < 8; i++)
-			{
-				_twoInPowerN[i] = a - 1;
-				a *= 2;
-			}
-		}
 
 		public BaseBigN(string alphabet, uint blockMaxBitsCount = 64,
 			Encoding encoding = null, bool reverseOrder = false, bool parallel = false,
@@ -180,10 +168,11 @@ namespace BaseNcoding
 			BigInteger result = 0;
 
 			int currentBytePos = Math.DivRem(bitPos, 8, out int currentBitInBytePos);
-			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
+			int shift = 8 - currentBitInBytePos;
+			int xLength = Math.Min(bitsCount, shift);
 			if (xLength != 0)
 			{
-				result = (((BigInteger)data[currentBytePos] >> 8 - xLength - currentBitInBytePos) & _twoInPowerN[7 - currentBitInBytePos]) << bitsCount - xLength;
+				result = new BigInteger((data[currentBytePos] >> shift - xLength) & ((1 << shift) - 1)) << bitsCount - xLength;
 
 				currentBytePos += Math.DivRem(currentBitInBytePos + xLength, 8, out currentBitInBytePos);
 
@@ -211,11 +200,11 @@ namespace BaseNcoding
 		{
 			int currentBytePos = Math.DivRem(bitPos, 8, out int currentBitInBytePos);
 
-			int xLength = Math.Min(bitsCount, 8 - currentBitInBytePos);
+			int shift = 8 - currentBitInBytePos;
+			int xLength = Math.Min(bitsCount, shift);
 			if (xLength != 0)
 			{
-				byte x1 = (byte)((value >> bitsCount + currentBitInBytePos - 8) & _twoInPowerN[7 - currentBitInBytePos]);
-				data[currentBytePos] |= x1;
+				data[currentBytePos] |= (byte) ((byte) (value >> bitsCount - shift) & ((1 << shift) - 1));
 
 				currentBytePos += Math.DivRem(currentBitInBytePos + xLength, 8, out currentBitInBytePos);
 
@@ -226,12 +215,12 @@ namespace BaseNcoding
 				while (x2Length > 0)
 				{
 					xLength += x2Length;
-					byte x2 = (byte)((value >> bitsCount - xLength << 8 - x2Length) & 0xFF);
-					data[currentBytePos] |= x2;
+					var bitsCountMinusXLength = bitsCount - xLength;
+					data[currentBytePos] |= (byte)((value >> (bitsCountMinusXLength - 8 + x2Length)) & 0xFF);
 
 					currentBytePos += Math.DivRem(currentBitInBytePos + x2Length, 8, out currentBitInBytePos);
 
-					x2Length = bitsCount - xLength;
+					x2Length = bitsCountMinusXLength;
 					if (x2Length > 8)
 						x2Length = 8;
 				}
