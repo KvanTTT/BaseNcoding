@@ -10,7 +10,7 @@ function BaseN(alphabet, blockMaxBitsCount, reverseOrder, oneBigNumber) {
     this.alphabet = alphabet;
     this.charsCount = alphabet.length;
     this.charsCount = alphabet.length;
-    this.bigCharsCount = new BigInteger(alphabet.length.toString());
+    this.bigCharsCount = BigInt(alphabet.length);
     this.blockMaxBitsCount = blockMaxBitsCount;
     var bitsCharsCount = getOptimalBitsCount(this.charsCount, this.blockMaxBitsCount, 2);
     this.blockBitsCount = bitsCharsCount.bitsCount;
@@ -19,13 +19,6 @@ function BaseN(alphabet, blockMaxBitsCount, reverseOrder, oneBigNumber) {
     this.oneBigNumber = oneBigNumber;
 
     this.preparePowN(this.blockCharsCount);
-
-    this.two_in_power_n = [];
-    var a = 2;
-    for (var i = 0; i < 8; i++) {
-        this.two_in_power_n[i] = new BigInteger((a - 1).toString());
-        a *= 2;
-    }
 
     this.invAlphabet = [];
     for (var i = 0; i < this.charsCount; i++)
@@ -83,23 +76,24 @@ BaseN.prototype.encodeBlock = function(src, dst, ind, blockBitsCount, blockChars
 
 BaseN.prototype.bitsToChars = function(chars, ind, count, block) {
     for (var i = 0; i < count; i++) {
-        var divRem = block.divideAndRemainder(this.bigCharsCount);
-        chars[ind + (!this.reverseOrder ? i : count - 1 - i)] = this.alphabet[divRem[1]];
-        block = divRem[0];
+        var quotient = block / this.bigCharsCount;
+        var remainder = block - quotient * this.bigCharsCount;
+        block = quotient;
+        chars[ind + (!this.reverseOrder ? i : count - 1 - i)] = this.alphabet[remainder];
     }
 }
 
 BaseN.prototype.getBitsN = function(data, bitPos, bitsCount) {
-    var result = new BigInteger('0');
+    var result = BigInt(0);
 
     var curBytePos = Math.floor(bitPos / 8);
     var curBitInBytePos = bitPos % 8;
-    var xLength = Math.min(bitsCount, 8 - curBitInBytePos);
+    var shift = 8 - curBitInBytePos;
+    var xLength = Math.min(bitsCount, shift);
 
     if (xLength != 0)
     {
-        var bigInt = new BigInteger(data[curBytePos].toString());
-        result = bigInt.shiftRight(8 - xLength - curBitInBytePos).and(this.two_in_power_n[7 - curBitInBytePos]).shiftLeft(bitsCount - xLength);
+        result = BigInt((data[curBytePos] >> shift - xLength) & ((1 << shift) - 1)) << BigInt(bitsCount - xLength);
 
         curBytePos += Math.floor((curBitInBytePos + xLength) / 8);
         curBitInBytePos = (curBitInBytePos + xLength) % 8;
@@ -111,7 +105,7 @@ BaseN.prototype.getBitsN = function(data, bitPos, bitsCount) {
         while (x2Length > 0)
         {
             xLength += x2Length;
-            result = result.or((new BigInteger((data[curBytePos] >> 8 - x2Length).toString())).shiftLeft(bitsCount - xLength));
+            result |= BigInt(data[curBytePos] >> 8 - x2Length) << BigInt(bitsCount - xLength);
 
             curBytePos += Math.floor((curBitInBytePos + x2Length) / 8);
             curBitInBytePos = (curBitInBytePos + x2Length) % 8;
@@ -154,7 +148,7 @@ BaseN.prototype.decodeToBytes = function(data) {
     var mainCharsCount = Math.floor(mainBitsLength * blockCharsCount / blockBitsCount);
     var tailCharsCount = Math.floor((tailBitsLength * blockCharsCount + blockBitsCount - 1) / blockBitsCount);
     var tailBits = this.charsToBits(data, mainCharsCount, tailCharsCount);
-    if (tailBits.shiftRight(tailBitsLength) != 0)
+    if ((tailBits >> BigInt(tailBitsLength)) != BigInt(0))
     {
         globalBitsLength += 8;
         mainBitsLength = Math.floor(globalBitsLength / blockBitsCount) * blockBitsCount;
@@ -184,10 +178,10 @@ BaseN.prototype.decodeBlock = function(src, dst, ind, blockBitsCount, blockChars
 }
 
 BaseN.prototype.charsToBits = function(data, ind, count) {
-    var result = new BigInteger('0');
+    var result = BigInt(0);
     for (var i = 0; i < count; i++) {
-        var bigInt = new BigInteger(this.invAlphabet[data[ind + (!this.reverseOrder ? i : count - 1 - i)]].toString());
-        result = result.add(bigInt.multiply(this.powN[this.powN.length - 1 - i]));
+        var bigInt = BigInt(this.invAlphabet[data[ind + (!this.reverseOrder ? i : count - 1 - i)]]);
+        result += bigInt * this.powN[this.powN.length - 1 - i];
     }
     return result;
 }
@@ -196,10 +190,10 @@ BaseN.prototype.addBitsN = function(data, value, bitPos, bitsCount) {
     var curBytePos = Math.floor(bitPos / 8);
     var curBitInBytePos = bitPos % 8;
 
-    var xLength = Math.min(bitsCount, 8 - curBitInBytePos);
+    var shift = 8 - curBitInBytePos;
+    var xLength = Math.min(bitsCount, shift);
     if (xLength != 0) {
-        var x1 = value.shiftRight(bitsCount + curBitInBytePos - 8).and(this.two_in_power_n[7 - curBitInBytePos]).byteValue() & 0xFF;
-        data[curBytePos] |= x1;
+        data[curBytePos] |= Number(value >> BigInt(bitsCount - shift)) & ((1 << shift) - 1);
 
         curBytePos += Math.floor((curBitInBytePos + xLength) / 8);
         curBitInBytePos = (curBitInBytePos + xLength) % 8;
@@ -210,13 +204,13 @@ BaseN.prototype.addBitsN = function(data, value, bitPos, bitsCount) {
 
         while (x2Length > 0) {
             xLength += x2Length;
-            var x2 = value.shiftRight(bitsCount - xLength).shiftLeft(8 - x2Length).byteValue() & 0xFF;
-            data[curBytePos] |= x2;
+            var bitsCountMinusXLength = bitsCount - xLength;
+            data[curBytePos] |= Number((value >> BigInt(bitsCountMinusXLength - 8 + x2Length)) & BigInt(0xFF));
 
             curBytePos += Math.floor((curBitInBytePos + x2Length) / 8);
             curBitInBytePos = (curBitInBytePos + x2Length) % 8;
 
-            x2Length = bitsCount - xLength;
+            x2Length = bitsCountMinusXLength;
             if (x2Length > 8)
                 x2Length = 8;
         }
@@ -224,12 +218,12 @@ BaseN.prototype.addBitsN = function(data, value, bitPos, bitsCount) {
 }
 
 BaseN.prototype.preparePowN = function(blockCharsCount) {
-    bigCharsCount = new BigInteger(this.alphabet.length.toString());
+    bigCharsCount = BigInt(this.alphabet.length);
     this.powN = [];
-    var pow = new BigInteger('1');
+    var pow = BigInt(1);
     for (var i = 0; i < blockCharsCount - 1; i++) {
         this.powN[blockCharsCount - 1 - i] = pow;
-        pow = pow.multiply(bigCharsCount);
+        pow = pow * bigCharsCount;
     }
     this.powN[0] = pow;
 }
