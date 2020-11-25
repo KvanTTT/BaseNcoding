@@ -15,14 +15,14 @@ $(function() {
 			rebuildBase();
 		}
     });
-	
+
 	$("#base").bind('spin', function (event, ui) {
 		var alphabet = alphabets['max'].substr(0, ui.value);
 		$('#alphabet').val(alphabet);
 		$('#base').val(alphabet.length);
 		rebuildBase();
 	});
-	
+
 	$('#maxBitsCount').spinner({
 		min: 2,
 		max: 512,
@@ -32,11 +32,11 @@ $(function() {
 			rebuildBase();
 		}
     });
-	
+
 	$("#maxBitsCount").bind('spin', function (event, ui) {
 		rebuildBase();
 	});
-	
+
 	$('#btnEncode').addClass('active');
 	$('#btnEncodeDecode .btn').click(function() {
 		if (this.id === 'btnEncode') {
@@ -45,19 +45,19 @@ $(function() {
 			$('#btnEncode').removeClass('active');
 		}
 	});
-	
+
 	$('.gen_alphabet').click(function() {
 		var alphabet = alphabets[$(this).val()];
 		$('#alphabet').val(alphabet);
 		$('#base').val(alphabet.length);
 		rebuildBase();
 	});
-	
+
 	$('#alphabet').on('change keyup paste', function() {
 		$('#base').val($('#alphabet').val().length);
 		rebuildBase();
 	});
-	
+
 	$('#convert').click(function() {
 		try {
 			var alphabet = $('#alphabet').val();
@@ -68,8 +68,8 @@ $(function() {
 					}
 				}
 			}
-			baseN = new BaseN(alphabet, $('#maxBitsCount').val(), $('#btnReverseOrder').hasClass('active'), $('#btnOneBigNumber').hasClass('active'));
-			
+			baseN = new BaseN(alphabet, parseInt($('#maxBitsCount').val()), $('#btnReverseOrder').hasClass('active'), $('#btnOneBigNumber').hasClass('active'));
+
 			var input = $('#input').val();
 			var converted;
 			if ($('#btnEncode').hasClass('active')) {
@@ -77,7 +77,7 @@ $(function() {
 			} else {
 				converted = baseN.decodeToString(input);
 			}
-			
+
 			$('#output').val(converted);
 			printBlockSize();
 		}
