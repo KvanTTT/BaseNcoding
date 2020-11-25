@@ -17,16 +17,16 @@ function BaseN(alphabet, blockMaxBitsCount, reverseOrder, oneBigNumber) {
     this.blockCharsCount = bitsCharsCount.charsCountInBits;
     this.reverseOrder = reverseOrder;
     this.oneBigNumber = oneBigNumber;
-    
+
     this.preparePowN(this.blockCharsCount);
-    
+
     this.two_in_power_n = [];
     var a = 2;
     for (var i = 0; i < 8; i++) {
         this.two_in_power_n[i] = new BigInteger((a - 1).toString());
         a *= 2;
     }
-    
+
     this.invAlphabet = [];
     for (var i = 0; i < this.charsCount; i++)
         this.invAlphabet[this.alphabet[i]] = i;
@@ -57,10 +57,8 @@ BaseN.prototype.encodeBytes = function(data)  {
 
     var mainBitsLength = (Math.floor(data.length * 8 / blockBitsCount)) * blockBitsCount;
     var tailBitsLength = data.length * 8 - mainBitsLength;
-    var globalBitsLength = mainBitsLength + tailBitsLength;
     var mainCharsCount = Math.floor(mainBitsLength * blockCharsCount / blockBitsCount);
     var tailCharsCount = Math.floor((tailBitsLength * blockCharsCount + blockBitsCount - 1) / blockBitsCount);
-    var globalCharsCount = mainCharsCount + tailCharsCount;
     var iterCount = Math.floor(mainCharsCount / blockCharsCount);
 
     var result = [];
@@ -75,7 +73,7 @@ BaseN.prototype.encodeBytes = function(data)  {
 
     return result.join("");
 }
-    
+
 BaseN.prototype.encodeBlock = function(src, dst, ind, blockBitsCount, blockCharsCount) {
     var charInd = ind * blockCharsCount;
     var bitInd = ind * blockBitsCount;
@@ -85,8 +83,9 @@ BaseN.prototype.encodeBlock = function(src, dst, ind, blockBitsCount, blockChars
 
 BaseN.prototype.bitsToChars = function(chars, ind, count, block) {
     for (var i = 0; i < count; i++) {
-        chars[ind + (!this.reverseOrder ? i : count - 1 - i)] = this.alphabet[block.modInt(this.charsCount)];
-        block = block.divide(this.bigCharsCount);
+        var divRem = block.divideAndRemainder(this.bigCharsCount);
+        chars[ind + (!this.reverseOrder ? i : count - 1 - i)] = this.alphabet[divRem[1]];
+        block = divRem[0];
     }
 }
 
@@ -96,7 +95,7 @@ BaseN.prototype.getBitsN = function(data, bitPos, bitsCount) {
     var curBytePos = Math.floor(bitPos / 8);
     var curBitInBytePos = bitPos % 8;
     var xLength = Math.min(bitsCount, 8 - curBitInBytePos);
-    
+
     if (xLength != 0)
     {
         var bigInt = new BigInteger(data[curBytePos].toString());
@@ -173,7 +172,7 @@ BaseN.prototype.decodeToBytes = function(data) {
         var bits = this.charsToBits(data, mainCharsCount, tailCharsCount);
         this.addBitsN(result, bits, mainBitsLength, tailBitsLength);
     }
-    
+
     return result;
 }
 
@@ -275,12 +274,12 @@ function strToUtf8Bytes(str) {
         var charcode = str.charCodeAt(i);
         if (charcode < 0x80) utf8.push(charcode);
         else if (charcode < 0x800) {
-            utf8.push(0xc0 | (charcode >> 6), 
+            utf8.push(0xc0 | (charcode >> 6),
                       0x80 | (charcode & 0x3f));
         }
         else if (charcode < 0xd800 || charcode >= 0xe000) {
-            utf8.push(0xe0 | (charcode >> 12), 
-                      0x80 | ((charcode>>6) & 0x3f), 
+            utf8.push(0xe0 | (charcode >> 12),
+                      0x80 | ((charcode>>6) & 0x3f),
                       0x80 | (charcode & 0x3f));
         }
         else {
@@ -290,9 +289,9 @@ function strToUtf8Bytes(str) {
             // 20 bits of 0x0-0xFFFFF into two halves
             charcode = 0x10000 + (((charcode & 0x3ff)<<10)
                       | (str.charCodeAt(i) & 0x3ff));
-            utf8.push(0xf0 | (charcode >>18), 
-                      0x80 | ((charcode>>12) & 0x3f), 
-                      0x80 | ((charcode>>6) & 0x3f), 
+            utf8.push(0xf0 | (charcode >>18),
+                      0x80 | ((charcode>>12) & 0x3f),
+                      0x80 | ((charcode>>6) & 0x3f),
                       0x80 | (charcode & 0x3f));
         }
     }
@@ -309,7 +308,7 @@ function bytesToUtf8Str(bytes) {
     while(i < len) {
         c = bytes[i++];
         switch(c >> 4)
-        { 
+        {
           case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
             // 0xxxxxxx
             out += String.fromCharCode(c);
