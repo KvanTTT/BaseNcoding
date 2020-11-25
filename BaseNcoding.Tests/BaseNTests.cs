@@ -15,9 +15,9 @@ namespace BaseNcoding.Tests
 			string s = "aaa";
 			var converter = new BaseN(Base64.DefaultAlphabet);
 			string encoded = converter.EncodeString(s);
-			string base64standart = Convert.ToBase64String(Encoding.UTF8.GetBytes(s));
+			string base64Standard = Convert.ToBase64String(Encoding.UTF8.GetBytes(s));
 
-			Assert.AreEqual(base64standart, encoded);
+			Assert.AreEqual(base64Standard, encoded);
 		}
 
 		[Test]
@@ -33,8 +33,7 @@ namespace BaseNcoding.Tests
 		[Test]
 		public void GetOptimalBitsCount()
 		{
-			uint charsCountInBits;
-			Assert.AreEqual(5, BaseN.GetOptimalBitsCount2(32, out charsCountInBits));
+			Assert.AreEqual(5, BaseN.GetOptimalBitsCount2(32, out var charsCountInBits));
 			Assert.AreEqual(6, BaseN.GetOptimalBitsCount2(64, out charsCountInBits));
 			Assert.AreEqual(32, BaseN.GetOptimalBitsCount2(85, out charsCountInBits));
 			Assert.AreEqual(13, BaseN.GetOptimalBitsCount2(91, out charsCountInBits));

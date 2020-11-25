@@ -130,7 +130,9 @@ namespace BaseNcoding
 			byte[] result = new byte[totalBitsLength / 8];
 
 			if (!Parallel)
+			{
 				DecodeBlock(data, result, 0, iterationCount, blockBitsCount, blockCharsCount);
+			}
 			else
 			{
 				int processorCount = Math.Min(iterationCount, Environment.ProcessorCount);

@@ -149,8 +149,7 @@ namespace BaseNcoding
 			{
 				result = ((ulong)data[currentBytePos] << 56 + currentBitInBytePos) >> 64 - xLength << bitsCount - xLength;
 
-				currentBytePos += (currentBitInBytePos + xLength) / 8;
-				currentBitInBytePos = (currentBitInBytePos + xLength) % 8;
+				currentBytePos += Math.DivRem(currentBitInBytePos + xLength, 8, out currentBitInBytePos);
 
 				int x2Length = bitsCount - xLength;
 				if (x2Length > 8)
@@ -161,8 +160,7 @@ namespace BaseNcoding
 					xLength += x2Length;
 					result |= (ulong)data[currentBytePos] >> 8 - x2Length << bitsCount - xLength;
 
-					currentBytePos += (currentBitInBytePos + x2Length) / 8;
-					currentBitInBytePos = (currentBitInBytePos + x2Length) % 8;
+					currentBytePos += Math.DivRem(currentBitInBytePos + x2Length, 8, out currentBitInBytePos);
 
 					x2Length = bitsCount - xLength;
 					if (x2Length > 8)
